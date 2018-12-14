@@ -1,0 +1,81 @@
+@layout("/common/_container.html"){
+<div class="layer">
+    <div class="layer-top clearfix">
+        <input id="checkinId" value="4028188165361cfd0165361d478d0001" type="hidden">
+        <input id="status" value="0" type="hidden">
+        <input id="cardnum" type="hidden">
+        <div class="lt top-left">
+            <span class="tit">门店名称：</span>
+            <span id="deptId">根部门</span>
+        </div>
+        <div class="lt rt-mgn top-right">
+            <span class="tit">会议场次：</span>
+            <span id="screenings">2018081401</span>
+            <span class="fn-btn-wrap">
+                <a href="javascript:;" class="fn-btn sign-start none">开始签到</a>
+                <a href="javascript:;" class="fn-btn sign-end">结束签到</a>
+                <a href="javascript:;" class="fn-btn none sign-new">新建签到</a>
+              </span>
+        </div>
+    </div>
+    <div class="layer-user-info clearfix">
+        <div class="lt user-thumb">
+            <img class="layer-thumb" src="">
+        </div>
+        <div class="lt rt-mgn user-info">
+            <p class="user-info-cls">
+                <span class="tit">姓名：</span>
+                <span id="name"></span>
+            </p>
+            <p class="user-info-cls">
+                <span class="tit">身份证号：</span>
+                <span id="cadID"></span>
+            </p>
+            <p class="user-info-cls">
+                <span class="tit">性别：</span>
+                <span id="sex"></span>
+            </p>
+            <p class="user-info-cls">
+                <span class="tit">当前积分：</span>
+                <span id="integral"></span>
+            </p>
+            <p class="user-info-cls">
+                <span class="tit">服务员工：</span>
+                <span id="staff"></span>
+            </p>
+            <p class="user-info-cls">
+                <a class="btn checkIn-details none" href="javascript:;">签到记录</a>
+            </p>
+        </div>
+    </div>
+    <div class="layer-num clearfix">
+        <div class="lt all-num">
+            <span class="tit">会员签到：</span>
+            <input id="memberCount" value="0" style="height:25px;border:1px solid;" class="input-text" readonly="true" type="text">
+            <span>人</span>
+        </div>
+        <div class="lt rt-mgn no-num">
+            <span class="tit">新人签到：</span>
+            <span>
+              	<button onclick="updateNewCount(1)" id="addCount" class="fl dsl fn plus">+</button>
+                <!--<span id="addCount" class="fl dsl fn plus"></span>
+                --><span class="fl dsl"><input id="newCount" style="height:25px;border:1px solid;" value="0" class="input-text" readonly="true" type="text"></span>
+                <!--<span id="minus" class="fl dsl fn minus">-</span>
+                --><button onclick="updateNewCount(2)" id="addCount" class="fl dsl fn minus">-</button>
+              </span>
+        </div>
+    </div>
+    <div class="layer-fn">
+        <a href="javascript:;" class="btn read-car ">读卡</a>
+        <a href="javascript:;" class="btn submit none">确定</a>
+        <a href="javascript:;" class="btn cancel">取消</a>
+    </div>
+    <div class="layer-fn">
+        身份证：
+        <input value="" id="cardNumber" style="height:25px; width:200px;border:1px solid;" class="input-text" type="text">
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <a href="javascript:;" id="cardId" class="btn">查询</a>
+        <a href="javascript:;" id="cardIdCheckIn" class="btn" style="display:none">签到</a>
+    </div>
+</div>
+@}

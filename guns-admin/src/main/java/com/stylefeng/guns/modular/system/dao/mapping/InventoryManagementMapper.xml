@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.stylefeng.guns.modular.system.dao.InventoryManagementMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.stylefeng.guns.modular.system.model.InventoryManagement">
+        <id column="id" property="id" />
+        <result column="createtime" property="createtime" />
+        <result column="createuserid" property="createuserid" />
+        <result column="deptid" property="deptid" />
+        <result column="integralrecordtypeid" property="integralrecordtypeid" />
+        <result column="status" property="status" />
+        <result column="memberid" property="memberid" />
+        <result column="consumptionNum" property="consumptionNum" />
+        <result column="name" property="name" />
+        <result column="memberName" property="memberName" />
+        <result column="memberPhone" property="memberPhone" />
+        <result column="integralid" property="integralid" />
+        <result column="clearid" property="clearid" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, createtime, createuserid, deptid, integralrecordtypeid, status, memberid, consumptionNum, name, memberName, memberPhone
+        id, createtime, createuserid, deptid, integralrecordtypeid, status, memberid, consumptionNum, name, memberName, integralid, clearid
+    </sql>
+
+</mapper>

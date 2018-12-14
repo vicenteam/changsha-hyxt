@@ -1,0 +1,32 @@
+@layout("/common/_container.html"){
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div class="form-horizontal">
+
+            <div class="row">
+                <div class="col-sm-6 b-r">
+                            <#input id="id" name="" underline="true"/>
+                            <#input id="memberid" name="会员id" underline="true"/>
+                            <#input id="createtime" name="签到时间" underline="true"/>
+                            <#input id="updatetime" name="复签时间"/>
+                </div>
+
+                <div class="col-sm-6">
+                            <#input id="checkinid" name="签到场次id" underline="true"/>
+                            <#input id="deptid" name="门店id" underline="true"/>
+                            <#input id="status" name="" underline="true"/>
+                </div>
+            </div>
+
+            <div class="row btn-group-m-t">
+                <div class="col-sm-10">
+                    <#button btnCss="info" name="提交" id="ensure" icon="fa-check" clickFun="QiandaoCheckinInfoDlg.addSubmit()"/>
+                    <#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="QiandaoCheckinInfoDlg.close()"/>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script src="${ctxPath}/static/modular/main/qiandaoCheckin/qiandaoCheckin_info.js"></script>
+@}

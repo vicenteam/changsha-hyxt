@@ -1,0 +1,53 @@
+@layout("/common/_container.html"){
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div class="form-horizontal" id="membershipcardtypeInfoTable">
+            <input type="hidden" id="id"  name="id" value="${item.id}">
+            <input type="hidden" id="checkleavenum_temp"   value="${item.checkleavenum}">
+            <div class="row">
+                <div class="col-sm-6 b-r">
+                            <#input id="cardname" name="会员等级名称" value="${item.cardname}" underline="true"/>
+                            <!--<#input id="signin" name="签到积分" value="${item.signin}" underline="true"/>-->
+                            <!--<#input id="shopping" name="购物积分" value="${item.shopping}" underline="true"/>-->
+                            <!--<#input id="newpoints" name="带新人奖励积分" value="${item.newpoints}" underline="true"/>-->
+                    <#input id="tips" name="备注" value="${item.tips}" underline="true"/>
+                    <#input id="leaves" name="排序序号" underline="true" value="${item.leaves}" disabled="disabled"/>
+                    <div id="checkleavenumDiv"></div>
+                </div>
+
+                <div class="col-sm-6">
+                            <!--<#input id="signinnew" name="新人签到积分" value="${item.signinnew}" underline="true"/>-->
+                            <!--<#input id="shoppingnew" name="新人购物积分" value="${item.shoppingnew}" />-->
+                            <#input id="upamount" name="升级所需积分" value="${item.upamount}" underline="true"/>
+                            <#select name="部门名称" id="deptid" underline="true">
+                                <option value="${dept.id}">${dept.fullname}</option>
+                            </#select>
+
+                </div>
+            </div>
+
+            <div class="row btn-group-m-t">
+                <div class="col-sm-10">
+                    <#button btnCss="info" name="提交" id="ensure" icon="fa-check" clickFun="MembershipcardtypeInfoDlg.editSubmit()"/>
+                    <#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="MembershipcardtypeInfoDlg.close()"/>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script src="${ctxPath}/static/modular/main/membershipcardtype/membershipcardtype_info.js"></script>
+<script>
+    if($("#leaves").val()==0){
+        var dom='<div class="form-group">\n' +
+            '    <label class="col-sm-3 control-label">签到升级次数</label>\n' +
+            '    <div class="col-sm-9">\n' +
+            '        <input class="form-control" id="checkleavenum" name="checkleavenum" type="text">\n' +
+            '\n' +
+            '    </div>\n' +
+            '</div><div class="hr-line-dashed"></div>';
+        $("#checkleavenumDiv").append(dom);
+    }
+    $("#checkleavenum").val($("#checkleavenum_temp").val())
+</script>
+@}

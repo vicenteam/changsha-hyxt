@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> 
+<meta http-equiv="Pragma" content="no-cache"> 
+<meta http-equiv="Cache-Control" content="no-cache"> 
+<meta http-equiv="Expires" content="0"> 
+<title>会员系统-管理登录</title>
+<link href="${ctxPath}/static/login/css/login.css" type="text/css" rel="stylesheet">
+</head> 
+<body> 
+
+<div class="login">
+    <div class="message">会员系统-管理登录</div>
+    <div id="darkbannerwrap"></div>
+    
+    <form method="post" role="form" action="${ctxPath}/login">
+		<h4 style="color: red;text-align: center">${tips!}</h4>
+		<input name="action" value="login" type="hidden">
+		<input name="username" placeholder="用户名" required="" type="text">
+		<hr class="hr15">
+		<input name="password" placeholder="密码" required="" type="password">
+		<hr class="hr15">
+		<input value="登录" style="width:100%;" type="submit">
+		<!--<button type="submit" style="width:100%;">登录</button>-->
+		<hr class="hr20">
+	</form>
+
+	
+</div>
+
+<div class="copyright">© 成都星协科技有限公司 by <a href="http://www.mycodes.net/" target="_blank">会员系统</a></div>
+
+</body>
+</html>

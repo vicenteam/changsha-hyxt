@@ -1,0 +1,425 @@
+
+<!DOCTYPE html>
+<html style="height: 100%">
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="/static/layui/css/layui.css" media="all">
+</head>
+<body style="height: 100%; margin: 0">
+<div style="width:100%;margin-left: 3px;margin-top: 3px">
+    <button class="layui-btn" onclick="exportExcel()">Excel导出</button>
+</div>
+<div id="container" style="height: 100%"></div>
+<div id="container2" style="height: 100%"></div>
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/echarts.min.js"></script>
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts-gl/echarts-gl.min.js"></script>
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts-stat/ecStat.min.js"></script>
+<script type="text/javascript"
+        src="http://echarts.baidu.com/gallery/vendors/echarts/extension/dataTool.min.js"></script>
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/map/js/china.js"></script>
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/map/js/world.js"></script>
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=ZUONbpqGBsYGXNIYHicvbAbM"></script>
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/extension/bmap.min.js"></script>
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/simplex.js"></script>
+<script src="/static/bar/macarons.js"></script>
+<script src="/static/js/jquery.min.js"></script>
+<script>
+
+    function GetWeekDate(time) {
+        var now = new Date(time); //当前日期
+        this.nowDayOfWeek = now.getDay(); //今天本周的第几天
+        this.nowYear = now.getYear(); //当前年
+        this.nowMonth = now.getMonth(); //月
+        this.nowDay = now.getDate(); //日
+        this.beginHour = "09:00:00";
+        this.endHour = "23:59:59";
+
+        this.nowYear += (this.nowYear < 2000) ? 1900 : 0; //
+        this.nowDayOfWeek = this.nowDayOfWeek == 0 ? 7 : this.nowDayOfWeek; // 如果是周日，就变成周七
+    }
+
+    GetWeekDate.prototype.date2str = function (x, y) {//date2str(new Date(curTime),"yyyy-MM-dd")
+        var z = {
+            y: x.getFullYear(),
+            M: x.getMonth() + 1,
+            d: x.getDate(),
+            h: x.getHours(),
+            m: x.getMinutes(),
+            s: x.getSeconds()
+        };
+        return y.replace(/(y+|M+|d+|h+|m+|s+)/g, function (v) {
+            return ((v.length > 1 ? "0" : "") + eval('z.' + v.slice(-1))).slice(-(v.length > 2 ? v.length : 2))
+        });
+    }
+
+    GetWeekDate.prototype.formatDate = function (date) {//格局化日期：yyyy-MM-dd
+        var myyear = date.getFullYear();
+        var mymonth = date.getMonth() + 1;
+        var myweekday = date.getDate();
+        //alert("formatDate"+myyear+":"+mymonth+":"+myweekday)
+        if (mymonth < 10) {
+            mymonth = "0" + mymonth;
+        }
+        if (myweekday < 10) {
+            myweekday = "0" + myweekday;
+        }
+        return (myyear + "-" + mymonth + "-" + myweekday);
+    }
+    GetWeekDate.prototype.getWeekStartDate = function () { //获得本周的开端日期
+        var weekStartDate = new Date(this.nowYear, this.nowMonth, this.nowDay - this.nowDayOfWeek + 1);
+        return this.formatDate(weekStartDate);
+    }
+
+    GetWeekDate.prototype.getWeekEndDate = function () {//获得本周的停止日期
+        var weekEndDate = new Date(this.nowYear, this.nowMonth, this.nowDay + (6 - this.nowDayOfWeek + 1));
+        return this.formatDate(weekEndDate);
+    }
+    GetWeekDate.prototype.getAWeedkYMD = function () {//获得本周周一~周日的年月日
+        var ymdArr = [];
+        for (var i = 0; i < 7; i++) {
+            ymdArr[i] = [];
+            //ymdArr[i][0]=this.formatDate(new Date(this.nowYear, this.nowMonth, this.nowDay - this.nowDayOfWeek+i+1));
+            ymdArr[i][0] = this.date2str(new Date(this.nowYear, this.nowMonth, this.nowDay - this.nowDayOfWeek + i + 1), 'yyyy-MM-dd');
+            ymdArr[i][1] = this.date2str(new Date(this.nowYear, this.nowMonth, this.nowDay - this.nowDayOfWeek + i + 1), 'MM月dd日');
+        }
+        ;
+
+        return ymdArr;
+    }
+
+    //获得本月的停止日期
+    function getMonthLastDay() {
+        var day = new Date(new Date().getFullYear(), new Date().getMonth(), 0);
+        var lastdate = new Date().getFullYear() + '-' + new Date().getMonth() + '-' + day.getDate();
+        var ymdArr = [];
+        ymdArr[0] = day.getDate();
+        ymdArr[1] = lastdate;
+        return ymdArr;
+    }
+
+</script>
+<script type="text/javascript">
+    var dom = document.getElementById("container");
+    var myChart = echarts.init(dom, "macarons");
+
+    var dom2 = document.getElementById("container2");
+    var myChart2 = echarts.init(dom2, "macarons");
+    var app = {};
+    option = null;
+    app.title = '柱状图框选';
+
+    var xAxisData = [];
+    var data1 = [];
+    var data2 = [];
+    var data3 = [];
+    //获取周签到数据
+    var weekdata = new GetWeekDate(new Date()).getAWeedkYMD();
+    $.ajax({
+        url: '/barbrush/getWeekdata',
+        data: {startdate: weekdata[0][0], enddate: weekdata[6][0]},
+        type: 'POST',
+        async: false,
+        success: function (data) {
+            data1 = data.data1
+            data2 = data.data2
+            data3 = data.data3
+        }
+    });
+
+
+    for (var i = 0; i < 7; i++) {
+        xAxisData.push('' + weekdata[i][0]);
+        // data1.push((Math.random() * 2).toFixed(2));
+        // data2.push(Math.random().toFixed(2));
+        // data3.push((Math.random() * 5).toFixed(2));
+    }
+
+    var itemStyle = {
+        normal: {},
+        emphasis: {
+            barBorderWidth: 1,
+            shadowBlur: 10,
+            shadowOffsetX: 0,
+            shadowOffsetY: 0,
+            shadowColor: 'rgba(0,0,0,0.5)'
+        }
+    };
+
+    option = {
+        title: {
+            text: '本周签到数据统计表',
+        },
+        backgroundColor: '#eee',
+        legend: {
+            data: ['当天签到人数', '昨天签到人数', '同比签到人数'],
+            align: 'left',
+
+        },
+        brush: {
+            toolbox: ['rect', 'polygon', 'lineX', 'lineY', 'keep', 'clear'],
+            xAxisIndex: 0
+        },
+        toolbox: {
+            feature: {
+                magicType: {
+                    type: ['stack', 'tiled']
+                },
+                dataView: {}
+            }
+        },
+        tooltip: {},
+        xAxis: {
+            data: xAxisData,
+            name: 'X Axis',
+            silent: false,
+            axisLine: {onZero: true},
+            splitLine: {show: false},
+            splitArea: {show: false}
+        },
+        yAxis: {
+            inverse: false,
+            splitArea: {show: true}
+        },
+        grid: {
+            left: 100
+        },
+        visualMap: {
+            type: '',
+            dimension: 1,
+            text: ['最大值', '最小值'],
+            inverse: false,
+            itemHeight: 200,
+            calculable: false,
+            min: -10000,
+            max: 10000,
+            top: 60,
+            left: 10,
+            inRange: {
+                colorLightness: [0.4, 0.8]
+            },
+            outOfRange: {
+                color: '#bb4e1d'
+            },
+            controller: {
+                inRange: {
+                    color: '#225412'
+                }
+            }
+        },
+        series: [
+            {
+                name: '当天签到人数',
+                type: 'bar',
+                stack: 'one',
+                itemStyle: itemStyle,
+                data: data1
+            },
+            {
+                name: '昨天签到人数',
+                type: 'bar',
+                stack: 'two',
+                itemStyle: itemStyle,
+                data: data2
+            },
+            {
+                name: '同比签到人数',
+                type: 'bar',
+                stack: 'three',
+                itemStyle: itemStyle,
+                data: data3
+            }
+        ]
+    };
+
+    myChart.on('brushSelected', renderBrushed);
+
+
+    function renderBrushed(params) {
+        var brushed = [];
+        var brushComponent = params.batch[0];
+
+        for (var sIdx = 0; sIdx < brushComponent.selected.length; sIdx++) {
+            var rawIndices = brushComponent.selected[sIdx].dataIndex;
+            brushed.push('[Series ' + sIdx + '] ' + rawIndices.join(', '));
+        }
+
+        myChart.setOption({
+            title: {
+                backgroundColor: '#333',
+                text: 'SELECTED DATA INDICES: \n' + brushed.join('\n'),
+                bottom: 0,
+                right: 0,
+                width: 100,
+                textStyle: {
+                    fontSize: 12,
+                    color: '#fff'
+                }
+            }
+        });
+    };
+
+    if (option && typeof option === "object") {
+        myChart.setOption(option, true);
+    }
+</script>
+<script>
+    var xAxisData2 = [];
+
+    var data4 = [];
+    var data5 = [];
+    var data6 = [];
+    var now = new Date();
+    var year = now.getFullYear();
+    var month = (now.getMonth() + 1);
+    var nowday = getMonthLastDay();
+    if (month.length == 1) {
+        month += "0" + month;
+    }
+    console.log(nowday)
+    $.ajax({
+        url: '/barbrush/getMonthdata',
+        data: {startdate: year + '-' + month + "-01", enddate: nowday[0]},
+        type: 'POST',
+        async: false,
+        success: function (data) {
+            data4 = data.data4;
+            data5 = data.data5;
+            data6 = data.data6;
+        }
+    });
+    for (var i = 0; i < nowday[0]; i++) {
+        xAxisData2.push(year + '-' + month + "-" + (i + 1));
+        // data4.push((Math.random() * 2).toFixed(2));
+        // data5.push(Math.random().toFixed(2));
+        // data6.push((Math.random() * 5).toFixed(2));
+    }
+    option2 = {
+        title: {
+            text: '本月签到数据统计表',
+        },
+        backgroundColor: '#eee',
+        legend: {
+            data: ['当天签到人数', '昨天签到人数', '同比签到人数'],
+            align: 'left',
+
+        },
+        brush: {
+            toolbox: ['rect', 'polygon', 'lineX', 'lineY', 'keep', 'clear'],
+            xAxisIndex: 0
+        },
+        toolbox: {
+            feature: {
+                magicType: {
+                    type: ['stack', 'tiled']
+                },
+                dataView: {}
+            }
+        },
+        tooltip: {},
+        xAxis: {
+            data: xAxisData2,
+            name: 'X Axis',
+            silent: false,
+            axisLine: {onZero: true},
+            splitLine: {show: false},
+            splitArea: {show: false}
+        },
+        yAxis: {
+            inverse: false,
+            splitArea: {show: true}
+        },
+        grid: {
+            left: 100
+        },
+        visualMap: {
+            type: '',
+            dimension: 1,
+            text: ['最大值', '最小值'],
+            inverse: false,
+            itemHeight: 200,
+            calculable: false,
+            min: -2,
+            max: 6,
+            top: 60,
+            left: 10,
+            inRange: {
+                colorLightness: [0.4, 0.8]
+            },
+            outOfRange: {
+                color: '#bb4e1d'
+            },
+            controller: {
+                inRange: {
+                    color: '#225412'
+                }
+            }
+        },
+        series: [
+            {
+                name: '当天签到人数',
+                type: 'bar',
+                stack: 'one',
+                itemStyle: itemStyle,
+                data: data4
+            },
+            {
+                name: '昨天签到人数',
+                type: 'bar',
+                stack: 'two',
+                itemStyle: itemStyle,
+                data: data5
+            },
+            {
+                name: '同比签到人数',
+                type: 'bar',
+                stack: 'three',
+                itemStyle: itemStyle,
+                data: data6
+            }
+        ]
+    };
+    myChart2.on('brushSelected', renderBrushed2);
+
+    function renderBrushed2(params) {
+        var brushed = [];
+        var brushComponent = params.batch[0];
+
+        for (var sIdx = 0; sIdx < brushComponent.selected.length; sIdx++) {
+            var rawIndices = brushComponent.selected[sIdx].dataIndex;
+            brushed.push('[Series ' + sIdx + '] ' + rawIndices.join(', '));
+        }
+
+        myChart2.setOption({
+            title: {
+                backgroundColor: '#333',
+                text: 'SELECTED DATA INDICES: \n' + brushed.join('\n'),
+                bottom: 0,
+                right: 0,
+                width: 100,
+                textStyle: {
+                    fontSize: 12,
+                    color: '#fff'
+                }
+            }
+        });
+    };
+    if (option2 && typeof option2 === "object") {
+        myChart2.setOption(option2, true);
+    }
+</script>
+<script src="${ctxPath}/static/js/plugins/layer/layer.js"></script>
+<script>
+    function exportExcel() {
+        layer.open({
+            type: 2,
+            title: '签到记录导出向导',
+            area: ['800px', '450px'], //宽高
+            fix: false, //不固定
+            maxmin: true,
+            content: '/barbrush/exportView'
+        });
+
+    }
+</script>
+</body>
+</html>

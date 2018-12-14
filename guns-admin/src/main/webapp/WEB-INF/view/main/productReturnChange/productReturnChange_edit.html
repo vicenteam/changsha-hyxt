@@ -1,0 +1,74 @@
+@layout("/common/_container.html"){
+<script type="text/javascript" src="http://cdn.bootcss.com/bootstrap-select/2.0.0-beta1/js/bootstrap-select.js"></script>
+<link rel="stylesheet" type="text/css" href="http://cdn.bootcss.com/bootstrap-select/2.0.0-beta1/css/bootstrap-select.css">
+<script src="https://cdn.bootcss.com/bootstrap-select/2.0.0-beta1/js/i18n/defaults-zh_CN.js"></script>
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div class="form-horizontal">
+            <input type="hidden" id="introducerId" name="introducerId"/>
+                <input type="hidden" id="id" value="${item.id}" />
+                <input type="hidden" id="returnchangeproductId" value="${item.returnchangeproductId}" />
+            <div class="row">
+                <div class="col-sm-6 b-r">
+                            <#input id="memberName" name="退换货人姓名" value="${item.memberName}" underline="true" disabled="disabled"/>
+                            <#input id="createtime" name="创建时间" value="${item.createtime}" underline="true" disabled="disabled"/>
+                            <#input id="createuserid" name="申请人" value="${item.createuserid}" underline="true" disabled="disabled"/>
+                    <#input id="productName" name="商品名称" value="${item.productName}" underline="true" disabled="disabled"/>
+                </div>
+                <div class="col-sm-6">
+
+                            <#input id="returnchangeType" name="退换货类型" value="${item.returnchangeType}" underline="true" disabled="disabled"/>
+
+                    @if(item.returnchangeType==0){
+                    <input  type="hidden" id="productname" value="${item.returnchangeproductId}"/>
+                    <#input id="returnchangeproductName" name="退换货商品名称" value="${item.returnchangeproductName}" disabled="disabled" underline="true"/>
+                    @}else{
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">退换货商品名称</label>
+                        <div class="col-sm-9">
+                            <select class="form-control" id="typeId" name="typeId" style="display: none">
+                                <option value="">全部</option>
+                                <option value="0">礼品类</option>
+                                <option value="1">积分兑换类</option>
+                                <option value="2">销售类</option>
+                                <option value="3">积分+金额类</option>
+
+                            </select>
+                            <select class="selectpicker" id="productname"   data-live-search="true" style="width: 30%">
+                            </select>
+                        </div>
+                    </div>
+                    @}
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">是否入库</label>
+                        <div class="col-sm-9">
+                            <select class="form-control" id="isInsert" name="isInsert" >
+                                <option value="0">不入库</option>
+                                <option value="1">入库</option>
+                            </select>
+                        </div>
+                    </div>
+                            <#input id="returnchangeNum" name="确认退换货数量" value="${item.returnchangeNum}" underline="true"/>
+                </div>
+            </div>
+
+            <div class="row btn-group-m-t">
+                <div class="col-sm-10">
+                    <#button btnCss="info" name="提交" id="ensure" icon="fa-check" clickFun="ProductReturnChangeInfoDlg.editSubmit()"/>
+                    <#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="ProductReturnChangeInfoDlg.close()"/>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script src="${ctxPath}/static/modular/main/productReturnChange/productReturnChange_info.js"></script>
+<script>
+    if($("#returnchangeType").val()==0){
+        $("#returnchangeType").val("退货")
+    }else {
+        $("#returnchangeType").val("换货")
+    }
+
+</script>
+@}

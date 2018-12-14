@@ -1,0 +1,52 @@
+@layout("/common/_container.html"){
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div class="form-horizontal" id="activityId">
+
+            <div class="row">
+                <div class="col-sm-4 b-r">
+                    <#input id="name" name="活动名称" underline="true"/>
+                    <#input id="content" name="活动内容" underline="true"/>
+                    <#select id="ruleexpression" name="活动规则" underline="true">
+                    <option value="0">累计签到</option>
+                    <option value="1">连续签到</option>
+                    <option value="2">积分兑换</option>
+                    <option value="3">推荐奖励</option>
+                    <option value="4">被推荐奖励</option>
+                </#select>
+                <#input id="qiandaonum" name="签到次数" underline="true" value="0"/>
+                </div>
+
+                <div class="col-sm-4">
+                    <#time id="begindate" name="活动开始时间" isTime="false" pattern="yyyy-MM-dd HH:mm:ss"  underline="true"/>
+                    <#time id="enddate" name="活动结束时间" isTime="false" pattern="yyyy-MM-dd HH:mm:ss"  underline="true" />
+                    <#input id="maxgetnum" name="最大领取次数" underline="true"/>
+                    <#input id="jifen" name="消耗积分" underline="true" value="0"/>
+                </div>
+            </div>
+
+            <div class="row btn-group-m-t">
+                <div class="col-sm-10">
+                    <#button btnCss="info" name="提交" id="ensure" icon="fa-check"
+                    clickFun="ActivityInfoDlg.addSubmit()"/>
+                    <#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="ActivityInfoDlg.close()"/>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script src="${ctxPath}/static/modular/main/activity/activity_info.js"></script>
+<script>
+
+    // $("#enddate").change(function () {alert()
+    //     var date1= $("#begindate").val();  //开始时间
+    //     var date2 = $("#enddate").val();    //结束时间
+    //     var date3 = new Date(date2).getTime() - new Date(date1).getTime();   //时间差的毫秒数
+    //     //计算出相差天数
+    //     var days=Math.floor(date3/(24*3600*1000))
+    //     $("#qiandaonum").val(days)
+    //     alert()
+    // })
+</script>
+@}

@@ -1,0 +1,39 @@
+@layout("/common/_container.html"){
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div class="form-horizontal">
+
+            <div class="row">
+                <div class="col-sm-6 b-r">
+                            <#input id="id" name="" underline="true"/>
+                            <#input id="memberName" name="退换货人姓名" underline="true"/>
+                            <#input id="memberId" name="退换货人id" underline="true"/>
+                            <#input id="createtime" name="" underline="true"/>
+                            <#input id="deptId" name="" underline="true"/>
+                            <#input id="createuserid" name="" underline="true"/>
+                            <#input id="productId" name="商品id"/>
+                </div>
+
+                <div class="col-sm-6">
+                            <#input id="productName" name="商品名称" underline="true"/>
+                            <#input id="returnchangeType" name="退换货类型(0退货 1换货)" underline="true"/>
+                            <#input id="returnchangeproductId" name="退换货商品id" underline="true"/>
+                            <#input id="returnchangeproductName" name="退换货商品名称" underline="true"/>
+                            <#input id="returnchangeNum" name="退换货数量" underline="true"/>
+                            <#input id="status" name="状态(0待处理 1已处理)" underline="true"/>
+                            <#input id="integralrecodeId" name="积分记录表id" underline="true"/>
+                </div>
+            </div>
+
+            <div class="row btn-group-m-t">
+                <div class="col-sm-10">
+                    <#button btnCss="info" name="提交" id="ensure" icon="fa-check" clickFun="ProductReturnChangeInfoDlg.addSubmit()"/>
+                    <#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="ProductReturnChangeInfoDlg.close()"/>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script src="${ctxPath}/static/modular/main/productReturnChange/productReturnChange_info.js"></script>
+@}

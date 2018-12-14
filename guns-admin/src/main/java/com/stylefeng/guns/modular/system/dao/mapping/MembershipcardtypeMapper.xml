@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.stylefeng.guns.modular.system.dao.MembershipcardtypeMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.stylefeng.guns.modular.system.model.Membershipcardtype">
+        <id column="id" property="id" />
+        <result column="cardname" property="cardname" />
+        <result column="signin" property="signin" />
+        <result column="shopping" property="shopping" />
+        <result column="newpoints" property="newpoints" />
+        <result column="signinnew" property="signinnew" />
+        <result column="shoppingnew" property="shoppingnew" />
+        <result column="upamount" property="upamount" />
+        <result column="deptid" property="deptid" />
+        <result column="tips" property="tips" />
+        <result column="status" property="status" />
+        <result column="createdt" property="createdt" />
+        <result column="updatedt" property="updatedt" />
+        <result column="checkleavenum" property="checkleavenum" />
+        <result column="leaves" property="leaves" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, cardname, signin, shopping, newpoints, signinnew, shoppingnew, upamount, deptid, tips, status, createdt, updatedt,leave
+    </sql>
+
+</mapper>

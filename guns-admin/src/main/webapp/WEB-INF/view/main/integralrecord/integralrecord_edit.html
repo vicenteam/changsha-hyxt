@@ -1,0 +1,31 @@
+@layout("/common/_container.html"){
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div class="form-horizontal">
+
+            <div class="row">
+                <div class="col-sm-6 b-r">
+                            <#input id="id" name="积分记录编号" value="${item.id}" underline="true"/>
+                            <#input id="integral" name="获得积分的值" value="${item.integral}" underline="true"/>
+                            <#input id="target" name="附加参数，如果是本人或新人购物获得积分，则该列的值是该购物记录的ID，如果是带新人或新人签到获得积分，则是所带新人的ID" value="${item.target}" />
+                </div>
+
+                <div class="col-sm-6">
+                            <#input id="type" name="积分类型(0购买新增 1推荐新人 2兑换)" value="${item.type}" underline="true"/>
+                            <#input id="memberid" name="会员id" value="${item.memberid}" underline="true"/>
+                            <#input id="createTime" name="创建时间" value="${item.createTime}" />
+                </div>
+            </div>
+
+            <div class="row btn-group-m-t">
+                <div class="col-sm-10">
+                    <#button btnCss="info" name="提交" id="ensure" icon="fa-check" clickFun="IntegralrecordInfoDlg.editSubmit()"/>
+                    <#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="IntegralrecordInfoDlg.close()"/>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script src="${ctxPath}/static/modular/main/integralrecord/integralrecord_info.js"></script>
+@}

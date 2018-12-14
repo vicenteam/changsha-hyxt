@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html style="height: 100%">
+<head>
+    <meta charset="utf-8">
+</head>
+<body style="height: 100%; margin: 0">
+<div id="container" style="height: 100%"></div>
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/echarts.min.js"></script>
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts-gl/echarts-gl.min.js"></script>
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts-stat/ecStat.min.js"></script>
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/extension/dataTool.min.js"></script>
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/map/js/china.js"></script>
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/map/js/world.js"></script>
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=ZUONbpqGBsYGXNIYHicvbAbM"></script>
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/extension/bmap.min.js"></script>
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/simplex.js"></script>
+<script src="/static/bar/macarons.js"></script>
+<script src="/static/js/jquery.min.js"></script>
+<script>
+    function GetWeekDate(time) {
+        var now = new Date(time); //当前日期
+        this.nowDayOfWeek = now.getDay(); //今天本周的第几天
+        this.nowYear = now.getYear(); //当前年
+        this.nowMonth = now.getMonth(); //月
+        this.nowDay = now.getDate(); //日
+        this.beginHour = "09:00:00";
+        this.endHour = "23:59:59";
+
+        this.nowYear += (this.nowYear < 2000) ? 1900 : 0; //
+        this.nowDayOfWeek = this.nowDayOfWeek == 0 ? 7 : this.nowDayOfWeek; // 如果是周日，就变成周七
+    }
+
+    GetWeekDate.prototype.date2str = function (x, y) {//date2str(new Date(curTime),"yyyy-MM-dd")
+        var z = {
+            y: x.getFullYear(),
+            M: x.getMonth() + 1,
+            d: x.getDate(),
+            h: x.getHours(),
+            m: x.getMinutes(),
+            s: x.getSeconds()
+        };
+        return y.replace(/(y+|M+|d+|h+|m+|s+)/g, function (v) {
+            return ((v.length > 1 ? "0" : "") + eval('z.' + v.slice(-1))).slice(-(v.length > 2 ? v.length : 2))
+        });
+    }
+
+    GetWeekDate.prototype.formatDate = function (date) {//格局化日期：yyyy-MM-dd
+        var myyear = date.getFullYear();
+        var mymonth = date.getMonth() + 1;
+        var myweekday = date.getDate();
+        //alert("formatDate"+myyear+":"+mymonth+":"+myweekday)
+        if (mymonth < 10) {
+            mymonth = "0" + mymonth;
+        }
+        if (myweekday < 10) {
+            myweekday = "0" + myweekday;
+        }
+        return (myyear + "-" + mymonth + "-" + myweekday);
+    }
+    GetWeekDate.prototype.getWeekStartDate = function () { //获得本周的开端日期
+        var weekStartDate = new Date(this.nowYear, this.nowMonth, this.nowDay - this.nowDayOfWeek + 1);
+        return this.formatDate(weekStartDate);
+    }
+
+    GetWeekDate.prototype.getWeekEndDate = function () {//获得本周的停止日期
+        var weekEndDate = new Date(this.nowYear, this.nowMonth, this.nowDay + (6 - this.nowDayOfWeek + 1));
+        return this.formatDate(weekEndDate);
+    }
+    GetWeekDate.prototype.getAWeedkYMD = function () {//获得本周周一~周日的年月日
+        var ymdArr = [];
+        for (var i = 0; i < 7; i++) {
+            ymdArr[i] = [];
+            //ymdArr[i][0]=this.formatDate(new Date(this.nowYear, this.nowMonth, this.nowDay - this.nowDayOfWeek+i+1));
+            ymdArr[i][0] = this.date2str(new Date(this.nowYear, this.nowMonth, this.nowDay - this.nowDayOfWeek + i + 1), 'yyyy-MM-dd');
+            ymdArr[i][1] = this.date2str(new Date(this.nowYear, this.nowMonth, this.nowDay - this.nowDayOfWeek + i + 1), 'MM月dd日');
+        }
+        ;
+
+        return ymdArr;
+    }
+
+    //获得本月的停止日期
+    function getMonthLastDay() {
+        var day = new Date(new Date().getFullYear(), new Date().getMonth(), 0);
+        var lastdate = new Date().getFullYear() + '-' + new Date().getMonth() + '-' + day.getDate();
+        var ymdArr = [];
+        ymdArr[0] = day.getDate();
+        ymdArr[1] = lastdate;
+        return ymdArr;
+    }
+</script>
+<script type="text/javascript">
+    var dom = document.getElementById("container");
+    var myChart = echarts.init(dom);
+    var app = {};
+    option = null;
+    app.title = '坐标轴刻度与标签对齐';
+
+    var sData = [];
+    var xData = [];
+    var weekdata = new GetWeekDate(new Date()).getAWeedkYMD();
+    $.ajax({
+        url: '/barranking/countData',
+        type: 'POST',
+        data: {startDate: weekdata[0][0]},
+        async: false,
+        success: function (data) {
+            for(var i=0; i<data.length; i++){
+                sData.push(data[i]);
+            }
+        }
+    });
+
+    option = {
+        title: {
+            text: '本周会员开卡数统计',
+        },
+        tooltip: {
+            trigger: 'axis'
+        },
+        legend: {
+            data:['最高气温','最低气温']
+        },
+        toolbox: {
+            show: true,
+            feature: {
+                dataZoom: {
+                    yAxisIndex: 'none'
+                },
+                dataView: {readOnly: false},
+                magicType: {type: ['line', 'bar']},
+                restore: {},
+                saveAsImage: {}
+            }
+        },
+        xAxis: {
+            type: 'category',
+            data: ['星期一', '星期二', '星期三', '星期四', '星期五', '星期六', '星期日']
+        },
+        yAxis: {
+            type: 'value',
+            axisLabel: {
+                formatter: '{value} 人次'
+            }
+        },
+        series: [{
+            data: sData,
+            name:'开卡人次',
+            barWidth: '60%',
+            type: 'line'
+        }]
+    };
+    if (option && typeof option === "object") {
+        myChart.setOption(option, true);
+    }
+</script>
+
+</body>
+</html>

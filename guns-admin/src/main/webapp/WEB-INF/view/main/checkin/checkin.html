@@ -1,0 +1,419 @@
+@layout("/common/_container.html"){
+<div class="layer"  style=" position: fixed;
+  top: 30%;
+  left: 50%;
+  width:50%;
+  height: 50%;
+-webkit-transform: translateX(-50%) translateY(-50%);
+-ms-transform:translateX(-50%) translateY(-50%);
+">
+       <div style="width: 850px;height: 60px;">
+           <div style="height: 100%;width: 45%;">
+             <h2>门店名称:${dept.fullname}</h2>
+           </div>
+           <div style="height: 100%;width: 52%;float: right;margin-top: -60px">
+               <span style="font-size: 25px;width: 300px" >会议场次:</span> <span id="checkName" style="font-size: 25px;"></span>  <button type="submit" class="btn btn-primary " style="width: 20%;margin-top: -10px" id="chuangjianbtn">创建签到</button>
+           </div>
+       </div><br>
+        <div style="width: 950px;height: 300px;">
+            <div style="height: 100%;width: 45%;border:1px solid lavender" >
+                <img src="/s.jpg" id="avatar"/>
+            </div>
+            <div style="height: 100%;width: 45%;border:1px solid lavender;float: left;display: none" id="display1">
+                <img src="/s.jpg" id="avatar2"/>
+            </div>
+            <div style="height: 100%;width: 52%;float: right;margin-top: -300px">
+                <div style="clear:both;">
+                    <div style="width: 100%;height: 30px">
+                        <label class="col-sm-3 control-label" style="text-align: right">姓名:</label><label class="col-sm-5 control-label" style="text-align: left" id="memberName"></label>
+                    </div><br>
+                    <div style="width: 100%;height: 30px">
+                        <label class="col-sm-3 control-label" style="text-align: right">身份证号:</label><label class="col-sm-5 control-label" style="text-align: left" id="memberCardId"></label>
+                    </div><br>
+                    <div style="width: 100%;height: 30px">
+                        <label class="col-sm-3 control-label" style="text-align: right">性别:</label><label class="col-sm-5 control-label" style="text-align: left" id="sex"></label>
+                    </div><br>
+                    <div style="width: 100%;height: 30px">
+                        <label class="col-sm-3 control-label" style="text-align: right">会员卡等级:</label><label class="col-sm-5 control-label" style="text-align: left" >
+                        <select disabled="disabled" id="memberlevelId">
+                            <option value=""></option>
+                            @for(item in leave){
+                            <option value="${item.id}">${item.cardname}</option>
+                            @}
+                        </select>
+
+                    </label>
+                    </div><br>
+                    <div style="width: 100%;height: 30px">
+                        <label class="col-sm-3 control-label" style="text-align: right">服务员工:</label><label class="col-sm-5 control-label" style="text-align: left">
+                        <select disabled="disabled" id="mamberStaffId">
+                            <option value=""></option>
+                            @for(item in staffs){
+                            <option value="${item.id}">${item.name}</option>
+                            @}
+                        </select>
+                    </label>
+                    </div><br>
+                    <div style="width: 100%;height: 30px">
+                        <label class="col-sm-3 control-label" style="text-align: right">可用积分:</label><label class="col-sm-5 control-label" style="text-align: left" id="integral"></label>
+                    </div>
+                </div>
+<!---->
+
+                <div style="clear:both;margin-top: 41px;display: none"  id="display2"><span><strong>关联卡信息</strong> </span>
+                    <div style="width: 100%;height: 30px">
+                        <label class="col-sm-3 control-label" style="text-align: right">姓名:</label><label class="col-sm-5 control-label" style="text-align: left" id="memberName2"></label>
+                    </div><br>
+                    <div style="width: 100%;height: 30px">
+                        <label class="col-sm-3 control-label" style="text-align: right">身份证号:</label><label class="col-sm-5 control-label" style="text-align: left" id="memberCardId2"></label>
+                    </div><br>
+                    <div style="width: 100%;height: 30px">
+                        <label class="col-sm-3 control-label" style="text-align: right">性别:</label><label class="col-sm-5 control-label" style="text-align: left" id="sex2"></label>
+                    </div><br>
+                    <div style="width: 100%;height: 30px">
+                        <label class="col-sm-3 control-label" style="text-align: right">会员卡等级:</label><label class="col-sm-5 control-label" style="text-align: left" >
+                        <select disabled="disabled" id="memberlevelId2">
+                            <option value=""></option>
+                            @for(item in leave){
+                            <option value="${item.id}">${item.cardname}</option>
+                            @}
+                        </select>
+
+                    </label>
+                    </div><br>
+                    <div style="width: 100%;height: 30px">
+                        <label class="col-sm-3 control-label" style="text-align: right">服务员工:</label><label class="col-sm-5 control-label" style="text-align: left">
+                        <select disabled="disabled" id="mamberStaffId2">
+                            <option value=""></option>
+                            @for(item in staffs){
+                            <option value="${item.id}">${item.name}</option>
+                            @}
+                        </select>
+                    </label>
+                    </div><br>
+                    <div style="width: 100%;height: 30px">
+                        <label class="col-sm-3 control-label" style="text-align: right">可用积分:</label><label class="col-sm-5 control-label" style="text-align: left" id="integral2"></label>
+                    </div>
+                </div>
+
+
+            </div>
+        </div><br>
+    <div style="width: 850px;height: 60px;">
+        <div style="height: 100%;width: 45%;">
+            <button type="submit" class="btn btn-primary" style="width: 50%" onclick="readCardbtn()">读 卡</button>
+        </div>
+        <div style="height: 100%;width: 45%;float: right;margin-top: -60px">
+            <button type="submit" class="btn btn-primary " style="width: 30%;" id="check1" onclick="check1()">首签</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <!--<button type="submit" class="btn btn-primary " style="width: 30%" id="check2" onclick="check2()">复签</button>-->
+        </div>
+    </div>
+    <input type="hidden" id="checkid">
+    <input type="hidden" id="manmberid">
+    <!--type 0首签 1复签-->
+    <input type="hidden" id="type">
+</div>
+<div style="display: none">
+    <OBJECT classid=clsid:730BF2F0-EAE2-46C5-BA06-5ABFC9AB8A0A width=0 height=0 align="center" codebase="zx_32.cab#version=1,0,0,1" id="CZx_32Ctrl" HSPACE=0 VSPACE=0>
+    </OBJECT>
+    <div style="display: none">
+        <fieldset>
+            <legend>设备操作函数组</legend>
+            硬件版本号：
+            <input type="text" name="Version" id="Account" maxlength="100" size="30" >
+            产品序列号：
+            <input type="text" name="Serial" id="Account" maxlength="100" size="30">
+            蜂鸣时间：
+            <input type="text" name="BeepTime" id="Account" maxlength="10" size="5" value="10">
+            蜂鸣间隔时间：
+            <input type="text" name="BeepSpaceTime" id="Account" maxlength="10" size="5" value="10">
+            蜂鸣次数：
+            <input type="text" name="BeepNum" id="Account" maxlength="10" size="5" value="1">
+            句柄信息：
+            <input type="text" name="DeviceHandle" id="Account" maxlength="100" size="5" value="-1">
+
+            <form name="设备操作">
+                <input type="button" onclick="javascript:OpenDevice()" value="打开设备" >
+                <input type="button" onclick="javascript:CloseDevice()" value="关闭设备" >
+                <input type="button" onclick="javascript:DevBeep()" value="蜂鸣" >
+            </form>
+        </fieldset>
+
+        </br>
+
+        <fieldset>
+            转换数据：
+            <input type="text" name="WriteDataASCHEX" id="Account" maxlength="3000" size="85" value="3030313132323333343435353636">
+            转换结果：
+            <input type="text" name="ReadDataASCHEX" id="Account" maxlength="3000" size="85">
+
+            <form name="ASCHEX操作">
+                <input type="button" onclick="javascript:AscHex()" value="ASC码转HEX码" >
+                <input type="button" onclick="javascript:HexAsc()" value="HEX码转ASC码" >
+            </form>
+        </fieldset>
+
+        </br>
+
+        <fieldset>
+            <legend>操作Eeprom函数组</legend>
+            地址：
+            <input type="text" name="AddressEeprom" id="Account" maxlength="10" size="5" value="0">
+            长度：
+            <input type="text" name="LengthEeprom" id="Account" maxlength="10" size="5" value="200">
+            写入数据：
+            <input type="text" name="WriteDataEeprom" id="Account" maxlength="3000" size="65" value="00112233445566778899AABBCCDDEEFF">
+            读出数据：
+            <input type="text" name="ReadDataEeprom" id="Account" maxlength="3000" size="65">
+
+            <form name="EEPROM操作">
+                <input type="button" onclick="javascript:DevReadeeprom()" value="读Eeprom" >
+                <input type="button" onclick="javascript:DevWriteeeprom()" value="写Eeprom" >
+            </form>
+        </fieldset>
+
+        </br>
+
+        <fieldset>
+            <legend>操作M1卡函数组</legend>
+            <label>密码类型：
+                <select name="keytypem1" id="keytypem1" >
+                    <option value="0" SELECTED>A密码</option>
+                    <option value="1">B密码</option>
+                </select>
+            </label>
+            密码：
+            <input type="text" name="PwdM1" id="Account" maxlength="12" size="20" value="FFFFFFFFFFFF">
+            块地址：
+            <input type="text" name="BlockM1" id="Account" maxlength="130" size="5" value="10">
+            卡片UID：
+            <input type="text" name="UidM1" id="Account" maxlength="130" size="20">
+            当前块值：
+            <input type="text" name="NowValueM1" id="Account" maxlength="130" size="5" >
+            值操作：
+            <input type="text" name="NewValueM1" id="Account" maxlength="3000" size="5" value="100">
+            写入数据：
+            <input type="text" name="WriteDataM1" id="Account" maxlength="3000" size="60" value="00112233445566778899AABBCCDDEEFF">
+            读出数据：
+            <input type="text" name="ReadDataM1" id="Account" maxlength="3000" size="60">
+            <form name="M1卡操作">
+                <input type="button" onclick="javascript:RfCard()" value="寻卡" >
+                <input type="button" onclick="javascript:RfAuthenticationKey()" value="校验密码" >
+                <input type="button" onclick="javascript:RfRead()" value="读数据" >
+                <input type="button" onclick="javascript:RfWrite()" value="写数据" >
+                <input type="button" onclick="javascript:RfInitval()" value="初始化块值" >
+                <input type="button" onclick="javascript:RfReadval()" value="读块值" >
+                <input type="button" onclick="javascript:RfIncrement()" value="加值" >
+                <input type="button" onclick="javascript:RfDecrement()" value="减值" >
+                <input type="button" onclick="javascript:RfRestore()" value="回传" >
+                <input type="button" onclick="javascript:RfTransfer()" value="传送" >
+                <input type="button" onclick="javascript:RfTerminal()" value="中止卡片" >
+            </form>
+        </fieldset>
+
+        </br>
+
+        <fieldset>
+            <legend>操作非接触式CPU卡函数组</legend>
+            <label>COS指令：
+                <select name="cosdiscpu" id="st" onchange="discpumycos()">
+                    <option value="0" SELECTED>取随机数08</option>
+                    <option value="1">选择MF</option>
+                </select>
+            </label>
+            写入数据：
+            <input type="text" name="WriteDataDiscpu" id="Account" maxlength="3000" size="83" value="0084000008">
+            读出数据：
+            <input type="text" name="ReadDataDiscpu" id="Account" maxlength="3000" size="83">
+
+            <form name="非接触式CPU卡操作">
+                <input type="button" onclick="javascript:OpenCard5()" value="激活卡片" >
+                <input type="button" onclick="javascript:ExchangePro5()" value="发送命令" >
+            </form>
+        </fieldset>
+    </div>
+
+    </br>
+
+    <div>
+        <button onclick="readDeviceCard()">读取卡片</button>:<input type="text" id="readDeviceCard">
+        <button onclick="readData()">读取数据</button>:<input id="readData" type="text" maxlength="3000" size="60">
+        <button onclick="writeData()">写入数据</button>:<input id="writeData" type="text" maxlength="3000" size="60" placeholder="长度为32位 字符规则(0-9|a-f)">
+    </div>
+</div>
+<script>
+    $("body").css("width","100%")
+    $("body").css("height","100%")
+    $("body").css("margin","0px auto")
+    $("div").css("text-align","center")
+</script>
+<script>
+    $("#chuangjianbtn").click(function () {
+        var val=$("#chuangjianbtn").html();
+        if(val=="创建签到"){
+            getcheck()
+
+        }else {
+            updatecheck()
+            $("#chuangjianbtn").html("创建签到")
+        }
+    })
+    //获取会议场次
+    function getcheck() {
+        var ajax = new $ax(Feng.ctxPath + "/checkin/getcheck", function (data) {
+            $("#checkName").html(data.screenings)
+            $("#checkid").val(data.id)
+            $("#chuangjianbtn").html("结束签到")
+        }, function (data) {
+            Feng.error("创建失败!" + data.responseJSON.message + "!");
+        });
+        ajax.start();
+
+    }
+    //结束会议签到
+    function updatecheck() {
+        var ajax = new $ax(Feng.ctxPath + "/checkin/updatecheck", function (data) {
+            $("#checkName").html("")
+            $("#checkid").val("")
+            $("#chuangjianbtn").html("结束签到")
+        }, function (data) {
+            Feng.error("操作失败!" + data.responseJSON.message + "!");
+        });
+        ajax.set("checkid",$("#checkid").val());
+        ajax.start();
+    }
+    function cleninfo() {
+        $("#memberName").html("");
+        $("#memberCardId").html("");
+        $("#sex").html("");
+        $("#integral").html("");
+        $("#memberlevelId").val("");
+        $("#mamberStaffId").val("");
+        $("#manmberid").val("");
+    }
+    function cleninfo2() {
+        $("#memberName2").html("");
+        $("#memberCardId2").html("");
+        $("#sex2").html("");
+        $("#integral2").html("");
+        $("#memberlevelId2").val("");
+        $("#mamberStaffId2").val("");
+        $("#manmberid2").val("");
+    }
+    function bangding(data) {
+        $("#memberName").html(data.name);
+        $("#memberCardId").html(data.cadID);
+        $("#sex").html(data.sex==1?"男":"女");
+        $("#integral").html(data.integral);
+        $("#memberlevelId").val(data.levelID);
+        $("#mamberStaffId").val(data.staffID);
+        $("#manmberid").val(data.id);
+        $("#avatar").attr('src','/kaptcha/'+data.avatar);
+        $("#avatar").css({"width":"300px","height":"300px"});
+        if(data.qiandao==0){
+            $('#check1').removeAttr("disabled");
+            $("#check2").attr("disabled","disabled")
+
+        }else if(data.qiandao==1){
+            $('#check2').removeAttr("disabled");
+            $("#check1").attr("disabled","disabled")
+        }else if(data.qiandao==3){
+            $("#check1").attr("disabled","disabled")
+            $("#check2").attr("disabled","disabled")
+        }
+    }
+    function bangding2(data) {
+        $("#memberName2").html(data.name);
+        $("#memberCardId2").html(data.cadID);
+        $("#sex2").html(data.sex==1?"男":"女");
+        $("#integral2").html(data.integral);
+        $("#memberlevelId2").val(data.levelID);
+        $("#mamberStaffId2").val(data.staffID);
+        $("#manmberid2").val(data.id);
+        $("#avatar2").attr('src','/kaptcha/'+data.avatar);
+        $("#avatar2").css({"width":"300px","height":"300px"});
+    }
+    //读卡按钮
+    function readCardbtn() {
+        var checkid=$("#checkid").val();
+        if(checkid.length!=0){
+            readData();
+            var ajax = new $ax(Feng.ctxPath + "/checkin/getUserInfo", function (data) {
+               console.log(data)
+                bangding(data)
+                //判断是否存在关联卡
+                if(data.relation.length!=0){
+                   //查询关联卡信息 并绑定值
+                    showDisplay()
+                    addButtionClass()
+                    var ajax = new $ax(Feng.ctxPath + "/checkin/getRelationUserInfo", function (data) {
+                        console.log(data)
+                        bangding2(data)
+                    }, function (data) {
+                        cleninfo2()
+                        hiddenDisplay();
+                        cleanButtionClass()
+                    });
+                    ajax.setData({delId:data.id,relation:data.relation})
+                    ajax.start();
+                }else {
+                    hiddenDisplay();
+                    cleanButtionClass()
+                }
+            }, function (data) {
+                console.log(data)
+                Feng.error("此卡信息为空 获取数据失败!!");
+                cleninfo()
+            });
+            // ajax.setData({value:$("#readData").val(),checkid:$("#checkid").val()})
+            ajax.setData({value:$("#readDeviceCard").val(),checkid:$("#checkid").val()})
+            ajax.start();
+        }else {
+            Feng.error("请先创建签到场次!");
+        }
+    }
+    //首签
+    function check1() {
+        var ajax = new $ax(Feng.ctxPath + "/qiandaoCheckin/add", function (data) {
+            Feng.success("首签成功!");
+            $("#check1").attr("disabled","disabled")
+        }, function (data) {
+            console.log(data)
+            Feng.error("首签失败!"+ data.responseJSON.message);
+        });
+        ajax.setData({memberId:$("#manmberid").val(),chechId:$("#checkid").val()})
+        ajax.start();
+    }
+    //复签
+    function check2() {
+            var ajax = new $ax(Feng.ctxPath + "/qiandaoCheckin/update", function (data) {
+                Feng.success("复签成功!");
+                $("#check2").attr("disabled","disabled")
+            }, function (data) {
+                console.log(data)
+                Feng.error("复签失败!");
+            });
+            ajax.setData({memberId:$("#manmberid").val(),chechId:$("#checkid").val()})
+            ajax.start();
+    }
+
+</script>
+<script>
+    function addButtionClass() {
+        $("#check1").css("margin-top","281px");
+    }
+    function cleanButtionClass() {
+        $("#check1").css("margin-top","");
+    }
+
+    function showDisplay() {
+        $("#display1").css("display","block")
+        $("#display2").css("display","block")
+    }
+    function hiddenDisplay() {
+        $("#display1").css("display","none")
+        $("#display2").css("display","none")
+    }
+</script>
+<script src="${ctxPath}/static/device/device.js"></script>
+@}

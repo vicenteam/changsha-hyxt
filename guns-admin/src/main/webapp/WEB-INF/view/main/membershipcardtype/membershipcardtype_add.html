@@ -1,0 +1,39 @@
+@layout("/common/_container.html"){
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div class="form-horizontal" id="membershipcardtypeInfoTable">
+
+            <div class="row">
+                <div class="col-sm-6 b-r">
+                            <#input id="cardname" name="会员等级名称" underline="true"/>
+                            <!--<#input id="signin" name="签到积分" underline="true"/>-->
+                            <!--<#input id="shopping" name="购物积分" underline="true"/>-->
+                            <!--<#input id="newpoints" name="带新人奖励积分" underline="true"/>-->
+                    <#input id="tips" name="备注" underline="true"/>
+                    <#input id="leaves" name="排序序号" underline="true" value="${dept.version}" disabled="disabled"/>
+
+                </div>
+
+                <div class="col-sm-6">
+                            <!--<#input id="signinnew" name="新人签到积分" underline="true"/>-->
+                            <!--<#input id="shoppingnew" name="新人购物积分" underline="true"/>-->
+                            <#input id="upamount" name="升级所需积分" underline="true"/>
+                            <#select name="部门名称" id="deptid" underline="true">
+                                <option value="${dept.id}">${dept.fullname}</option>
+                            </#select>
+
+                </div>
+            </div>
+
+            <div class="row btn-group-m-t">
+                <div class="col-sm-10">
+                    <#button btnCss="info" name="提交" id="ensure" icon="fa-check" clickFun="MembershipcardtypeInfoDlg.addSubmit()"/>
+                    <#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="MembershipcardtypeInfoDlg.close()"/>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script src="${ctxPath}/static/modular/main/membershipcardtype/membershipcardtype_info.js"></script>
+@}

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.stylefeng.guns.modular.system.dao.ProductReturnChangeMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.stylefeng.guns.modular.system.model.ProductReturnChange">
+        <id column="id" property="id" />
+        <result column="memberName" property="memberName" />
+        <result column="memberId" property="memberId" />
+        <result column="createtime" property="createtime" />
+        <result column="deptId" property="deptId" />
+        <result column="createuserid" property="createuserid" />
+        <result column="productId" property="productId" />
+        <result column="productName" property="productName" />
+        <result column="returnchangeType" property="returnchangeType" />
+        <result column="returnchangeproductId" property="returnchangeproductId" />
+        <result column="returnchangeproductName" property="returnchangeproductName" />
+        <result column="returnchangeNum" property="returnchangeNum" />
+        <result column="status" property="status" />
+        <result column="integralrecodeId" property="integralrecodeId" />
+        <result column="inventoryManagementId" property="inventoryManagementId" />
+        <result column="isInsert" property="isInsert" />
+        <result column="memberPhone" property="memberPhone" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, memberName, memberId, createtime, deptId, createuserid, productId, productName, returnchangeType, returnchangeproductId, returnchangeproductName, returnchangeNum, status, integralrecodeId, inventoryManagementId, isInsert, memberPhone
+    </sql>
+
+</mapper>

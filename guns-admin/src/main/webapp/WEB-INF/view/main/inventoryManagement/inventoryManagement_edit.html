@@ -1,0 +1,33 @@
+@layout("/common/_container.html"){
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div class="form-horizontal">
+
+            <div class="row">
+                <div class="col-sm-6 b-r">
+                            <#input id="id" name="" value="${item.id}" underline="true"/>
+                            <#input id="createtime" name="" value="${item.createtime}" underline="true"/>
+                            <#input id="createuserid" name="" value="${item.createuserid}" underline="true"/>
+                            <#input id="deptid" name="" value="${item.deptid}" />
+                </div>
+
+                <div class="col-sm-6">
+                            <#input id="integralrecordtypeid" name="" value="${item.integralrecordtypeid}" underline="true"/>
+                            <#input id="status" name="记录状态(0添加库存 1消耗库存)" value="${item.status}" underline="true"/>
+                            <#input id="memberid" name="消耗库存人id(meimberid)" value="${item.memberid}" underline="true"/>
+                            <#input id="consumptionNum" name="消耗数量" value="${item.consumptionNum}" />
+                </div>
+            </div>
+
+            <div class="row btn-group-m-t">
+                <div class="col-sm-10">
+                    <#button btnCss="info" name="提交" id="ensure" icon="fa-check" clickFun="InventoryManagementInfoDlg.editSubmit()"/>
+                    <#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="InventoryManagementInfoDlg.close()"/>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script src="${ctxPath}/static/modular/main/inventoryManagement/inventoryManagement_info.js"></script>
+@}

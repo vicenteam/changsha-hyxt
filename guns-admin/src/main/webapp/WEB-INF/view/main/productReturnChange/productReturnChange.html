@@ -1,0 +1,56 @@
+@layout("/common/_container.html"){
+<div class="row">
+    <div class="col-sm-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>商品退换货管理</h5>
+            </div>
+            <div class="ibox-content">
+                <div class="row row-lg">
+                    <div class="col-sm-12">
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <#NameCon id="condition" name="退货人姓名或电话" />
+                            </div>
+                            <div class="col-sm-2">
+                                <#NameCon id="productName" name="商品名称" />
+                            </div>
+                            <div class="col-sm-2">
+                                <#SelectCon name="退换货类型" id="returnchangeType" >
+                                <option value="">全部</option>
+                                <option value="0">退货</option>
+                                <option value="1">换货</option>
+                            </#SelectCon>
+                            </div>
+                        <div class="col-sm-2">
+                            <#SelectCon name="状态" id="status" >
+                            <option value="">全部</option>
+                            <option value="0">待处理</option>
+                            <option value="1">已处理</option>
+                        </#SelectCon>
+                    </div>
+                            <div class="col-sm-3">
+                                <#button name="搜索" icon="fa-search" clickFun="ProductReturnChange.search()"/>
+                            </div>
+                        </div>
+                        <div class="hidden-xs" id="ProductReturnChangeTableToolbar" role="group">
+                            @if(shiro.hasPermission("/productReturnChange/add")){
+                                <#button name="添加" icon="fa-plus" clickFun="ProductReturnChange.openAddProductReturnChange()"/>
+                            @}
+                            @if(shiro.hasPermission("/productReturnChange/update")){
+                                <#button name="处理退换货" icon="fa-edit" clickFun="ProductReturnChange.openProductReturnChangeDetail()" space="true"/>
+                                 <#button name="查看退换货详情" icon="fa-search" clickFun="ProductReturnChange.openProductReturnChangeDetail2()" space="true"/>
+                            @}
+                            @if(shiro.hasPermission("/productReturnChange/delete")){
+                                <#button name="删除" icon="fa-remove" clickFun="ProductReturnChange.delete()" space="true"/>
+                            @}
+                        </div>
+                        <#table id="ProductReturnChangeTable"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="${ctxPath}/static/modular/main/productReturnChange/productReturnChange.js"></script>
+@}

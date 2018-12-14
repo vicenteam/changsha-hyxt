@@ -1,0 +1,54 @@
+@layout("/common/_container.html"){
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div class="form-horizontal">
+            <!--<form id="uploadForm" enctype="multipart/form-data" action="/civilCustomer/import_excel" type="post">-->
+            <div class="row">
+                <div class="col-sm-6 b-r">
+                    <div class="layui-upload">
+                        <button type="button" class="layui-btn layui-btn-normal" id="excelFileUpload">选择文件</button>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <button type="button" class="layui-btn" id="startUp">开始上传</button>
+                </div>
+            </div>
+
+            <div class="row btn-group-m-t">
+                <div class="col-sm-10">
+                    <!--<#button btnCss="info" name="提交" id="ensure" icon="fa-check" clickFun="CivilCustomerInfoDlg.excelSubmit()"/>-->
+                    <!--<#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="CivilCustomerInfoDlg.close()"/>-->
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script src="${ctxPath}/static/layui/layui.js"></script>
+@}
+<link href="${ctxPath}/static/layui/css/layui.css" rel="stylesheet"/>
+<script>
+    layui.use('upload', function() {
+        var $ = layui.jquery
+            ,upload = layui.upload;
+
+        //选完文件后不自动上传
+        upload.render({
+            elem: '#excelFileUpload'
+            ,url: '/membermanagement/importE/'
+            ,method: "post"
+            ,auto: false
+            ,accept: 'file' //普通文件
+            ,exts: 'xls|xlsx' //只允许上传excel文件
+            //,multiple: true
+            ,bindAction: '#startUp'
+            ,done: function(res){
+                layer.open({
+                    title: '提示'
+                    ,content: res.msg
+                });
+                console.log(res.msg)
+            }
+        });
+    });
+</script>

@@ -1,0 +1,39 @@
+@layout("/common/_container.html"){
+<div class="row">
+    <div class="col-sm-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>商品库存管理</h5>
+            </div>
+            <div class="ibox-content">
+                <div class="row row-lg">
+                    <div class="col-sm-12">
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <#NameCon id="condition" name="名称" />
+                            </div>
+                            <div class="col-sm-2">
+                                <#SelectCon name="记录状态" id="status" >
+                                <option value="">全部</option>
+                                <option value="0">添加库存</option>
+                                <option value="1">消耗库存</option>
+                            </#SelectCon>
+                        </div>
+                            <div class="col-sm-3">
+                                <#button name="搜索" icon="fa-search" clickFun="InventoryManagement.search()"/>
+                            </div>
+                        </div>
+                        <div class="hidden-xs" id="InventoryManagementTableToolbar" role="group">
+                            @if(shiro.hasPermission("/inventoryManagement/add")){
+                                <#button name="添加库存" icon="fa-plus" clickFun="InventoryManagement.openAddInventoryManagement()"/>
+                            @}
+                        </div>
+                        <#table id="InventoryManagementTable"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="${ctxPath}/static/modular/main/inventoryManagement/inventoryManagement.js"></script>
+@}

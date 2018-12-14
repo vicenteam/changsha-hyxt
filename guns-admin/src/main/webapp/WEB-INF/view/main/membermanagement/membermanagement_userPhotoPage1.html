@@ -1,0 +1,271 @@
+@layout("/common/_container.html"){
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div class="form-horizontal" id="membermanagementInfoTable">
+
+            <div class="row">
+                <!--<div>-->
+                    <!--<p id="contentHolder">-->
+                        <!--<video id="video" width="320" height="320" autoplay></video>-->
+                        <!--<button id="picture" style="display:block" class="btn btn-primary button-margin" onclick="MgrUser.openChangeUser()" type="button">-->
+                            <!--<i class="fa fa-edit"></i>&nbsp;拍照-->
+                        <!--</button>-->
+                        <!--<canvas style="display:block" id="canvas" width="320" height="320"></canvas>-->
+
+
+                    <!--</p>-->
+                    <!--<script>-->
+                        <!--navigator.getUserMedia = navigator.getUserMedia ||-->
+                            <!--navigator.webkitGetUserMedia ||-->
+                            <!--navigator.mozGetUserMedia;-->
+                        <!--if (navigator.getUserMedia) {-->
+                            <!--navigator.getUserMedia({ audio: true, video: { width: 320, height: 320 } },-->
+                                <!--function(stream) {-->
+                                    <!--var video = document.getElementById("video");-->
+                                    <!--video.src = window.URL.createObjectURL(stream);-->
+                                    <!--video.onloadedmetadata = function(e) {-->
+                                        <!--console.log('nihao44eee4aaaaddda');-->
+                                        <!--video.play();-->
+                                    <!--};-->
+                                <!--},-->
+                                <!--function(err) {-->
+                                    <!--console.log("The following error occurred: " + err.name);-->
+                                <!--}-->
+                            <!--);-->
+                        <!--} else {-->
+                            <!--console.log("getUserMedia not supported");-->
+                        <!--}-->
+                        <!--var context = document.getElementById("canvas").getContext("2d");-->
+                        <!--document.getElementById("picture").addEventListener("click", function () {-->
+                            <!--context.drawImage(video, 0, 0, 320, 320);-->
+                            <!--var imgData=document.getElementById("canvas").toDataURL("image/png");-->
+                            <!--var data=imgData.substr(22);-->
+
+                            <!--// $("#imgtest").attr("src",imgData);-->
+                            <!--// $.post('recorder/target/sc',{'sj':data});-->
+                            <!--window.parent.imgData=imgData;-->
+                            <!--window.parent.MembermanagementInfoDlg.eaa();-->
+                        <!--});-->
+                    <!--</script>-->
+                <!--</div>-->
+
+            </div>
+            <div class="row btn-group-m-t">
+                <div class="col-sm-10">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!---->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/static/photo/camera/css/jquery-ui.css">
+    <link rel="stylesheet" href="/static/photo/camera/css/easyui.css">
+    <script type="text/javascript" src="/static/photo/camera/js/jquery-2.2.2.js"></script>
+    <script type="text/javascript" src="/static/photo/camera/js/jquery-ui.js"></script>
+    <script type="text/javascript">
+        /**
+         * 初始化
+         */
+        var isBrowser;
+        $(function(){
+            //按钮样式
+            $("#takePhoto").button()
+                .click(function( event ) {
+                    event.preventDefault();
+                });
+            //判断浏览器
+            isBrowser = doVerificationBrowser();
+            //根据浏览器不同使用不同方法调用摄像头
+            if(isBrowser){
+                $("#FalshDiv").show();
+            }else{
+                //判断浏览器是否 支持HTML5
+                if(checkHtml5()){
+                    $("#HTML5Div").show();
+                    doHtml5();
+                }
+            }
+        });
+        /**
+         * 检查摄像头是否存在
+         */
+        function checkCamera(){
+        }
+        /**
+         * 检测浏览器是否兼容HTML5
+         */
+        function checkHtml5() {
+            return !!document.createElement("video").canPlayType;
+        }
+        /**
+         *  判断浏览器是否为IE或者其他浏览器
+         */
+        function doVerificationBrowser(){
+            var userAgent = navigator.userAgent; //取得浏览器的userAgent字符串
+            //判断浏览是否为IE
+            if (!!window.ActiveXObject || "ActiveXObject" in window || userAgent.indexOf("trident")>-1) {
+                return true;
+            } else{
+                return false;
+            }
+        }
+        /**
+         * 使用HTML5调用摄像头拍摄照片(适用于非IE浏览器)
+         */
+        var canvas,context,video,videoObj,errBack;
+        function doHtml5(){
+            //Put event listeners into place
+            window.addEventListener("DOMContentLoaded", function() {
+                // Grab elements, create settings, etc.
+                canvas = document.getElementById("canvas"),
+                    context = canvas.getContext("2d"),
+                    video = document.getElementById("video"),
+                    videoObj = { "video": true },
+                    errBack = function(error) {
+                        console.log("Video capture error: ", error.code);
+                    };
+                // Put video listeners into place
+                if(navigator.getUserMedia) { // Standard
+                    navigator.getUserMedia(videoObj, function(stream) {
+                        video.src = stream;
+                        video.play();
+                    }, errBack);
+                } else if(navigator.webkitGetUserMedia) { // WebKit-prefixed
+                    navigator.webkitGetUserMedia(videoObj, function(stream){
+                        video.src = window.webkitURL.createObjectURL(stream);
+                        video.play();
+                    }, errBack);
+                }
+                else if(navigator.mozGetUserMedia) { // Firefox-prefixed
+                    navigator.mozGetUserMedia(videoObj, function(stream){
+                        video.src = window.URL.createObjectURL(stream);
+                        video.play();
+                    }, errBack);
+                }
+            }, false);
+        }
+        /**
+         * 拍照
+         */
+        function photo(){
+            //IE
+            if(isBrowser){
+                doFlash();
+            }else{
+                //非IE
+                tabkePhotoForHtml5();
+            }
+        }
+        /**
+         * 使用FLASH调用摄像头拍照(适用于IE浏览器)
+         */
+        function doFlash(){
+            var MyCan= thisMovie("My_Cam");
+            var base64Data = MyCan.GetBase64Code();
+            var data={"base64Face":base64Data,"phone":getQueryString("phone"),"idCode":getQueryString("cardId")};
+            console.log(base64Data)
+            $("#aaa").html(base64Data)
+            $("#length").val(base64Data.length)
+            window.parent.imgData=base64Data;
+            window.parent.MembermanagementInfoDlg.eaa();
+            Feng.success("截取成功!");
+            // $.restPost({
+            //     type:'post',
+            //     dataType: 'json',
+            //     url:'../rest/realNameAuth/checkFace',
+            //     data:data,
+            //     success:function(data){
+            //         if(true==data){
+            //             $.messager.alert('提示信息','操作成功,转至登录页面!');
+            //             window.location.href="../../view/login.html";
+            //         }
+            //     }
+            // });
+        }
+        /**
+         * 获取Flash对象
+         */
+        function thisMovie(movieName) {
+            if (navigator.appName.indexOf("Microsoft") != -1) {
+                return document[movieName];
+            }
+            else {
+                return document[movieName];
+            }
+        }
+        /**
+         * 拍摄照片(非IE)
+         */
+        function tabkePhotoForHtml5(){
+            //拍照画在画布上
+            context.drawImage(video,0,0,500,400);
+            var canvas = document.getElementById("canvas");
+            //从画布上获取照片数据
+            var imgData = canvas.toDataURL();
+            //将图片转换为Base64
+            var base64Data = imgData.substr(22);
+            var data={"base64Face":base64Data,"phone":getQueryString("phone")};
+            //执行确定操作
+            $.restPost({
+                type:'post',
+                dataType: 'json',
+                url:'../rest/realNameAuth/checkFace',
+                data:data,
+                success:function(data){
+                    if(true==data){
+                        $.messager.alert('提示信息','操作成功,转至登录页面!');
+                        window.location.href="../../view/login.html";
+                    }
+                }
+            });
+        }
+        /**
+         * 获取url请求参数
+         */
+        function getQueryString(name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+            var r = window.location.search.substr(1).match(reg);
+            if (r != null) return unescape(r[2]); return null;
+        }
+    </script>
+</head>
+<body>
+<!-- FLASH调用 -->
+<div id="FalshDiv"  style="text-align:center;display:none;">
+    <object style="z-index: 100" id="My_Cam" align="middle" classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000"
+            codebase="http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=8,0,0,0"
+            height="400" viewastext="在线拍照" width="500">
+        <param name="allowScriptAccess" value="sameDomain" />
+        <param name="movie" value="/static/photo/camera/js/MyCamera.swf" />
+        <param name="quality" value="high" />
+        <param name="bgcolor" value="#ffffff" />
+        <param name="wmode" value="transparent" />
+        <embed style="z-index: 100" align="middle" allowscriptaccess="sameDomain" bgcolor="#ffffff" height="400"
+               name="My_Cam" pluginspage="http://www.macromedia.com/go/getflashplayer" quality="high"  wmode="transparent"
+               src="/static/photo/camera/js/MyCamera.swf" type="application/x-shockwave-flash" width="500"></embed>
+    </object>
+</div>
+<!-- HTML5调用 -->
+<div id="HTML5Div" style="text-align:center;display:none;">
+    <video id="video" width="500" height="400" autoplay ></video>
+    <canvas id="canvas" width="500" height="400" style="display:none;"></canvas>
+</div>
+<!-- 执行按钮 -->
+<div align="center" id="secondPageBT">
+    <button id="picture" style="display:block" class="btn btn-primary button-margin" onclick="photo()" type="button">
+        <i class="fa fa-edit"></i>&nbsp;拍照
+    </button>
+    <!--<input id="takePhoto" type="button" value="拍照" onclick="photo()">-->
+
+</div>
+</body>
+</html>
+
+
+<script src="${ctxPath}/static/modular/main/membermanagement/membermanagement_userPhotoPage.js"></script>
+@}
