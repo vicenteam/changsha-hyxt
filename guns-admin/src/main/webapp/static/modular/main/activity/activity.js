@@ -218,14 +218,17 @@ Activity.lingqu = function (id) {
  * 删除活动管理
  */
 Activity.delete = function (id) {
-    var ajax = new $ax(Feng.ctxPath + "/activity/delete", function (data) {
-        Feng.success("删除成功!");
-        Activity.table.refresh();
-    }, function (data) {
-        Feng.error("删除失败!" + data.responseJSON.message + "!");
+    layer.confirm('您确定要删除本条数据吗？', {btn: ['确定', '取消']}, function () {
+        layer.closeAll('dialog');
+        var ajax = new $ax(Feng.ctxPath + "/activity/delete", function (data) {
+            Feng.success("删除成功!");
+            Activity.table.refresh();
+        }, function (data) {
+            Feng.error("删除失败!" + data.responseJSON.message + "!");
+        });
+        ajax.set("activityId", id);
+        ajax.start();
     });
-    ajax.set("activityId", id);
-    ajax.start();
 };
 
 /**

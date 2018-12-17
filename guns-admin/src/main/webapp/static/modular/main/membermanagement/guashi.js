@@ -151,14 +151,17 @@ Membermanagement.openintroducer = function (id) {
  */
 Membermanagement.delete = function () {
     if (this.check()) {
-        var ajax = new $ax(Feng.ctxPath + "/membermanagement/delete", function (data) {
-            Feng.success("删除成功!");
-            Membermanagement.table.refresh();
-        }, function (data) {
-            Feng.error("删除失败!" + data.responseJSON.message + "!");
+        layer.confirm('您确定要删除本条数据吗？', {btn: ['确定', '取消']}, function () {
+            layer.closeAll('dialog');
+            var ajax = new $ax(Feng.ctxPath + "/membermanagement/delete", function (data) {
+                Feng.success("删除成功!");
+                Membermanagement.table.refresh();
+            }, function (data) {
+                Feng.error("删除失败!" + data.responseJSON.message + "!");
+            });
+            ajax.set("membermanagementId", this.seItem.id);
+            ajax.start();
         });
-        ajax.set("membermanagementId",this.seItem.id);
-        ajax.start();
     }
 };
 

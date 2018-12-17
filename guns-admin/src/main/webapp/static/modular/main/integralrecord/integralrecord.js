@@ -74,14 +74,17 @@ Integralrecord.openIntegralrecordDetail = function () {
  */
 Integralrecord.delete = function () {
     if (this.check()) {
-        var ajax = new $ax(Feng.ctxPath + "/integralrecord/delete", function (data) {
-            Feng.success("删除成功!");
-            Integralrecord.table.refresh();
-        }, function (data) {
-            Feng.error("删除失败!" + data.responseJSON.message + "!");
+        layer.confirm('您确定要删除本条数据吗？', {btn: ['确定', '取消']}, function () {
+            layer.closeAll('dialog');
+            var ajax = new $ax(Feng.ctxPath + "/integralrecord/delete", function (data) {
+                Feng.success("删除成功!");
+                Integralrecord.table.refresh();
+            }, function (data) {
+                Feng.error("删除失败!" + data.responseJSON.message + "!");
+            });
+            ajax.set("integralrecordId", this.seItem.id);
+            ajax.start();
         });
-        ajax.set("integralrecordId",this.seItem.id);
-        ajax.start();
     }
 };
 

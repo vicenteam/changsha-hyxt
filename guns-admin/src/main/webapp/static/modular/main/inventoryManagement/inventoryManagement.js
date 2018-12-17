@@ -126,14 +126,17 @@ InventoryManagement.openInventoryManagementDetail = function () {
  */
 InventoryManagement.delete = function () {
     if (this.check()) {
-        var ajax = new $ax(Feng.ctxPath + "/inventoryManagement/delete", function (data) {
-            Feng.success("删除成功!");
-            InventoryManagement.table.refresh();
-        }, function (data) {
-            Feng.error("删除失败!" + data.responseJSON.message + "!");
+        layer.confirm('您确定要删除本条数据吗？', {btn: ['确定', '取消']}, function () {
+            layer.closeAll('dialog');
+            var ajax = new $ax(Feng.ctxPath + "/inventoryManagement/delete", function (data) {
+                Feng.success("删除成功!");
+                InventoryManagement.table.refresh();
+            }, function (data) {
+                Feng.error("删除失败!" + data.responseJSON.message + "!");
+            });
+            ajax.set("inventoryManagementId", this.seItem.id);
+            ajax.start();
         });
-        ajax.set("inventoryManagementId", this.seItem.id);
-        ajax.start();
     }
 };
 
