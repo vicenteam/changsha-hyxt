@@ -10,9 +10,8 @@ import com.stylefeng.guns.core.util.DateUtil;
 import com.stylefeng.guns.modular.main.service.IIntegralrecordtypeService;
 import com.stylefeng.guns.modular.main.service.IInventoryManagementService;
 import com.stylefeng.guns.modular.main.service.IMembermanagementService;
-import com.stylefeng.guns.modular.system.model.Integralrecordtype;
-import com.stylefeng.guns.modular.system.model.InventoryManagement;
-import com.stylefeng.guns.modular.system.model.Membermanagement;
+import com.stylefeng.guns.modular.system.model.*;
+import com.stylefeng.guns.modular.system.service.IDictService;
 import org.springframework.stereotype.Controller;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.stylefeng.guns.core.common.constant.factory.PageFactory;
@@ -26,7 +25,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.stylefeng.guns.core.log.LogObjectHolder;
 import org.springframework.web.bind.annotation.RequestParam;
-import com.stylefeng.guns.modular.system.model.Integralrecord;
 import com.stylefeng.guns.modular.main.service.IIntegralrecordService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -58,6 +56,8 @@ public class IntegralrecordController extends BaseController {
     private IIntegralrecordtypeService integralrecordtypeService;
     @Autowired
     private IInventoryManagementService inventoryManagementService;
+    @Autowired
+    private IDictService dictService;
 
 
     /**
@@ -82,6 +82,14 @@ public class IntegralrecordController extends BaseController {
         tWrapper.notIn("names","积分清零","积分恢复","积分兑换");
         List<Integralrecordtype> types = integralrecordtypeService.selectList(tWrapper);
         model.addAttribute("type",types);
+        //获取快捷积分
+        EntityWrapper<Dict> dictEntityWrapper = new EntityWrapper<>();
+        dictEntityWrapper.eq("code","quickjf");
+        Dict dict = dictService.selectOne(dictEntityWrapper);
+        dictEntityWrapper=new EntityWrapper<>();
+        dictEntityWrapper.eq("pid",dict.getId());
+        List<Dict> dicts = dictService.selectList(dictEntityWrapper);
+        model.addAttribute("kjjf",dicts);
         return PREFIX + "integralrecord_add.html";
     }
 
