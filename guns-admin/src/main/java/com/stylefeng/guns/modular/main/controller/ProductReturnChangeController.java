@@ -54,6 +54,8 @@ public class ProductReturnChangeController extends BaseController {
     private IInventoryManagementService inventoryManagementService;
     @Autowired
     private IIntegralrecordService iIntegralrecordService;
+    @Autowired
+    private MembermanagementController membermanagementController;
 
     /**
      * 跳转到商品退换货首页
@@ -159,6 +161,8 @@ public class ProductReturnChangeController extends BaseController {
         productReturnChange.setReturnchangeproductId(integralrecordtype.getId());
         productReturnChange.setReturnchangeproductName(integralrecordtype.getProductname());
         productReturnChange.setStatus(1);
+        //更改数量信息
+        productReturnChange.setReturnchangeNum(returnchangeNum);
         productReturnChange.setIsInsert(isInsert);
 
         //判断是否入库
@@ -169,8 +173,10 @@ public class ProductReturnChangeController extends BaseController {
         }
         //判断是退货还是换货 如果是换货即选择商品库存减少
         if (productReturnChange != null && productReturnChange.getReturnchangeType() == 1) {
+            //减少库存
             integralrecordtype.setProductnum((integralrecordtype.getProductnum() - returnchangeNum));
             iIntegralrecordtypeService.updateById(integralrecordtype);
+            //
         } else {
             //更改用户积分 (积分回滚)
             String productjifen = integralrecordtype.getProductjifen();
@@ -186,6 +192,8 @@ public class ProductReturnChangeController extends BaseController {
             iIntegralrecordService.deleteById(productReturnChange.getIntegralrecodeId());
             //删除商品库存管理订单
             inventoryManagementService.deleteById(productReturnChange.getInventoryManagementId());
+            //更新会员会员等级
+            membermanagementController.updateMemberLeave(memberId.toString());
         }
         productReturnChange.updateById();
 
