@@ -17,6 +17,7 @@ Integralrecord.initColumn = function () {
             {title: '积分记录编号', field: 'id', visible: false, align: 'center', valign: 'middle'},
             {title: '部门', field: 'deptName', visible: true, align: 'center', valign: 'middle'},
             {title: '时间', field: 'createdt', visible: true, align: 'center', valign: 'middle'},
+            {title: '操作人', field: 'staffName', visible: true, align: 'center', valign: 'middle'},
             {title: '操作', field: 'operation', visible: true, align: 'center', valign: 'middle',formatter: function (value, row, index) {
                 console.log(row.id);
                     return '<button type="button" class="btn btn-primary button-margin" onclick="Integralrecord.recovery(' + row.id + ')" id=""><i class="fa fa-edit"></i>&nbsp;恢复</button>'

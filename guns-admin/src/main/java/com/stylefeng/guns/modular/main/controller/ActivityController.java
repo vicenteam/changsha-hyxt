@@ -268,10 +268,9 @@ public class ActivityController extends BaseController {
         if (ruleexpression == 2) {//积分操作 积分兑换
             Double jifen = activity.getJifen();//将被扣除的积分
             //积分操作
-            List<Membermanagement> membermanagements = new ArrayList<>();
-            Membermanagement membermanagement = new Membermanagement();
-            membermanagement.setId(Integer.parseInt(memberId));
-            membermanagements.add(membermanagement);
+            BaseEntityWrapper<Membermanagement> mWrapper = new BaseEntityWrapper<>();
+            mWrapper.eq("id",memberId);
+            List<Membermanagement> membermanagements = membermanagementService.selectList(mWrapper);
             //调用积分变动方法
             integralrecordController.insertIntegral(jifen,2, 2, membermanagements);
         }else if (ruleexpression == 3||ruleexpression == 4){
@@ -283,6 +282,15 @@ public class ActivityController extends BaseController {
             if(list.size()>=1){
                 MemberInactivity memberInactivity=list.get(0);
                 memberInactivityService.deleteById(memberInactivity.getId());
+                if(ruleexpression == 3){ //推荐人获得积分
+                    Double jifen = activity.getJifen();
+                    //积分操作
+                    BaseEntityWrapper<Membermanagement> mWrapper = new BaseEntityWrapper<>();
+                    mWrapper.eq("id",memberId);
+                    List<Membermanagement> membermanagements = membermanagementService.selectList(mWrapper);
+                    //调用积分变动方法
+                    integralrecordController.insertIntegral(jifen,2, 1, membermanagements);
+                }
             }else {
                 throw new GunsException(BizExceptionEnum.NO_PERMITION1);
             }

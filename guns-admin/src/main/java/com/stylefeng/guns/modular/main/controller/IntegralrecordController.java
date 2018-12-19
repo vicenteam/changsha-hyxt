@@ -216,21 +216,28 @@ public class IntegralrecordController extends BaseController {
         for(Membermanagement memberId : mList){  //循环当前门店会员列表为
             nowIntegral = memberId.getIntegral();
             nowCountPrice = memberId.getCountPrice();
-            if(type == 1){ //扣除类积分
-                if((nowIntegral + integral) >= 0){
+            if(type == 1){
+                if(integral < 0){ //扣除类积分
+                    if((nowIntegral + integral) >= 0){
+                        memberId.setIntegral(nowIntegral + integral);
+                    }else {
+                        throw new Exception("可用积分不足！");
+                    }
+                }else {
                     memberId.setIntegral(nowIntegral + integral);
-                }else {
-                    throw new Exception("可用积分不足！");
+                    memberId.setCountPrice(nowCountPrice + integral);
                 }
-            }else if(type == 2 && typeId == 2){ //扣除类积分
-                if((nowIntegral - integral) >= 0){
-                    memberId.setIntegral(nowIntegral - integral);
+            }else if(type == 2){
+                if(typeId == 2) { //扣除积分
+                    if((nowIntegral - integral) >= 0){
+                        memberId.setIntegral(nowIntegral - integral);
+                    }else {
+                        throw new Exception("可用积分不足！");
+                    }
                 }else {
-                    throw new Exception("可用积分不足！");
+                    memberId.setIntegral(nowIntegral + integral);
+                    memberId.setCountPrice(nowCountPrice + integral);
                 }
-            }else { //获得积分
-                memberId.setIntegral(integral+nowIntegral);
-                memberId.setCountPrice(integral+nowCountPrice);
             }
             //更新会员总积分和实际积分
             membermanagementService.updateById(memberId);

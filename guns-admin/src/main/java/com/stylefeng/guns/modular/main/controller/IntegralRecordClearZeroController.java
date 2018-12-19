@@ -14,11 +14,13 @@ import com.stylefeng.guns.modular.main.service.IIntegralrecordService;
 import com.stylefeng.guns.modular.main.service.IMembermanagementService;
 import com.stylefeng.guns.modular.system.model.*;
 import com.stylefeng.guns.modular.system.service.IDeptService;
+import com.stylefeng.guns.modular.system.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -46,6 +48,8 @@ public class IntegralRecordClearZeroController extends BaseController {
     private IMembermanagementService membermanagementService;
     @Autowired
     private IClearService clearService;
+    @Autowired
+    private IUserService userService;
 
     @RequestMapping("")
     public String index(Model model){
@@ -65,9 +69,10 @@ public class IntegralRecordClearZeroController extends BaseController {
         wrapper.eq("status",0);
         Page<Map<String, Object>> mapPage = clearService.selectMapsPage(integralrecordPage,wrapper);
         for(Map<String, Object> map : mapPage.getRecords()){
-            if(map.get("deptid").toString() != null){
+            if(! StringUtils.isEmpty(map.get("deptid").toString()))
                 map.put("deptName",deptService.selectById(map.get("deptid").toString()).getFullname());
-            }
+            if(! StringUtils.isEmpty(map.get("staffid").toString()))
+                map.put("staffName",userService.selectById(map.get("staffid").toString()).getName());
         }
         return super.packForBT(mapPage);
     }
@@ -82,29 +87,26 @@ public class IntegralRecordClearZeroController extends BaseController {
     public Object integralClear() {
         Integer deptId = ShiroKit.getUser().getDeptId();
         Integer staffId = ShiroKit.getUser().getId();
-
         BaseEntityWrapper<Membermanagement> wrapper = new BaseEntityWrapper<>();
         List<Membermanagement> mList = membermanagementService.selectList(wrapper);
-        // clear start
+
         Clear clear = new Clear();
         clear.setDeptid(deptId);
         clear.setStaffid(staffId);
         clear.setCreatedt(DateUtil.getTime());
-        //积分清零记录表保存
-        clearService.insert(clear);
-        Integralrecord clearM = new Integralrecord();
-        for(Membermanagement m : mList){  //循环门店会员列表 并插入积分记录表
-            clearM.setIntegral(m.getIntegral()); // 清零会员可用积分
-            clearM.setTypeId("11");
-            clearM.setMemberid(m.getId());
-            clearM.setDeptid(deptId);
-            clearM.setStaffid(staffId);
-            clearM.setClearid(clear.getId());
-            clearM.setCreateTime(DateUtil.getTime());
-            //插入清除积分记录
-            integralrecordService.insert(clearM);
+        clearService.insert(clear); //生成积分清零记录id
+
+        Integralrecord integralrecord = new Integralrecord();
+        for(Membermanagement m : mList){  //循环门店会员列表
+            if(m.getIntegral() <= 0) continue; //积分为零不计入
+            integralrecord.setIntegral(m.getIntegral()); //清零会员可用积分
+            integralrecord.setMemberid(m.getId());
+            integralrecord.setDeptid(deptId);
+            integralrecord.setStaffid(staffId);
+            integralrecord.setClearid(clear.getId()); //记录积分清零id
+            integralrecord.setCreateTime(DateUtil.getTime());
+            integralrecordService.insert(integralrecord);
             m.setIntegral(0.0);
-            //清零会员可用积分
             membermanagementService.updateById(m);
         }
         return SUCCESS_TIP;
@@ -121,17 +123,11 @@ public class IntegralRecordClearZeroController extends BaseController {
         BaseEntityWrapper<Integralrecord> wrapper = new BaseEntityWrapper<>();
         wrapper.eq("clearid",integralRecordId);
         List<Integralrecord> integrals = integralrecordService.selectList(wrapper);
-        Integralrecord i = new Integralrecord();
+        Membermanagement membermanagement = new Membermanagement();
         for(Integralrecord integral : integrals){
-            membermanagementService.updateIntegralRollBack(integral);
-            i.setCreateTime(DateUtil.getTime());
-            i.setClearid(integral.getClearid());
-            i.setStaffid(integral.getStaffid());
-            i.setMemberid(integral.getMemberid());
-            i.setDeptid(integral.getDeptid());
-            i.setTypeId("12");
-            i.setIntegral(integral.getIntegral());
-            integralrecordService.insert(i);
+            membermanagement.setId(integral.getMemberid());
+            membermanagement.setIntegral(integral.getIntegral());
+            membermanagementService.updateById(membermanagement); //回复积分
         }
         Clear clear = new Clear();
         clear.setId(integralRecordId);
