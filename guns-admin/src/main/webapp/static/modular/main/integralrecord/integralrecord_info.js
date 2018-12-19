@@ -10,10 +10,10 @@ var IntegralrecordInfoDlg = {
                     message: '新增积分不能为空'
                 },
                 numeric: {message: '新增积分只能输入数字'},
-                greaterThan: {
-                    value: 0.001,
-                    message: "新增积分最小输入值为 0.001"
-                }
+                // greaterThan: {
+                //     value: 0.001,
+                //     message: "新增积分最小输入值为 0.001"
+                // }
             }
         }
     }
