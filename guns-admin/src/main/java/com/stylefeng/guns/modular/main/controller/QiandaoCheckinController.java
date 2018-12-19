@@ -95,6 +95,7 @@ public class QiandaoCheckinController extends BaseController {
      */
     @RequestMapping(value = "/add")
     @ResponseBody
+    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRES_NEW)
     public Object add(String memberId, String chechId) throws Exception {
         //判断签到场次是否被结束
         if (!StringUtils.isEmpty(chechId)) {
@@ -120,6 +121,8 @@ public class QiandaoCheckinController extends BaseController {
         qiandaoCheckin.setDeptid(ShiroKit.getUser().getDeptId());
         qiandaoCheckin.setMemberid(Integer.parseInt(memberId));
         qiandaoCheckinService.insert(qiandaoCheckin);
+        //自动复签
+        update(memberId,chechId);
         return SUCCESS_TIP;
     }
 
