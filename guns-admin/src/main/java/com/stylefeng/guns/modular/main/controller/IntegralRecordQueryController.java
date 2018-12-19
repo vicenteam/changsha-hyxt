@@ -116,11 +116,11 @@ public class IntegralRecordQueryController extends BaseController {
         //把 membermanagement 与 user 条件放入 积分记录表实现条件分页查询
         Page<Integralrecord> page = new PageFactory<Integralrecord>().defaultPage();
         BaseEntityWrapper<Integralrecord> iWrapper = new BaseEntityWrapper<>();
-        iWrapper.eq("integralType",type);
+        if(! StringUtils.isEmpty(type)) iWrapper.eq("integralType",type);
         if(type.equals("1")){
-            iWrapper.eq("typeId",integralType);
+            if(! StringUtils.isEmpty(integralType)) iWrapper.eq("typeId",integralType);
         }else if(type.equals("2")){
-            iWrapper.eq("otherTypeId",integralType);
+            if(! StringUtils.isEmpty(integralType)) iWrapper.eq("otherTypeId",integralType);
         }
         if(mIdArray.length <= 0) mIdArray = new Integer[]{-1}; //判断数组 <=0 赋予初始值 方便查询
         iWrapper.in("memberid",mIdArray);
@@ -133,12 +133,12 @@ public class IntegralRecordQueryController extends BaseController {
         Page<Map<String, Object>> serverPage = integralrecordService.selectMapsPage(page, iWrapper);
         if (serverPage.getRecords().size() >= 0){
             for(Map<String, Object> map : serverPage.getRecords()){
-                if(type.equals("1")){
-                    Integralrecordtype integralrecordtype = new Integralrecordtype();
+                Integralrecordtype integralrecordtype = new Integralrecordtype();
+                if(map.get("typeId") != null){
                     integralrecordtype.setId(Integer.parseInt(map.get("typeId").toString()));
                     map.put("typeId",integralrecordtypeService.selectById(integralrecordtype).getProductname());
                 }
-                if(type.equals("2")){
+                if(map.get("otherTypeId") != null){
                     if(map.get("otherTypeId").equals("0")){
                         map.put("typeId","签到积分");
                     }else if(map.get("otherTypeId").equals("1")){

@@ -17,6 +17,7 @@
                             </div>
                             <div class="col-sm-2">
                                 <#SelectCon name="积分类型" id="type" underline="true">
+                                    <option value="">全部</option>
                                     @for(item in types1){
                                         @if(item.integralType == "1"){
                                             <option value="${item.integralType}" >商品积分</option>

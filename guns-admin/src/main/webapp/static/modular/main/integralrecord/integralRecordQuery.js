@@ -142,6 +142,7 @@ Integralrecord.findIntegralType = function (type) {
     $("#integralType").empty();
     var ajax = new $ax(Feng.ctxPath + "/integralrecordquery/findIntegralType", function (data) {
         //    动态添加dom元素
+        $("#integralType").append('<option value="">全部</option>');
         if(type == "1"){
             for(var i=0;i<data.length;i++){
                 $("#integralType").append('<option value="'+data[i].typeId+'">'+data[i].name+'</option>');
