@@ -18,4 +18,5 @@ public interface IMembermanagementService extends IService<Membermanagement> {
      * 恢复积分
      */
     boolean updateIntegralRollBack(Integralrecord integralrecord);
+    int updateisvisit( String time);
 }

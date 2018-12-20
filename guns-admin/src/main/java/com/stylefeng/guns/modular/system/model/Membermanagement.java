@@ -126,7 +126,18 @@ public class Membermanagement extends Model<Membermanagement> {
      */
     private String deptId;
     private String token;
+    /**
+     * 是否回访(0过滤 1需回访 2已回访)
+     */
+    private Integer isvisit;
 
+    public Integer getIsvisit() {
+        return isvisit;
+    }
+
+    public void setIsvisit(Integer isvisit) {
+        this.isvisit = isvisit;
+    }
 
     public Integer getId() {
         return id;

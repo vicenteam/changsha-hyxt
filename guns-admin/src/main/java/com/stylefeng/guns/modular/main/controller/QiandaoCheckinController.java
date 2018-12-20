@@ -123,6 +123,13 @@ public class QiandaoCheckinController extends BaseController {
         qiandaoCheckinService.insert(qiandaoCheckin);
         //自动复签
         update(memberId,chechId);
+        //修改签到记录
+        Membermanagement membermanagement = membermanagementService.selectById(memberId);
+        if(membermanagement!=null){
+            membermanagement.setCheckINTime1(DateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
+            membermanagement.setIsvisit(0);
+            membermanagementService.updateById(membermanagement);
+        }
         return SUCCESS_TIP;
     }
 

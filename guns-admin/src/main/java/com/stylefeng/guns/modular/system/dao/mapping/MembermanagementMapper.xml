@@ -50,4 +50,10 @@
       set integral= #{integralrecord.integral} + integral
       where id= #{integralrecord.memberid}
     </update>
+    <update id="updateisvisit" >
+        update main_membermanagement
+        set isvisit=1
+        where CheckINTime1 <![CDATA[ <= ]]> #{time}
+        and isvisit=0
+    </update>
 </mapper>
