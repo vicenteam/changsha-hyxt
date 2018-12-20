@@ -252,6 +252,7 @@ public class IntegralrecordController extends BaseController {
             }
             //添加积分记录
             integralrecord.setIntegral(integral);
+            if(type==2&&typeId==2)integralrecord.setIntegral(-integral);
             integralrecord.setCreateTime(DateUtil.getTime());
             integralrecord.setMemberid(memberId.getId());
             integralrecord.setDeptid(ShiroKit.getUser().getDeptId());

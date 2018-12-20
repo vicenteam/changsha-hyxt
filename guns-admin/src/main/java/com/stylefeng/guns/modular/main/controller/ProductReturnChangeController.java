@@ -185,8 +185,13 @@ public class ProductReturnChangeController extends BaseController {
             Double countPrice = membermanagement.getCountPrice();
             Double integral = membermanagement.getIntegral();
             double v = (Double.parseDouble(productjifen)*returnchangeNum);
-            membermanagement.setCountPrice((countPrice - v));
-            membermanagement.setIntegral((integral - v));
+            //实际积分算法
+            Integer integralrecodeId = productReturnChange.getIntegralrecodeId();
+            Integralrecord integralrecord = iIntegralrecordService.selectById(integralrecodeId);
+//            membermanagement.setCountPrice((countPrice - v));
+//            membermanagement.setIntegral((integral - v));
+            membermanagement.setCountPrice((countPrice - integralrecord.getIntegral()));
+            membermanagement.setIntegral((integral - integralrecord.getIntegral()));
             membermanagementService.updateById(membermanagement);
             //删除积分记录
             iIntegralrecordService.deleteById(productReturnChange.getIntegralrecodeId());
