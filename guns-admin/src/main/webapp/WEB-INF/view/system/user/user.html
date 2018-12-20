@@ -63,6 +63,9 @@
 									@if(shiro.hasPermission("/mgr/setRole")){
 									<#button name="角色分配" icon="fa-user-secret" clickFun="MgrUser.roleAssign()" space="true"/>
 									@}
+									@if(shiro.hasPermission("/mgr/setRole")){
+									<#button name="批量角色防查" icon="fa-exclamation-triangle"  clickFun="MgrUser.roleAssignByDeptId()" space="true"/>
+									@}
 								</div>
 								<#table id="managerTable"/>
 							</div>

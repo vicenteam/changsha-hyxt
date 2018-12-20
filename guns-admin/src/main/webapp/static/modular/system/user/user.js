@@ -6,7 +6,8 @@ var MgrUser = {
     seItem: null,		//选中的条目
     table: null,
     layerIndex: -1,
-    deptid:0
+    deptid:0,
+    deptName:'',
 };
 
 /**
@@ -92,7 +93,25 @@ MgrUser.roleAssign = function () {
         this.layerIndex = index;
     }
 };
+MgrUser.roleAssignByDeptId = function () {
+    if(MgrUser.deptid==0||MgrUser.deptid==24){
+        Feng.error("请选择将要操作的组织机构!");
+        return;
+    }
+    var operation = function(){
+        var deptid = MgrUser.deptid;
+        var ajax = new $ax(Feng.ctxPath + "/mgr/roleAssignByDeptId", function () {
+            Feng.success("更改成功!");
+            MgrUser.table.refresh();
+        }, function (data) {
+            Feng.error("更改失败! 请联系管理员");
+        });
+        ajax.set("deptid", deptid);
+        ajax.start();
+    };
 
+    Feng.confirm("是否进行批量角色防查[" + MgrUser.deptName+ "]?",operation);
+};
 /**
  * 删除用户
  */
@@ -193,6 +212,7 @@ MgrUser.search = function () {
 
 MgrUser.onClickDept = function (e, treeId, treeNode) {
     MgrUser.deptid = treeNode.id;
+    MgrUser.deptName = treeNode.name;
     MgrUser.search();
 };
 

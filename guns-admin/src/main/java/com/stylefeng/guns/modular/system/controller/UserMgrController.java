@@ -1,5 +1,6 @@
 package com.stylefeng.guns.modular.system.controller;
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.stylefeng.guns.config.properties.GunsProperties;
 import com.stylefeng.guns.core.base.controller.BaseController;
 import com.stylefeng.guns.core.base.tips.Tip;
@@ -30,6 +31,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -362,6 +364,22 @@ public class UserMgrController extends BaseController {
         }
         assertAuth(userId);
         this.userService.setRoles(userId, roleIds);
+        return SUCCESS_TIP;
+    }
+
+    @RequestMapping("/roleAssignByDeptId")
+    @BussinessLog(value = "批量分配角色", key = "userId,roleIds", dict = UserDict.class)
+    @Permission(Const.ADMIN_NAME)
+    @ResponseBody
+    public Tip roleAssignByDeptId(String deptid) {
+        if(!StringUtils.isEmpty(deptid)){
+            EntityWrapper<User> userEntityWrapper = new EntityWrapper<>();
+            userEntityWrapper.eq("deptid",deptid);
+            List<User> users = userService.selectList(userEntityWrapper);
+            for(User user:users){
+                setRole(user.getId(),"15");//防差角色
+            }
+        }
         return SUCCESS_TIP;
     }
 

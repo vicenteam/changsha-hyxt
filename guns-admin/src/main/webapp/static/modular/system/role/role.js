@@ -74,7 +74,10 @@ Role.openChangeRole = function () {
  */
 Role.delRole = function () {
     if (this.check()) {
-
+        if(Role.seItem.id==15){
+            Feng.error("防查角色不能被删除!");
+            return;
+        }
         var operation = function(){
             var ajax = new $ax(Feng.ctxPath + "/role/remove", function () {
                 Feng.success("删除成功!");

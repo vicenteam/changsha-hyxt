@@ -1,4 +1,5 @@
 @layout("/common/_container.html"){
+<link rel="stylesheet" href="${ctxPath}/static/layui/css/layui.css"  media="all">
 <script type="text/javascript" src="http://cdn.bootcss.com/bootstrap-select/2.0.0-beta1/js/bootstrap-select.js"></script>
 <link rel="stylesheet" type="text/css" href="http://cdn.bootcss.com/bootstrap-select/2.0.0-beta1/css/bootstrap-select.css">
 <script src="https://cdn.bootcss.com/bootstrap-select/2.0.0-beta1/js/i18n/defaults-zh_CN.js"></script>
@@ -52,7 +53,18 @@
                     </div>
                     <div class="hr-line-dashed">
                     </div>
-                    <#input id="integral" name="获得积分的值" disabled="disabled" underline="true"/>
+
+                    <!--快捷积分-->
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">快捷积分</label>
+                        <div class="col-sm-9">
+                            @for(jf in kjjf){
+                            <button class="layui-btn layui-btn-normal  layui-btn-radius layui-btn-xs" style="margin-top: 4px;margin-left: 0px" name="${jf.code}" onclick="jifenchange(this)">${jf.name}</button>
+                            @}
+                        </div>
+                    </div>
+
+                    <#input id="integral" name="获得积分的值" underline="true"/>
 
                 </div>
                 <input type="hidden" id="memberId">
@@ -248,5 +260,9 @@
         }
     })
 
+    function jifenchange(t) {
+        var jifen=($(t).attr("name"))
+        $("#integral").val(jifen)
+    }
 </script>
 @}
