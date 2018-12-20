@@ -99,7 +99,7 @@ IntegralrecordInfoDlg.addSubmit = function() {
         $("#countPrice").val("");
         $("#levelID").val("");
     },function(data){
-        Feng.error("操作成功!" + data.responseJSON.message + "!");
+        Feng.error("操作失败!" + data.responseJSON.message + "!");
     });
     ajax.set(this.integralrecordInfoData);
     ajax.start();
