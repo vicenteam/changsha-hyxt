@@ -96,7 +96,8 @@ DeptInfoDlg.close = function() {
  * @returns
  */
 DeptInfoDlg.onClickDept = function(e, treeId, treeNode) {
-    $("#pName").attr("value", DeptInfoDlg.zTreeInstance.getSelectedVal());
+    // $("#pName").attr("value", DeptInfoDlg.zTreeInstance.getSelectedVal());
+    $("#pName").val(DeptInfoDlg.zTreeInstance.getSelectedVal());
     $("#pid").attr("value", treeNode.id);
 }
 
