@@ -74,11 +74,13 @@ RolInfoDlg.close = function () {
  * @returns
  */
 RolInfoDlg.onClickDept = function (e, treeId, treeNode) {
-    $("#deptName").attr("value", RolInfoDlg.deptZtree.getSelectedVal());
+    // $("#deptName").attr("value", RolInfoDlg.deptZtree.getSelectedVal());
+    $("#deptName").val(RolInfoDlg.deptZtree.getSelectedVal());
     $("#deptid").attr("value", treeNode.id);
 };
 RolInfoDlg.onDblClickDept = function (e, treeId, treeNode) {
-    $("#deptName").attr("value", RolInfoDlg.deptZtree.getSelectedVal());
+    // $("#deptName").attr("value", RolInfoDlg.deptZtree.getSelectedVal());
+    $("#deptName").val(RolInfoDlg.deptZtree.getSelectedVal());
     $("#deptid").attr("value", treeNode.id);
     $("#deptContent").fadeOut("fast");
 };
@@ -92,7 +94,8 @@ RolInfoDlg.onDblClickDept = function (e, treeId, treeNode) {
  * @returns
  */
 RolInfoDlg.onClickPName = function (e, treeId, treeNode) {
-    $("#pName").attr("value", RolInfoDlg.pNameZtree.getSelectedVal());
+    // $("#pName").attr("value", RolInfoDlg.pNameZtree.getSelectedVal());
+    $("#pName").val(RolInfoDlg.pNameZtree.getSelectedVal());
     $("#pid").attr("value", treeNode.id);
 };
 

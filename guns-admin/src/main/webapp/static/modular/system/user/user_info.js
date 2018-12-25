@@ -119,7 +119,8 @@ UserInfoDlg.close = function () {
  * @returns
  */
 UserInfoDlg.onClickDept = function (e, treeId, treeNode) {
-    $("#citySel").attr("value", instance.getSelectedVal());
+    // $("#citySel").attr("value", instance.getSelectedVal());
+    $("#citySel").val(instance.getSelectedVal());
     $("#deptid").attr("value", treeNode.id);
 };
 
