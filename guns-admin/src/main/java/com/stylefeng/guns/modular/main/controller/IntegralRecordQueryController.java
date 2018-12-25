@@ -77,6 +77,9 @@ public class IntegralRecordQueryController extends BaseController {
                 }else if(e.get("otherTypeId").equals("2")){
                     e.put("name","活动兑换积分");
                 }
+                else if(e.get("otherTypeId").equals("3")){
+                    e.put("name","被推荐人打卡奖励积分");
+                }
             }
         });
         return types2;
@@ -145,6 +148,9 @@ public class IntegralRecordQueryController extends BaseController {
                         map.put("typeId","带新人积分");
                     }else if(map.get("otherTypeId").equals("2")){
                         map.put("typeId","活动兑换积分");
+                    }
+                    else if(map.get("otherTypeId").equals("3")){
+                        map.put("typeId","被推荐人打卡奖励积分");
                     }
                 }
 //                map.put("typeName",integralrecordtypeService.selectById(map.get("typeId").toString()).getProducttype()); //获取积分类型

@@ -7,12 +7,10 @@
             <div class="row">
                 <div class="col-sm-6 b-r">
                             <#input id="cardname" name="会员等级名称" value="${item.cardname}" underline="true"/>
-                            <!--<#input id="signin" name="签到积分" value="${item.signin}" underline="true"/>-->
+                            <#input id="signin" name="签到积分" value="${item.signin}" underline="true"/>
                             <!--<#input id="shopping" name="购物积分" value="${item.shopping}" underline="true"/>-->
-                            <!--<#input id="newpoints" name="带新人奖励积分" value="${item.newpoints}" underline="true"/>-->
-                    <#input id="tips" name="备注" value="${item.tips}" underline="true"/>
-                    <#input id="leaves" name="排序序号" underline="true" value="${item.leaves}" disabled="disabled"/>
-                    <div id="checkleavenumDiv"></div>
+                            <#input id="newpoints" name="被推荐人打卡奖励积分" value="${item.newpoints}" underline="true"/>
+                            <#input id="leaves" name="排序序号" underline="true" value="${item.leaves}" disabled="disabled"/>
                 </div>
 
                 <div class="col-sm-6">
@@ -22,7 +20,8 @@
                             <#select name="部门名称" id="deptid" underline="true">
                                 <option value="${dept.id}">${dept.fullname}</option>
                             </#select>
-
+                            <#input id="tips" name="备注" value="${item.tips}" underline="true"/>
+                            <div id="checkleavenumDiv"></div>
                 </div>
             </div>
 

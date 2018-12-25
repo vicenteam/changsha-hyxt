@@ -19,6 +19,30 @@ var MembershipcardtypeInfoDlg = {
                 },
                 numeric: {message: '积分等级只能输入数字'}
             }
+        },
+        signin: {
+            validators: {
+                notEmpty: {
+                    message: '签到积分不能为空'
+                },
+                numeric: {message: '签到积分只能输入数字'},
+                // greaterThan: {
+                //     value: 0.001,
+                //     message: "新增积分最小输入值为 0.001"
+                // }
+            }
+        },
+        newpoints: {
+            validators: {
+                notEmpty: {
+                    message: '被推荐人打卡奖励积分不能为空'
+                },
+                numeric: {message: '被推荐人打卡奖励积分只能输入数字'},
+                // greaterThan: {
+                //     value: 0.001,
+                //     message: "新增积分最小输入值为 0.001"
+                // }
+            }
         }
     }
 };
