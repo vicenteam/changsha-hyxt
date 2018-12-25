@@ -6,9 +6,22 @@
     <link rel="stylesheet" href="/static/layui/css/layui.css" media="all">
 </head>
 <body style="height: 100%; margin: 0">
-<div style="width:100%;margin-left: 3px;margin-top: 3px">
-    <button class="layui-btn" onclick="exportExcel()">Excel导出</button>
+<div>
+    @layout("/common/_container.html"){
+    <div class="col-sm-2">
+        <#DeptSelectCon id="deptId" name="门店" val="${shiro.getUser().deptId}"/>
+    </div>
+    <div class="col-sm-2">
+        <#button name="查询" icon="fa-search" clickFun="searchData1()"/>
+    </div>
+    <div class="col-sm-2">
+        <button class="layui-btn" onclick="exportExcel()">Excel导出</button>
+    </div>
+    @}
 </div>
+<!--<div style="width:100%;margin-left: 3px;margin-top: 3px">-->
+    <!--<button class="layui-btn" onclick="exportExcel()">Excel导出</button>-->
+<!--</div>-->
 <div id="container" style="height: 100%"></div>
 <div id="container2" style="height: 100%"></div>
 <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/echarts.min.js"></script>
@@ -99,41 +112,12 @@
 
 </script>
 <script type="text/javascript">
+    var topDeptId=${shiro.getUser().deptId};
     var dom = document.getElementById("container");
     var myChart = echarts.init(dom, "macarons");
 
     var dom2 = document.getElementById("container2");
     var myChart2 = echarts.init(dom2, "macarons");
-    var app = {};
-    option = null;
-    app.title = '柱状图框选';
-
-    var xAxisData = [];
-    var data1 = [];
-    var data2 = [];
-    var data3 = [];
-    //获取周签到数据
-    var weekdata = new GetWeekDate(new Date()).getAWeedkYMD();
-    $.ajax({
-        url: '/barbrush/getWeekdata',
-        data: {startdate: weekdata[0][0], enddate: weekdata[6][0]},
-        type: 'POST',
-        async: false,
-        success: function (data) {
-            data1 = data.data1
-            data2 = data.data2
-            data3 = data.data3
-        }
-    });
-
-
-    for (var i = 0; i < 7; i++) {
-        xAxisData.push('' + weekdata[i][0]);
-        // data1.push((Math.random() * 2).toFixed(2));
-        // data2.push(Math.random().toFixed(2));
-        // data3.push((Math.random() * 5).toFixed(2));
-    }
-
     var itemStyle = {
         normal: {},
         emphasis: {
@@ -144,268 +128,311 @@
             shadowColor: 'rgba(0,0,0,0.5)'
         }
     };
+    function initData1() {
 
-    option = {
-        title: {
-            text: '本周签到数据统计表',
-        },
-        backgroundColor: '#eee',
-        legend: {
-            data: ['当天签到人数', '昨天签到人数', '同比签到人数'],
-            align: 'left',
+        var app = {};
+        option = null;
+        app.title = '柱状图框选';
 
-        },
-        brush: {
-            toolbox: ['rect', 'polygon', 'lineX', 'lineY', 'keep', 'clear'],
-            xAxisIndex: 0
-        },
-        toolbox: {
-            feature: {
-                magicType: {
-                    type: ['stack', 'tiled']
-                },
-                dataView: {}
-            }
-        },
-        tooltip: {},
-        xAxis: {
-            data: xAxisData,
-            name: 'X Axis',
-            silent: false,
-            axisLine: {onZero: true},
-            splitLine: {show: false},
-            splitArea: {show: false}
-        },
-        yAxis: {
-            inverse: false,
-            splitArea: {show: true}
-        },
-        grid: {
-            left: 100
-        },
-        visualMap: {
-            type: '',
-            dimension: 1,
-            text: ['最大值', '最小值'],
-            inverse: false,
-            itemHeight: 200,
-            calculable: false,
-            min: -10000,
-            max: 10000,
-            top: 60,
-            left: 10,
-            inRange: {
-                colorLightness: [0.4, 0.8]
-            },
-            outOfRange: {
-                color: '#bb4e1d'
-            },
-            controller: {
-                inRange: {
-                    color: '#225412'
-                }
-            }
-        },
-        series: [
-            {
-                name: '当天签到人数',
-                type: 'bar',
-                stack: 'one',
-                itemStyle: itemStyle,
-                data: data1
-            },
-            {
-                name: '昨天签到人数',
-                type: 'bar',
-                stack: 'two',
-                itemStyle: itemStyle,
-                data: data2
-            },
-            {
-                name: '同比签到人数',
-                type: 'bar',
-                stack: 'three',
-                itemStyle: itemStyle,
-                data: data3
-            }
-        ]
-    };
-
-    myChart.on('brushSelected', renderBrushed);
-
-
-    function renderBrushed(params) {
-        var brushed = [];
-        var brushComponent = params.batch[0];
-
-        for (var sIdx = 0; sIdx < brushComponent.selected.length; sIdx++) {
-            var rawIndices = brushComponent.selected[sIdx].dataIndex;
-            brushed.push('[Series ' + sIdx + '] ' + rawIndices.join(', '));
-        }
-
-        myChart.setOption({
-            title: {
-                backgroundColor: '#333',
-                text: 'SELECTED DATA INDICES: \n' + brushed.join('\n'),
-                bottom: 0,
-                right: 0,
-                width: 100,
-                textStyle: {
-                    fontSize: 12,
-                    color: '#fff'
-                }
+        var xAxisData = [];
+        var data1 = [];
+        var data2 = [];
+        var data3 = [];
+        //获取周签到数据
+        var weekdata = new GetWeekDate(new Date()).getAWeedkYMD();
+        $.ajax({
+            url: '/barbrush/getWeekdata',
+            data: {startdate: weekdata[0][0], enddate: weekdata[6][0],deptId:topDeptId},
+            type: 'POST',
+            async: false,
+            success: function (data) {
+                data1 = data.data1
+                data2 = data.data2
+                data3 = data.data3
             }
         });
-    };
 
-    if (option && typeof option === "object") {
-        myChart.setOption(option, true);
+
+        for (var i = 0; i < 7; i++) {
+            xAxisData.push('' + weekdata[i][0]);
+            // data1.push((Math.random() * 2).toFixed(2));
+            // data2.push(Math.random().toFixed(2));
+            // data3.push((Math.random() * 5).toFixed(2));
+        }
+
+
+
+        option = {
+            title: {
+                text: '本周签到数据统计表',
+            },
+            backgroundColor: '#eee',
+            legend: {
+                data: ['当天签到人数', '昨天签到人数', '同比签到人数'],
+                align: 'left',
+
+            },
+            brush: {
+                toolbox: ['rect', 'polygon', 'lineX', 'lineY', 'keep', 'clear'],
+                xAxisIndex: 0
+            },
+            toolbox: {
+                feature: {
+                    magicType: {
+                        type: ['stack', 'tiled']
+                    },
+                    dataView: {}
+                }
+            },
+            tooltip: {},
+            xAxis: {
+                data: xAxisData,
+                name: 'X Axis',
+                silent: false,
+                axisLine: {onZero: true},
+                splitLine: {show: false},
+                splitArea: {show: false}
+            },
+            yAxis: {
+                inverse: false,
+                splitArea: {show: true}
+            },
+            grid: {
+                left: 100
+            },
+            visualMap: {
+                type: '',
+                dimension: 1,
+                text: ['最大值', '最小值'],
+                inverse: false,
+                itemHeight: 200,
+                calculable: false,
+                min: -10000,
+                max: 10000,
+                top: 60,
+                left: 10,
+                inRange: {
+                    colorLightness: [0.4, 0.8]
+                },
+                outOfRange: {
+                    color: '#bb4e1d'
+                },
+                controller: {
+                    inRange: {
+                        color: '#225412'
+                    }
+                }
+            },
+            series: [
+                {
+                    name: '当天签到人数',
+                    type: 'bar',
+                    stack: 'one',
+                    itemStyle: itemStyle,
+                    data: data1
+                },
+                {
+                    name: '昨天签到人数',
+                    type: 'bar',
+                    stack: 'two',
+                    itemStyle: itemStyle,
+                    data: data2
+                },
+                {
+                    name: '同比签到人数',
+                    type: 'bar',
+                    stack: 'three',
+                    itemStyle: itemStyle,
+                    data: data3
+                }
+            ]
+        };
+
+        myChart.on('brushSelected', renderBrushed);
+
+
+        function renderBrushed(params) {
+            var brushed = [];
+            var brushComponent = params.batch[0];
+
+            for (var sIdx = 0; sIdx < brushComponent.selected.length; sIdx++) {
+                var rawIndices = brushComponent.selected[sIdx].dataIndex;
+                brushed.push('[Series ' + sIdx + '] ' + rawIndices.join(', '));
+            }
+
+            myChart.setOption({
+                title: {
+                    backgroundColor: '#333',
+                    text: 'SELECTED DATA INDICES: \n' + brushed.join('\n'),
+                    bottom: 0,
+                    right: 0,
+                    width: 100,
+                    textStyle: {
+                        fontSize: 12,
+                        color: '#fff'
+                    }
+                }
+            });
+        };
+
+        if (option && typeof option === "object") {
+            myChart.setOption(option, true);
+        }
     }
+    function searchData1() {
+        topDeptId=$('#deptId').val()
+        initData1();
+        initData2();
+    }
+    initData1();
 </script>
 <script>
-    var xAxisData2 = [];
+    function initData2() {
+        var xAxisData2 = [];
 
-    var data4 = [];
-    var data5 = [];
-    var data6 = [];
-    var now = new Date();
-    var year = now.getFullYear();
-    var month = (now.getMonth() + 1);
-    var nowday = getMonthLastDay();
-    if (month.length == 1) {
-        month += "0" + month;
-    }
-    console.log(nowday)
-    $.ajax({
-        url: '/barbrush/getMonthdata',
-        data: {startdate: year + '-' + month + "-01", enddate: nowday[0]},
-        type: 'POST',
-        async: false,
-        success: function (data) {
-            data4 = data.data4;
-            data5 = data.data5;
-            data6 = data.data6;
+        var data4 = [];
+        var data5 = [];
+        var data6 = [];
+        var now = new Date();
+        var year = now.getFullYear();
+        var month = (now.getMonth() + 1);
+        var nowday = getMonthLastDay();
+        if (month.length == 1) {
+            month += "0" + month;
         }
-    });
-    for (var i = 0; i < nowday[0]; i++) {
-        xAxisData2.push(year + '-' + month + "-" + (i + 1));
-        // data4.push((Math.random() * 2).toFixed(2));
-        // data5.push(Math.random().toFixed(2));
-        // data6.push((Math.random() * 5).toFixed(2));
-    }
-    option2 = {
-        title: {
-            text: '本月签到数据统计表',
-        },
-        backgroundColor: '#eee',
-        legend: {
-            data: ['当天签到人数', '昨天签到人数', '同比签到人数'],
-            align: 'left',
-
-        },
-        brush: {
-            toolbox: ['rect', 'polygon', 'lineX', 'lineY', 'keep', 'clear'],
-            xAxisIndex: 0
-        },
-        toolbox: {
-            feature: {
-                magicType: {
-                    type: ['stack', 'tiled']
-                },
-                dataView: {}
-            }
-        },
-        tooltip: {},
-        xAxis: {
-            data: xAxisData2,
-            name: 'X Axis',
-            silent: false,
-            axisLine: {onZero: true},
-            splitLine: {show: false},
-            splitArea: {show: false}
-        },
-        yAxis: {
-            inverse: false,
-            splitArea: {show: true}
-        },
-        grid: {
-            left: 100
-        },
-        visualMap: {
-            type: '',
-            dimension: 1,
-            text: ['最大值', '最小值'],
-            inverse: false,
-            itemHeight: 200,
-            calculable: false,
-            min: -2,
-            max: 6,
-            top: 60,
-            left: 10,
-            inRange: {
-                colorLightness: [0.4, 0.8]
-            },
-            outOfRange: {
-                color: '#bb4e1d'
-            },
-            controller: {
-                inRange: {
-                    color: '#225412'
-                }
-            }
-        },
-        series: [
-            {
-                name: '当天签到人数',
-                type: 'bar',
-                stack: 'one',
-                itemStyle: itemStyle,
-                data: data4
-            },
-            {
-                name: '昨天签到人数',
-                type: 'bar',
-                stack: 'two',
-                itemStyle: itemStyle,
-                data: data5
-            },
-            {
-                name: '同比签到人数',
-                type: 'bar',
-                stack: 'three',
-                itemStyle: itemStyle,
-                data: data6
-            }
-        ]
-    };
-    myChart2.on('brushSelected', renderBrushed2);
-
-    function renderBrushed2(params) {
-        var brushed = [];
-        var brushComponent = params.batch[0];
-
-        for (var sIdx = 0; sIdx < brushComponent.selected.length; sIdx++) {
-            var rawIndices = brushComponent.selected[sIdx].dataIndex;
-            brushed.push('[Series ' + sIdx + '] ' + rawIndices.join(', '));
-        }
-
-        myChart2.setOption({
-            title: {
-                backgroundColor: '#333',
-                text: 'SELECTED DATA INDICES: \n' + brushed.join('\n'),
-                bottom: 0,
-                right: 0,
-                width: 100,
-                textStyle: {
-                    fontSize: 12,
-                    color: '#fff'
-                }
+        console.log(nowday)
+        $.ajax({
+            url: '/barbrush/getMonthdata',
+            data: {startdate: year + '-' + month + "-01", enddate: nowday[0],deptId:topDeptId},
+            type: 'POST',
+            async: false,
+            success: function (data) {
+                data4 = data.data4;
+                data5 = data.data5;
+                data6 = data.data6;
             }
         });
-    };
-    if (option2 && typeof option2 === "object") {
-        myChart2.setOption(option2, true);
+        for (var i = 0; i < nowday[0]; i++) {
+            xAxisData2.push(year + '-' + month + "-" + (i + 1));
+            // data4.push((Math.random() * 2).toFixed(2));
+            // data5.push(Math.random().toFixed(2));
+            // data6.push((Math.random() * 5).toFixed(2));
+        }
+        option2 = {
+            title: {
+                text: '本月签到数据统计表',
+            },
+            backgroundColor: '#eee',
+            legend: {
+                data: ['当天签到人数', '昨天签到人数', '同比签到人数'],
+                align: 'left',
+
+            },
+            brush: {
+                toolbox: ['rect', 'polygon', 'lineX', 'lineY', 'keep', 'clear'],
+                xAxisIndex: 0
+            },
+            toolbox: {
+                feature: {
+                    magicType: {
+                        type: ['stack', 'tiled']
+                    },
+                    dataView: {}
+                }
+            },
+            tooltip: {},
+            xAxis: {
+                data: xAxisData2,
+                name: 'X Axis',
+                silent: false,
+                axisLine: {onZero: true},
+                splitLine: {show: false},
+                splitArea: {show: false}
+            },
+            yAxis: {
+                inverse: false,
+                splitArea: {show: true}
+            },
+            grid: {
+                left: 100
+            },
+            visualMap: {
+                type: '',
+                dimension: 1,
+                text: ['最大值', '最小值'],
+                inverse: false,
+                itemHeight: 200,
+                calculable: false,
+                min: -2,
+                max: 6,
+                top: 60,
+                left: 10,
+                inRange: {
+                    colorLightness: [0.4, 0.8]
+                },
+                outOfRange: {
+                    color: '#bb4e1d'
+                },
+                controller: {
+                    inRange: {
+                        color: '#225412'
+                    }
+                }
+            },
+            series: [
+                {
+                    name: '当天签到人数',
+                    type: 'bar',
+                    stack: 'one',
+                    itemStyle: itemStyle,
+                    data: data4
+                },
+                {
+                    name: '昨天签到人数',
+                    type: 'bar',
+                    stack: 'two',
+                    itemStyle: itemStyle,
+                    data: data5
+                },
+                {
+                    name: '同比签到人数',
+                    type: 'bar',
+                    stack: 'three',
+                    itemStyle: itemStyle,
+                    data: data6
+                }
+            ]
+        };
+        myChart2.on('brushSelected', renderBrushed2);
+
+        function renderBrushed2(params) {
+            var brushed = [];
+            var brushComponent = params.batch[0];
+
+            for (var sIdx = 0; sIdx < brushComponent.selected.length; sIdx++) {
+                var rawIndices = brushComponent.selected[sIdx].dataIndex;
+                brushed.push('[Series ' + sIdx + '] ' + rawIndices.join(', '));
+            }
+
+            myChart2.setOption({
+                title: {
+                    backgroundColor: '#333',
+                    text: 'SELECTED DATA INDICES: \n' + brushed.join('\n'),
+                    bottom: 0,
+                    right: 0,
+                    width: 100,
+                    textStyle: {
+                        fontSize: 12,
+                        color: '#fff'
+                    }
+                }
+            });
+        };
+        if (option2 && typeof option2 === "object") {
+            myChart2.setOption(option2, true);
+        }
     }
+    initData2()
 </script>
 <script src="${ctxPath}/static/js/plugins/layer/layer.js"></script>
 <script>

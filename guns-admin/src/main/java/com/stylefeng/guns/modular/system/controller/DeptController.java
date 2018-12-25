@@ -33,9 +33,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 部门控制器
@@ -136,12 +134,12 @@ public class DeptController extends BaseController {
         }
         //初始化admin活动
         List<Activity> list1 = activityService.selectList(membershipcardtypeBaseEntityWrapper);
-        list1.forEach(a->{
-            Activity activity=new Activity();
+        list1.forEach(a -> {
+            Activity activity = new Activity();
             activity.setStatus(a.getStatus());
             activity.setJifen(a.getJifen());
             activity.setCreater(a.getCreater());
-            activity.setDeptid(dept.getId()+"");
+            activity.setDeptid(dept.getId() + "");
             activity.setCreatetime(a.getCreatetime());
             activity.setBegindate(a.getBegindate());
             activity.setContent(a.getContent());
@@ -165,6 +163,34 @@ public class DeptController extends BaseController {
     public Object list(String condition) {
         List<Map<String, Object>> list = this.deptService.list(condition);
         return super.warpObject(new DeptWarpper(list));
+    }
+
+    @RequestMapping(value = "/findDeptLists")
+    @ResponseBody
+    public Object findDeptLists(String deptId) {
+        List<Map<String, Object>> list = new ArrayList<>();
+        Dept dept = deptService.selectById(deptId);
+        Map<String, Object> objectMap = new HashMap<>();
+        objectMap.put("id", dept.getId());
+        objectMap.put("name", dept.getSimplename());
+        objectMap.put("pids", dept.getPids());
+        list.add(objectMap);
+        eachFindDeptLists(dept.getId().toString(), list);
+        return list;
+    }
+
+    public void eachFindDeptLists(String id, List<Map<String, Object>> map) {
+        EntityWrapper<Dept> deptEntityWrapper = new EntityWrapper<Dept>();
+        deptEntityWrapper.eq("pid",  id  );
+        List<Dept> depts = deptService.selectList(deptEntityWrapper);
+        for (Dept dept : depts) {
+            Map<String, Object> objectMap = new HashMap<>();
+            objectMap.put("id", dept.getId());
+            objectMap.put("name", dept.getSimplename());
+            objectMap.put("pids", dept.getPids());
+            map.add(objectMap);
+            eachFindDeptLists(dept.getId().toString(), map);
+        }
     }
 
     /**
