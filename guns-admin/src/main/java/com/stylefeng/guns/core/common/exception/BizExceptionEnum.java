@@ -10,6 +10,10 @@ import com.stylefeng.guns.core.exception.ServiceExceptionEnum;
 public enum BizExceptionEnum implements ServiceExceptionEnum {
 
     /**
+     * 数量
+     */
+    NUM_IS_ERROR(400,"数量错误"),
+    /**
      * 字典
      */
     DICT_EXISTED(400, "字典已经存在"),

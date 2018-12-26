@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.stylefeng.guns.modular.system.dao.BackTopToProductMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.stylefeng.guns.modular.system.model.BackTopToProduct">
+        <id column="id" property="id" />
+        <result column="backTopToCreateTime" property="backTopToCreateTime" />
+        <result column="backTopToNum" property="backTopToNum" />
+        <result column="backTopToProductId" property="backTopToProductId" />
+        <result column="backTopToMyProductId" property="backTopToMyProductId" />
+        <result column="createUserId" property="createUserId" />
+        <result column="deptId" property="deptId" />
+        <result column="backTopToProductName" property="backTopToProductName" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, backTopToCreateTime, backTopToNum, backTopToProductId, backTopToMyProductId, createUserId, deptId, backTopToProductName
+    </sql>
+
+</mapper>

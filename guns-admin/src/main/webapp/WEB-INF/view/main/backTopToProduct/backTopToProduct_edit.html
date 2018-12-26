@@ -1,0 +1,33 @@
+@layout("/common/_container.html"){
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div class="form-horizontal">
+
+            <div class="row">
+                <div class="col-sm-6 b-r">
+                            <#input id="id" name="" value="${item.id}" underline="true"/>
+                            <#input id="backTopToCreateTime" name="退回时间" value="${item.backTopToCreateTime}" underline="true"/>
+                            <#input id="backTopToNum" name="退回数量" value="${item.backTopToNum}" underline="true"/>
+                            <#input id="backTopToProductId" name="退回商品id" value="${item.backTopToProductId}" />
+                </div>
+
+                <div class="col-sm-6">
+                            <#input id="backTopToMyProductId" name="退回自己商品id" value="${item.backTopToMyProductId}" underline="true"/>
+                            <#input id="createUserId" name="" value="${item.createUserId}" underline="true"/>
+                            <#input id="deptId" name="" value="${item.deptId}" underline="true"/>
+                            <#input id="backTopToProductName" name="退回商品名称" value="${item.backTopToProductName}" />
+                </div>
+            </div>
+
+            <div class="row btn-group-m-t">
+                <div class="col-sm-10">
+                    <#button btnCss="info" name="提交" id="ensure" icon="fa-check" clickFun="BackTopToProductInfoDlg.editSubmit()"/>
+                    <#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="BackTopToProductInfoDlg.close()"/>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script src="${ctxPath}/static/modular/main/backTopToProduct/backTopToProduct_info.js"></script>
+@}

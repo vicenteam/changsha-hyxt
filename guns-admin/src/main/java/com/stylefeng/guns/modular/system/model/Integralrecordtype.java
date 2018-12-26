@@ -59,6 +59,19 @@ public class Integralrecordtype extends Model<Integralrecordtype> {
     private String createuserid;
     private String updateuserid;
     private Integer status;
+    private Integer productPid;
+
+
+    /**
+     * 父级药品id
+     */
+    public Integer getProductPid() {
+        return productPid;
+    }
+
+    public void setProductPid(Integer productPid) {
+        this.productPid = productPid;
+    }
 
     public Integer getStatus() {
         return status;

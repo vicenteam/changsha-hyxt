@@ -17,6 +17,7 @@
         <result column="memberPhone" property="memberPhone" />
         <result column="integralid" property="integralid" />
         <result column="clearid" property="clearid" />
+        <result column="toDeptId" property="toDeptId" />
     </resultMap>
 
     <!-- 通用查询结果列 -->

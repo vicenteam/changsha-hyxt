@@ -68,6 +68,7 @@ InventoryManagement.initColumn = function () {
                 }
             }
         },
+        {title: '所属下级', field: 'deptId', visible: true, align: 'center', valign: 'middle',},
         {title: '记录时间', field: 'createtime', visible: true, align: 'center', valign: 'middle',},
         {title: '操作人', field: 'createuserid', visible: true, align: 'center', valign: 'middle'},
         // {title: '消耗库存人id(meimberid)', field: 'memberid', visible: true, align: 'center', valign: 'middle'},
@@ -95,11 +96,11 @@ InventoryManagement.check = function () {
 InventoryManagement.openAddInventoryManagement = function () {
     var index = layer.open({
         type: 2,
-        title: '添加商品库存',
+        title: '商品库存出库',
         area: ['800px', '420px'], //宽高
         fix: false, //不固定
         maxmin: true,
-        content: Feng.ctxPath + '/inventoryManagement/inventoryManagement_add'
+        content: Feng.ctxPath + '/inventoryManagement/inventoryManagement_out_add'
     });
     this.layerIndex = index;
 };
@@ -155,6 +156,6 @@ $(function () {
     var table = new BSTable(InventoryManagement.id, "/inventoryManagement/list", defaultColunms);
     //table.setPaginationType("client");
     table.setPaginationType("server");
-    table.setQueryParams({status:0});
+    table.setQueryParams({status:1});
     InventoryManagement.table = table.init();
 });

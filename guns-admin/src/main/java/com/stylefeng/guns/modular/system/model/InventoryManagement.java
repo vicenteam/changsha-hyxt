@@ -42,6 +42,18 @@ public class InventoryManagement extends Model<InventoryManagement> {
     private Integer integralid;
     private Integer clearid;
     private String memberPhone;
+    /**
+     *
+     */
+    private String toDeptId;
+
+    public String getToDeptId() {
+        return toDeptId;
+    }
+
+    public void setToDeptId(String toDeptId) {
+        this.toDeptId = toDeptId;
+    }
 
     public String getMemberPhone() {
         return memberPhone;

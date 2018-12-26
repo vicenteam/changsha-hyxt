@@ -18,6 +18,8 @@
         <result column="updatetime" property="updatetime" />
         <result column="createuserid" property="createuserid" />
         <result column="updateuserid" property="updateuserid" />
+        <result column="status" property="status" />
+        <result column="productPid" property="productPid" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
