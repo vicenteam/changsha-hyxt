@@ -1,0 +1,24 @@
+@layout("/common/_container.html"){
+<link rel="stylesheet" href="${ctxPath}/static/layui/css/layui.css"  media="all">
+<div class="row">
+    <div class="col-sm-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>增值服务详情</h5>
+            </div>
+            <div class="ibox-content">
+                <div class="row row-lg">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            @for(item in list){
+                            <button class="layui-btn layui-btn-normal layui-btn-radius" style="width: 200px;margin-top: 20px" data-id="${item.id}" onclick="MainServerConsumption.openAddMainServerConsumption(${item.id})">${item.serverName}</button><br>
+                            @}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="${ctxPath}/static/modular/main/mainServerConsumption/mainServerConsumptionInfo.js"></script>
+@}

@@ -1,0 +1,32 @@
+@layout("/common/_container.html"){
+<div class="row">
+    <div class="col-sm-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>增值服务管理</h5>
+            </div>
+            <div class="ibox-content">
+                <div class="row row-lg">
+                    <div class="col-sm-12">
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <#NameCon id="condition" name="名称" />
+                            </div>
+                            <div class="col-sm-3">
+                                <#button name="搜索" icon="fa-search" clickFun="MainServerConsumption.search()"/>
+                            </div>
+                        </div>
+                        <div class="hidden-xs" id="MainServerConsumptionTableToolbar" role="group">
+                                <#button name="添加" icon="fa-plus" clickFun="MainServerConsumption.openAddMainServerConsumption()"/>
+                                <#button name="修改" icon="fa-edit" clickFun="MainServerConsumption.openMainServerConsumptionDetail()" space="true"/>
+                                <#button name="删除" icon="fa-remove" clickFun="MainServerConsumption.delete()" space="true"/>
+                        </div>
+                        <#table id="MainServerConsumptionTable"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="${ctxPath}/static/modular/main/mainServerConsumption/mainServerConsumption.js"></script>
+@}
