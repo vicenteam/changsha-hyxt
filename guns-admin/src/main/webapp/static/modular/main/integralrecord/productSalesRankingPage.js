@@ -96,7 +96,17 @@ Integralrecord.search = function () {
     queryData['condition'] = $("#condition").val();
     queryData['periodTime1'] = $("#periodTime1").val();
     queryData['periodTime2'] = $("#periodTime2").val();
+    queryData['deptId'] = $("#deptId").val();
     Integralrecord.table.refresh({query: queryData});
+};
+
+Integralrecord.form = function () {
+    var queryData = {};
+    queryData['condition'] = $("#condition").val();
+    queryData['periodTime1'] = $("#periodTime1").val();
+    queryData['periodTime2'] = $("#periodTime2").val();
+    queryData['deptId'] = $("#deptId").val();
+    return queryData;
 };
 
 $(function () {
@@ -104,5 +114,6 @@ $(function () {
     var table = new BSTable(Integralrecord.id, "/integralrecord/productSalesRanking", defaultColunms);
     //table.setPaginationType("client");
     table.setPaginationType("server");
+    table.setQueryParams(Integralrecord.form());
     Integralrecord.table = table.init();
 });

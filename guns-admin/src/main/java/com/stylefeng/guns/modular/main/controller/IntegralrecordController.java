@@ -58,6 +58,8 @@ public class IntegralrecordController extends BaseController {
     private IInventoryManagementService inventoryManagementService;
     @Autowired
     private IDictService dictService;
+    @Autowired
+    private SellController sellController;
 
 
     /**
@@ -69,7 +71,10 @@ public class IntegralrecordController extends BaseController {
     }
 
     @RequestMapping("productSalesRankingPage")
-    public String productSalesRankingPage() {
+    public String productSalesRankingPage(Model model) {
+        List<Dept> deptList = new ArrayList<>();
+        List<Dept> depts = sellController.getTreeMenuList(deptList,ShiroKit.getUser().getDeptId());
+        model.addAttribute("depts", depts);
         return PREFIX + "productSalesRankingPage.html";
     }
 

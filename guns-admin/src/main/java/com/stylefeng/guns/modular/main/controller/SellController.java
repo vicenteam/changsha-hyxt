@@ -82,18 +82,18 @@ public class SellController {
         }
         List<Dept> depts = new ArrayList<>();
         List<Dept> deptList = getTreeMenuList(depts, deptId);
-        List<InventoryManagement> inventoryManagements = new ArrayList<>();
-        for (Dept dept : deptList) {
-            EntityWrapper<InventoryManagement> wrapper = new EntityWrapper();
-            wrapper.eq("deptid",dept.getId());
-            wrapper.eq("status",1); //
-            wrapper.ne("memberid","");
-            if(! StringUtils.isEmpty(begindate)) wrapper.gt("createtime",begindate);
-            if(! StringUtils.isEmpty(enddate)) wrapper.lt("createtime",enddate);
-            wrapper.isNotNull("memberid");
-            InventoryManagement inventoryManagement = inventoryManagementService.selectOne(wrapper);
-            if(inventoryManagement != null) inventoryManagements.add(inventoryManagement);
+        Integer[] num = new Integer[deptList.size()];
+        for(int i=0; i< deptList.size(); i++){
+            num[i] = deptList.get(i).getId();
         }
+        EntityWrapper<InventoryManagement> wrapper = new EntityWrapper();
+        wrapper.in("deptid",num);
+        wrapper.eq("status",1); //
+        wrapper.ne("memberid","");
+        if(! StringUtils.isEmpty(begindate)) wrapper.gt("createtime",begindate);
+        if(! StringUtils.isEmpty(enddate)) wrapper.lt("createtime",enddate);
+        wrapper.isNotNull("memberid");
+        List<InventoryManagement> inventoryManagements = inventoryManagementService.selectList(wrapper);
         Map<String,Object> rowsMap = new HashMap();
         Map<String,Object> map1 = new HashMap<>();
 //        Map<String,Object> map2 = new HashMap<>();

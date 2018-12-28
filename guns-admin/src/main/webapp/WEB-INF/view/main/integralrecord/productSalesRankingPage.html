@@ -15,6 +15,14 @@
                             <div class=" col-sm-2">
                                 <#TimeCon id="periodTime2" name="结束时间段" isTime="false"  pattern="yyyy-MM-dd"/>
                             </div>
+                            <div class="col-sm-2">
+                                <#SelectCon name="门店" id="deptId" >
+                                    <!--<option value="">全部</option>-->
+                                    @for(item in depts){
+                                    <option value="${item.id}">${item.fullname}</option>
+                                    @}
+                                </#SelectCon>
+                            </div>
                             <div class="col-sm-3">
                                 <#button name="搜索" icon="fa-search" clickFun="Integralrecord.search()"/>
                             </div>
