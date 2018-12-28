@@ -100,7 +100,6 @@ public class QiandaoCheckinController extends BaseController {
     @ResponseBody
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRES_NEW)
     public Object add(String memberId, String chechId) throws Exception {
-        memberId="99"; chechId="203";
         //判断签到场次是否被结束
         if (!StringUtils.isEmpty(chechId)) {
             Checkin checkin1 = checkinService.selectById(chechId);
