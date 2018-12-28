@@ -7,6 +7,7 @@
         <id column="id" property="id" />
         <result column="name" property="name" />
         <result column="isactive" property="isactive" />
+        <result column="deptId" property="deptId" />
     </resultMap>
 
     <!-- 通用查询结果列 -->

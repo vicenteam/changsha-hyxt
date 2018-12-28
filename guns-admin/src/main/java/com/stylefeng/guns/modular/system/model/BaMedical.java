@@ -30,6 +30,15 @@ public class BaMedical extends Model<BaMedical> {
      */
     private Integer isactive;
 
+    private Integer deptId;
+
+    public Integer getDeptId() {
+        return deptId;
+    }
+
+    public void setDeptId(Integer deptId) {
+        this.deptId = deptId;
+    }
 
     public Integer getId() {
         return id;

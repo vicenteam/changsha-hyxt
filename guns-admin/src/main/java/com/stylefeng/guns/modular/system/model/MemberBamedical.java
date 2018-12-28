@@ -24,6 +24,15 @@ public class MemberBamedical extends Model<MemberBamedical> {
     private Integer memberid;
     private Integer bamedicalid;
 
+    private Integer deptId;
+
+    public Integer getDeptId() {
+        return deptId;
+    }
+
+    public void setDeptId(Integer deptId) {
+        this.deptId = deptId;
+    }
 
     public Integer getId() {
         return id;

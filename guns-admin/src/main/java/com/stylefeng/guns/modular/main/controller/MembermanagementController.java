@@ -45,6 +45,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.*;
 
 /**
@@ -94,13 +95,37 @@ public class MembermanagementController extends BaseController {
         List list = userService.selectList(deptBaseEntityWrapper);
         model.addAttribute("staffs", list);
         EntityWrapper<Dept> deptBaseEntityWrapper1 = new EntityWrapper<>();
-        if(ShiroKit.getUser().getAccount().equals("admin")){
-        }else {
-            deptBaseEntityWrapper1.eq("id",ShiroKit.getUser().getDeptId());
+        if (ShiroKit.getUser().getAccount().equals("admin")) {
+        } else {
+            deptBaseEntityWrapper1.eq("id", ShiroKit.getUser().getDeptId());
         }
         List depts = deptService.selectList(deptBaseEntityWrapper1);
         model.addAttribute("depts", depts);
         return PREFIX + "membermanagement.html";
+    }
+
+    /**
+     * 生日病史查询
+     *
+     * @param model
+     * @return
+     */
+    @RequestMapping("birthOrOther")
+    public String birthOrOther(Model model) {
+        BaseEntityWrapper<User> deptBaseEntityWrapper = new BaseEntityWrapper<>();
+        List list = userService.selectList(deptBaseEntityWrapper);
+        model.addAttribute("staffs", list);
+        EntityWrapper<Dept> deptBaseEntityWrapper1 = new EntityWrapper<>();
+        if (ShiroKit.getUser().getAccount().equals("admin")) {
+        } else {
+            deptBaseEntityWrapper1.eq("id", ShiroKit.getUser().getDeptId());
+        }
+        List depts = deptService.selectList(deptBaseEntityWrapper1);
+        model.addAttribute("depts", depts);
+        //查询病史
+        List<BaMedical> baMedicals = baMedicalService.selectList(null);
+        model.addAttribute("baMedicals", baMedicals);
+        return PREFIX + "membermanagement1.html";
     }
 
     /**
@@ -126,7 +151,8 @@ public class MembermanagementController extends BaseController {
         model.addAttribute("baMedicals", map);
         return PREFIX + "membermanagement_add.html";
     }
- @RequestMapping("/membermanagement_userPhotoPage")
+
+    @RequestMapping("/membermanagement_userPhotoPage")
     public String membermanagement_userPhotoPage(Model model) {
 
         return PREFIX + "membermanagement_userPhotoPage1.html";
@@ -205,7 +231,19 @@ public class MembermanagementController extends BaseController {
      */
     @RequestMapping(value = "/list")
     @ResponseBody
-    public Object list(String name, String address, String fstatus, String sex, String idcard, String phone, String stafff, String deptid, String province, String city, String district, String memberid, String townshipid) {
+    public Object list(String name,
+                       String address,
+                       String fstatus,
+                       String sex,
+                       String idcard,
+                       String phone,
+                       String stafff,
+                       String deptid,
+                       String province,
+                       String city,
+                       String district,
+                       String memberid,
+                       String townshipid, String year, String month, String day, String medicalHistory) {
         Page<Membermanagement> page = new PageFactory<Membermanagement>().defaultPage();
         EntityWrapper<Membermanagement> baseEntityWrapper = new EntityWrapper<>();
         if (!StringUtils.isEmpty(name)) baseEntityWrapper.eq("name", name);
@@ -215,12 +253,12 @@ public class MembermanagementController extends BaseController {
         if (!StringUtils.isEmpty(idcard)) baseEntityWrapper.eq("idcard", idcard);
         if (!StringUtils.isEmpty(phone)) baseEntityWrapper.like("phone", phone);
         if (!StringUtils.isEmpty(stafff)) baseEntityWrapper.eq("staffid", stafff);
-        if (!StringUtils.isEmpty(deptid)){
+        if (!StringUtils.isEmpty(deptid)) {
             baseEntityWrapper.eq("deptid", deptid);
-        }else {
-            if(ShiroKit.getUser().getAccount().equals("admin")){
+        } else {
+            if (ShiroKit.getUser().getAccount().equals("admin")) {
 
-            }else {
+            } else {
                 baseEntityWrapper.eq("deptid", ShiroKit.getUser().getDeptId());
             }
 
@@ -230,6 +268,24 @@ public class MembermanagementController extends BaseController {
         if (!StringUtils.isEmpty(district)) baseEntityWrapper.eq("district", district);
         if (!StringUtils.isEmpty(memberid)) baseEntityWrapper.eq("id", memberid);
         if (!StringUtils.isEmpty(townshipid)) baseEntityWrapper.eq("townshipid", townshipid);
+        String memberBirth = "";
+        if (!StringUtils.isEmpty(year)) {
+            memberBirth += year + "-";
+        }
+        if (!StringUtils.isEmpty(month)) {
+            if (month.length() == 1) {
+                month = "0" + month;
+            }
+            memberBirth += month + "-";
+        }
+        if (!StringUtils.isEmpty(day)) {
+            if (day.length() == 1) {
+                day = "0" + day;
+            }
+            memberBirth += day;
+        }
+        if (!StringUtils.isEmpty(memberBirth)) baseEntityWrapper.like("birthday", memberBirth);
+        if (!StringUtils.isEmpty(medicalHistory)) baseEntityWrapper.like("medicalHistory", medicalHistory);
         baseEntityWrapper.eq("state", 0);
         Page<Map<String, Object>> mapPage = membermanagementService.selectMapsPage(page, baseEntityWrapper);
         List<Map<String, Object>> records = mapPage.getRecords();
@@ -259,11 +315,12 @@ public class MembermanagementController extends BaseController {
 
     /**
      * 新增会员管理
+     *
      * @param membermanagement
      * @param cardCode
      * @param baMedicals
      * @param code
-     * @param otherMemberId //关联卡memberId
+     * @param otherMemberId    //关联卡memberId
      * @return
      * @throws Exception
      */
@@ -272,12 +329,13 @@ public class MembermanagementController extends BaseController {
     @ResponseBody
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRES_NEW)
     public Object add(Membermanagement membermanagement, String cardCode, String baMedicals, String code
-                    ,String otherMemberId) throws Exception {
+            , String otherMemberId) throws Exception {
         String uuid = UUID.randomUUID().toString().replaceAll("-", "");//生成关联字符串
         if (StringUtils.isEmpty(code)) throw new Exception("请进行读卡操作！");
         membermanagement.setCreateTime(DateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
         membermanagement.setDeptId("" + ShiroKit.getUser().getDeptId());
         membermanagement.setTownshipid("0");
+        membermanagement.setMedicalHistory(baMedicals);
         BaseEntityWrapper<Membershipcardtype> membershipcardtypeBaseEntityWrapper = new BaseEntityWrapper<>();
         membershipcardtypeBaseEntityWrapper.orderBy("leaves", true);
         Membershipcardtype membershipcardtype = membershipcardtypeService.selectOne(membershipcardtypeBaseEntityWrapper);
@@ -287,13 +345,13 @@ public class MembermanagementController extends BaseController {
 
         if (membermanagement != null && StringUtils.isEmpty(membermanagement.getAvatar()))
             membermanagement.setAvatar("-");
-        if(! StringUtils.isEmpty(otherMemberId)){
+        if (!StringUtils.isEmpty(otherMemberId)) {
             Membermanagement otherMember = membermanagementService.selectById(otherMemberId);
-            if(StringUtils.isEmpty(otherMember.getRelation())){
+            if (StringUtils.isEmpty(otherMember.getRelation())) {
                 otherMember.setRelation(uuid); //存入关联字符串
                 membermanagementService.updateById(otherMember);
                 membermanagement.setRelation(uuid); //存入关联字符串
-            }else {
+            } else {
                 throw new Exception("关联卡片已存在关联会员！");
             }
         }
@@ -314,6 +372,7 @@ public class MembermanagementController extends BaseController {
                 MemberBamedical memberBamedical = new MemberBamedical();
                 memberBamedical.setBamedicalid(Integer.parseInt(s));
                 memberBamedical.setMemberid(membermanagement.getId());
+                memberBamedical.setDeptId(ShiroKit.getUser().getDeptId());
                 memberBamedicalService.insert(memberBamedical);
             }
         }
@@ -337,29 +396,29 @@ public class MembermanagementController extends BaseController {
 //                activityController.insertAcitvityMember(activity.getId() + "", membermanagement.getId() + "", ShiroKit.getUser().getDeptId());
 //            }
             //获取推荐活动 被推荐活动
-            BaseEntityWrapper<Activity> baseEntityWrapper=new BaseEntityWrapper<Activity>();
-            baseEntityWrapper.eq("ruleexpression",3);
-            List<Activity> list1=activityService.selectList(baseEntityWrapper);//推荐人活动
-            baseEntityWrapper=new BaseEntityWrapper<Activity>();
-            baseEntityWrapper.eq("ruleexpression",4);
-            List<Activity> list2=activityService.selectList(baseEntityWrapper);//被推荐人活动
+            BaseEntityWrapper<Activity> baseEntityWrapper = new BaseEntityWrapper<Activity>();
+            baseEntityWrapper.eq("ruleexpression", 3);
+            List<Activity> list1 = activityService.selectList(baseEntityWrapper);//推荐人活动
+            baseEntityWrapper = new BaseEntityWrapper<Activity>();
+            baseEntityWrapper.eq("ruleexpression", 4);
+            List<Activity> list2 = activityService.selectList(baseEntityWrapper);//被推荐人活动
             //分组推荐人与被推荐人
 
             //推荐人写入推荐人活动领取次数
-            list1.forEach(a->{
-                MemberInactivity memberInactivity= new MemberInactivity();
+            list1.forEach(a -> {
+                MemberInactivity memberInactivity = new MemberInactivity();
                 memberInactivity.setActivityId(a.getId());
                 memberInactivity.setMemberId(membermanagement1.getId());
                 memberInactivity.setDeptId(ShiroKit.getUser().getDeptId());
-                memberInactivity.setCreateDt(DateUtil.formatDate(new Date(),"yyyy-MM-dd HH:mm:ss"));
+                memberInactivity.setCreateDt(DateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
                 memberInactivityService.insert(memberInactivity);
             });
             //被推荐人写入被推荐人活动领取次数
-            list2.forEach(a->{
-                MemberInactivity memberInactivity= new MemberInactivity();
+            list2.forEach(a -> {
+                MemberInactivity memberInactivity = new MemberInactivity();
                 memberInactivity.setActivityId(a.getId());
                 memberInactivity.setMemberId(membermanagement.getId());
-                memberInactivity.setCreateDt(DateUtil.formatDate(new Date(),"yyyy-MM-dd HH:mm:ss"));
+                memberInactivity.setCreateDt(DateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
                 memberInactivity.setDeptId(ShiroKit.getUser().getDeptId());
                 memberInactivityService.insert(memberInactivity);
             });
@@ -391,7 +450,7 @@ public class MembermanagementController extends BaseController {
     @RequestMapping(value = "/buka")
     @ResponseBody
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRES_NEW)
-    public Object buka(String memberId, String cardID, String cadID){
+    public Object buka(String memberId, String cardID, String cadID) {
         BaseEntityWrapper<MemberCard> memberCardBaseEntityWrapper = new BaseEntityWrapper<>();
         memberCardBaseEntityWrapper.eq("memberid", memberId);
         MemberCard memberCard = memberCardService.selectOne(memberCardBaseEntityWrapper);
@@ -414,6 +473,7 @@ public class MembermanagementController extends BaseController {
     @ResponseBody
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRES_NEW)
     public Object update(Membermanagement membermanagement, String baMedicals) {
+        membermanagement.setMedicalHistory(baMedicals);
         membermanagementService.updateById(membermanagement);
         //删除历史健康记录
         EntityWrapper<MemberBamedical> memberBamedicalEntityWrapper = new EntityWrapper<>();
@@ -426,6 +486,7 @@ public class MembermanagementController extends BaseController {
                 MemberBamedical memberBamedical = new MemberBamedical();
                 memberBamedical.setMemberid(membermanagement.getId());
                 memberBamedical.setBamedicalid(Integer.parseInt(s));
+                memberBamedical.setDeptId(ShiroKit.getUser().getDeptId());
                 memberBamedicalService.insert(memberBamedical);
             }
         }
@@ -536,9 +597,9 @@ public class MembermanagementController extends BaseController {
                 qiandaoCheckinBaseEntityWrapper.eq("memberid", map.get("id"));
                 qiandaoCheckinBaseEntityWrapper.isNotNull("updatetime");
                 int i = qiandaoCheckinService.selectCount(qiandaoCheckinBaseEntityWrapper);
-                if((membershipcardtype.getCheckleavenum() - i)==0){
+                if ((membershipcardtype.getCheckleavenum() - i) == 0) {
                     map.put("levelID", membershipcardtype.getCardname());
-                }else {
+                } else {
                     map.put("levelID", "<span style='color:red;'>还差" + (membershipcardtype.getCheckleavenum() - i) + "次签到成为普通会员</span>");
                 }
                 map.put("count", i);
@@ -554,32 +615,32 @@ public class MembermanagementController extends BaseController {
 
         }
         //设置推荐的人
-        Membermanagement membermanagement= membermanagementService.selectById(id);
+        Membermanagement membermanagement = membermanagementService.selectById(id);
         //获取当前用户介绍人
-        if(membermanagement!=null&&membermanagement.getIntroducerId()!=null&&page.getOffset()==0){
+        if (membermanagement != null && membermanagement.getIntroducerId() != null && page.getOffset() == 0) {
             //查询相关信息
-            Membermanagement top=membermanagementService.selectById(membermanagement.getIntroducerId());
+            Membermanagement top = membermanagementService.selectById(membermanagement.getIntroducerId());
             //添加到page结果集中
-            if(top!=null){
-                List<Map<String, Object>> mapList= mapPage.getRecords();
-                Map<String, Object> map=new HashMap<>();
-                map.put("id",top.getId());
-                map.put("name","<span style='color:red;'>推荐我的人-" +top.getName()  + "</span>");
+            if (top != null) {
+                List<Map<String, Object>> mapList = mapPage.getRecords();
+                Map<String, Object> map = new HashMap<>();
+                map.put("id", top.getId());
+                map.put("name", "<span style='color:red;'>推荐我的人-" + top.getName() + "</span>");
                 //获取会员等级
-                String s = (String)top.getLevelID();
+                String s = (String) top.getLevelID();
                 Membershipcardtype membershipcardtype = membershipcardtypeService.selectById(s);
-                if(membershipcardtype!=null){
-                    map.put("levelID",membershipcardtype.getCardname());
+                if (membershipcardtype != null) {
+                    map.put("levelID", membershipcardtype.getCardname());
 
                 }
-                map.put("integral",top.getIntegral());
+                map.put("integral", top.getIntegral());
                 //获取总签到场次次数
                 BaseEntityWrapper<QiandaoCheckin> qiandaoCheckinBaseEntityWrapper = new BaseEntityWrapper<>();
                 qiandaoCheckinBaseEntityWrapper.eq("memberid", top.getId());
                 qiandaoCheckinBaseEntityWrapper.isNotNull("updatetime");
                 int i = qiandaoCheckinService.selectCount(qiandaoCheckinBaseEntityWrapper);
                 map.put("count", i);
-                mapList.add(0,map);
+                mapList.add(0, map);
             }
         }
 
@@ -600,14 +661,15 @@ public class MembermanagementController extends BaseController {
         List list = userService.selectList(deptBaseEntityWrapper);
         model.addAttribute("staffs", list);
         EntityWrapper<Dept> deptBaseEntityWrapper1 = new EntityWrapper<>();
-        if(ShiroKit.getUser().getAccount().equals("admin")){
-        }else {
-            deptBaseEntityWrapper1.eq("id",ShiroKit.getUser().getDeptId());
+        if (ShiroKit.getUser().getAccount().equals("admin")) {
+        } else {
+            deptBaseEntityWrapper1.eq("id", ShiroKit.getUser().getDeptId());
         }
         List depts = deptService.selectList(deptBaseEntityWrapper1);
         model.addAttribute("depts", depts);
         return PREFIX + "guashi.html";
     }
+
     @BussinessLog(value = "进行挂失", key = "guashiData")
     @RequestMapping("/guashiData")
     @ResponseBody
@@ -617,6 +679,7 @@ public class MembermanagementController extends BaseController {
         membermanagementService.updateById(m);
         return SUCCESS_TIP;
     }
+
     @BussinessLog(value = "解除挂失", key = "guashiData1")
     @RequestMapping("/guashiData1")
     @ResponseBody
@@ -646,6 +709,7 @@ public class MembermanagementController extends BaseController {
             }
         }
     }
+
     @BussinessLog(value = "会员资料导出", key = "export_excel")
     @RequestMapping("export_excel")
     public void export(HttpServletResponse response, String name, String address, String fstatus, String sex, String idcard, String phone, String stafff
@@ -659,12 +723,12 @@ public class MembermanagementController extends BaseController {
         if (!StringUtils.isEmpty(idcard)) baseEntityWrapper.eq("idcard", idcard);
         if (!StringUtils.isEmpty(phone)) baseEntityWrapper.like("phone", phone);
         if (!StringUtils.isEmpty(stafff)) baseEntityWrapper.eq("staffid", stafff);
-        if (!StringUtils.isEmpty(deptid)){
+        if (!StringUtils.isEmpty(deptid)) {
             baseEntityWrapper.eq("deptid", deptid);
-        }else {
-            if(ShiroKit.getUser().getAccount().equals("admin")){
+        } else {
+            if (ShiroKit.getUser().getAccount().equals("admin")) {
 
-            }else {
+            } else {
                 baseEntityWrapper.eq("deptid", ShiroKit.getUser().getDeptId());
             }
 
@@ -766,11 +830,11 @@ public class MembermanagementController extends BaseController {
         Integer nowNum = 0;
         JSONObject resJson = new JSONObject();
         try {
-            List<MemberExcel> excelUpload = ExcelImportUtil.importExcel(file.getInputStream(),MemberExcel.class,params);
+            List<MemberExcel> excelUpload = ExcelImportUtil.importExcel(file.getInputStream(), MemberExcel.class, params);
             Membermanagement membermanagement = new Membermanagement();
             BaseEntityWrapper<Membershipcardtype> typeWrapper = new BaseEntityWrapper<>();
-            typeWrapper.eq("deptid",ShiroKit.getUser().getDeptId());
-            typeWrapper.eq("upamount","0");
+            typeWrapper.eq("deptid", ShiroKit.getUser().getDeptId());
+            typeWrapper.eq("upamount", "0");
             Membershipcardtype membershipcardtype = membershipcardtypeService.selectOne(typeWrapper);
             for (MemberExcel excelParams : excelUpload) {
                 membermanagement.setName(excelParams.getmName());
@@ -787,19 +851,42 @@ public class MembermanagementController extends BaseController {
                 membermanagementService.insert(membermanagement);
                 total += 1;
             }
-            if(total == excelUpload.size()){
-                message = "导入成功,共"+total+"条";
-            }else if(total == -1){
-                message = "客户编号已存在,在第"+(nowNum+1)+"条错误,导入失败！";
-            }else{
-                message = "导入失败，第"+(total+1)+"条错误!";
+            if (total == excelUpload.size()) {
+                message = "导入成功,共" + total + "条";
+            } else if (total == -1) {
+                message = "客户编号已存在,在第" + (nowNum + 1) + "条错误,导入失败！";
+            } else {
+                message = "导入失败，第" + (total + 1) + "条错误!";
             }
-            resJson.put("msg",message);
+            resJson.put("msg", message);
         } catch (Exception e) {
-            message = "导入失败，第"+(total+1)+"条错误!";
-            resJson.put("msg",message);
+            message = "导入失败，第" + (total + 1) + "条错误!";
+            resJson.put("msg", message);
             e.printStackTrace();
         }
         return resJson;
+    }
+
+    //病况查询
+    @RequestMapping("/membermanagement1_medicalHistory")
+    public String membermanagement1_medicalHistory() {
+
+        return PREFIX + "membermanagement1_medicalHistory.html";
+    }
+
+    @RequestMapping(value = "/medicalHistoryPage")
+    @ResponseBody
+    public Object medicalHistoryPage(String condition) {
+        Page<BaMedical> page = new PageFactory<BaMedical>().defaultPage();
+        EntityWrapper<BaMedical> baseEntityWrapper = new EntityWrapper<>();
+        Page<BaMedical> result = baMedicalService.selectPage(page, baseEntityWrapper);
+        List<BaMedical> records = result.getRecords();
+        records.forEach(a -> {
+            a.getId();
+            BaseEntityWrapper<MemberBamedical> entityWrapper = new BaseEntityWrapper<>();
+            entityWrapper.eq("bamedicalid",a.getId());
+           a.setIsactive(memberBamedicalService.selectCount(entityWrapper));
+        });
+        return super.packForBT(result);
     }
 }
