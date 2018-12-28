@@ -19,7 +19,7 @@ public interface IntegralrecordMapper extends BaseMapper<Integralrecord> {
 
     List<Map<String,Object>> productSalesRanking(@Param("pageNum")Integer pagetNum,
                                                  @Param("pageSize")Integer pageSize,
-                                                 @Param("deptId")Integer deptId,
+                                                 @Param("deptId")String deptId,
                                                  @Param("monthTime1")String monthTime1,
                                                  @Param("monthTime2")String monthTime2,
                                                  @Param("periodTime1")String periodTime1,
@@ -28,7 +28,7 @@ public interface IntegralrecordMapper extends BaseMapper<Integralrecord> {
                                                  @Param("desc")String desc);
     int productSalesRankingCount(@Param("pageNum")Integer pagetNum,
                                            @Param("pageSize")Integer pageSize,
-                                           @Param("deptId")Integer deptId,
+                                           @Param("deptId")String deptId,
                                            @Param("monthTime1")String monthTime1,
                                            @Param("monthTime2")String monthTime2,
                                            @Param("periodTime1")String periodTime1,

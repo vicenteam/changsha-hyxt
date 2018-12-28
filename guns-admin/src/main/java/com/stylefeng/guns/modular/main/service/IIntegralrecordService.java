@@ -19,7 +19,7 @@ public interface IIntegralrecordService extends IService<Integralrecord> {
 
     List<Map<String,Object>> productSalesRanking(Integer pagetNum,
                                                  Integer pageSize,
-                                                 Integer deptId,
+                                                 String deptId,
                                                  String monthTime1,
                                                  String monthTime2,
                                                  String periodTime1,
@@ -29,7 +29,7 @@ public interface IIntegralrecordService extends IService<Integralrecord> {
 
    int productSalesRankingintCount(Integer pagetNum,
                                            Integer pageSize,
-                                           Integer deptId,
+                                           String deptId,
                                            String monthTime1,
                                            String monthTime2,
                                            String periodTime1,

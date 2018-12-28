@@ -21,12 +21,12 @@ import java.util.Map;
 public class IntegralrecordServiceImpl extends ServiceImpl<IntegralrecordMapper, Integralrecord> implements IIntegralrecordService {
 
     @Override
-    public List<Map<String, Object>> productSalesRanking(Integer pagetNum, Integer pageSize, Integer deptId, String monthTime1, String monthTime2, String periodTime1, String periodTime2, String orderBy, String desc) {
+    public List<Map<String, Object>> productSalesRanking(Integer pagetNum, Integer pageSize, String deptId, String monthTime1, String monthTime2, String periodTime1, String periodTime2, String orderBy, String desc) {
         return this.baseMapper.productSalesRanking(pagetNum,pageSize,deptId,monthTime1,monthTime2,periodTime1,periodTime2,orderBy,desc);
     }
 
     @Override
-    public int productSalesRankingintCount(Integer pagetNum, Integer pageSize, Integer deptId, String monthTime1, String monthTime2, String periodTime1, String periodTime2, String orderBy, String desc) {
+    public int productSalesRankingintCount(Integer pagetNum, Integer pageSize, String deptId, String monthTime1, String monthTime2, String periodTime1, String periodTime2, String orderBy, String desc) {
         return this.baseMapper.productSalesRankingCount(pagetNum,pageSize,deptId,monthTime1,monthTime2,periodTime1,periodTime2,orderBy,desc);
     }
 }

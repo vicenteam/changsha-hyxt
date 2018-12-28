@@ -17,12 +17,8 @@
                             </div>
                         </div>
                         <div class="hidden-xs" id="InventoryManagementTableToolbar" role="group">
-                            @if(shiro.hasPermission("/inventoryManagement/add")){
                             <#button name="申请退货" icon="fa-compress" clickFun="InventoryManagement.delete()"/>
-                            @}
-                            @if(shiro.hasPermission("/inventoryManagement/add")){
                             <#button name="申请换货" icon="fa-compress" clickFun="InventoryManagement.delete1()"/>
-                            @}
                         </div>
                         <#table id="InventoryManagementTable"/>
                     </div>

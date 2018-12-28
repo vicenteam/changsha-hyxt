@@ -1,15 +1,19 @@
 package com.stylefeng.guns.modular.main.controller;
 
+import com.alibaba.druid.sql.visitor.functions.Substring;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.stylefeng.guns.core.base.controller.BaseController;
 import com.stylefeng.guns.core.common.annotion.BussinessLog;
+import com.stylefeng.guns.core.common.exception.BizExceptionEnum;
+import com.stylefeng.guns.core.exception.GunsException;
 import com.stylefeng.guns.core.shiro.ShiroKit;
 import com.stylefeng.guns.core.support.HttpKit;
 import com.stylefeng.guns.core.util.DateUtil;
 import com.stylefeng.guns.modular.main.service.IIntegralrecordtypeService;
 import com.stylefeng.guns.modular.main.service.IInventoryManagementService;
 import com.stylefeng.guns.modular.main.service.IMembermanagementService;
+import com.stylefeng.guns.modular.system.controller.DeptController;
 import com.stylefeng.guns.modular.system.model.*;
 import com.stylefeng.guns.modular.system.service.IDictService;
 import org.springframework.stereotype.Controller;
@@ -60,6 +64,8 @@ public class IntegralrecordController extends BaseController {
     private IDictService dictService;
     @Autowired
     private SellController sellController;
+    @Autowired
+    private DeptController deptController;
 
 
     /**
@@ -155,11 +161,19 @@ public class IntegralrecordController extends BaseController {
        }catch (Exception e){
 
        }
+
+       //获取deptids
+        List<Map<String, Object>> list=( List<Map<String, Object>>) deptController.findDeptLists(deptId.toString());
+       String deptIds="";
+       for(Map<String, Object> map:list){
+           deptIds+=map.get("id")+",";
+       }
+        deptIds=deptIds.substring(0,deptIds.length()-1);
         Page<Map<String,Object>> page = new PageFactory<Map<String,Object>>().defaultPage();
         System.out.println(JSON.toJSONString(page));
-        int i = integralrecordService.productSalesRankingintCount(page.getOffset(), page.getLimit(), ShiroKit.getUser().getDeptId(), monthTime1, monthTime2, periodTime1, periodTime2, orderBy, desc);
+        int i = integralrecordService.productSalesRankingintCount(page.getOffset(), page.getLimit(), deptIds.toString(), monthTime1, monthTime2, periodTime1, periodTime2, orderBy, desc);
         page.setTotal(i);
-        List<Map<String, Object>> mapList = integralrecordService.productSalesRanking(page.getOffset(), page.getLimit(), ShiroKit.getUser().getDeptId(), monthTime1, monthTime2, periodTime1, periodTime2, orderBy, desc);
+        List<Map<String, Object>> mapList = integralrecordService.productSalesRanking(page.getOffset(), page.getLimit(), deptIds.toString(), monthTime1, monthTime2, periodTime1, periodTime2, orderBy, desc);
         page.setRecords(mapList);
         return super.packForBT(page);
     }
@@ -182,6 +196,9 @@ public class IntegralrecordController extends BaseController {
         typeWrapper.eq("id",productname);
         Integralrecordtype integralrecordtype = integralrecordtypeService.selectOne(typeWrapper);
         integralrecordtype.setProductnum(integralrecordtype.getProductnum()-consumptionNum);//库存减
+        if(integralrecordtype.getProductnum()-consumptionNum<0){
+            throw new GunsException(BizExceptionEnum.NUM_IS_ERROR);
+        }
         integralrecordtype.setUpdatetime(DateUtil.getTime());
         integralrecordtype.setUpdateuserid(ShiroKit.getUser().getId().toString());
         integralrecordtypeService.updateById(integralrecordtype);
