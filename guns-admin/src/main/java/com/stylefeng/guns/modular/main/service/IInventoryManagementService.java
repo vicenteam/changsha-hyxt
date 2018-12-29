@@ -1,7 +1,11 @@
 package com.stylefeng.guns.modular.main.service;
 
+import com.stylefeng.guns.modular.system.model.Dept;
 import com.stylefeng.guns.modular.system.model.InventoryManagement;
 import com.baomidou.mybatisplus.service.IService;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -13,4 +17,10 @@ import com.baomidou.mybatisplus.service.IService;
  */
 public interface IInventoryManagementService extends IService<InventoryManagement> {
 
+    /**
+     * 部门id
+     * @param dept
+     * @return
+     */
+    List<Map<String,Object>> findSellNumber(List<Dept> dept);
 }

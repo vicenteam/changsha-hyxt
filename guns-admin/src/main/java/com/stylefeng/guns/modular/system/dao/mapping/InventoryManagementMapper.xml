@@ -26,4 +26,17 @@
         id, createtime, createuserid, deptid, integralrecordtypeid, status, memberid, consumptionNum, name, memberName, integralid, clearid
     </sql>
 
+    
+    <select id="findSellNumber" resultType="java.util.HashMap">
+        select `name`,sum(consumptionNum) as consumptionNum
+        from main_inventory_management
+        where status = 1
+        and memberid &lt;&gt; ""
+        and deptid
+        <foreach collection="deptId" item="deptId" open="in(" close=")" separator=",">
+            #{deptId.id}
+        </foreach>
+        and memberid is not null
+        group by `name`
+    </select>
 </mapper>

@@ -1,10 +1,14 @@
 package com.stylefeng.guns.modular.main.service.impl;
 
+import com.stylefeng.guns.modular.system.model.Dept;
 import com.stylefeng.guns.modular.system.model.InventoryManagement;
 import com.stylefeng.guns.modular.system.dao.InventoryManagementMapper;
 import com.stylefeng.guns.modular.main.service.IInventoryManagementService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -17,4 +21,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class InventoryManagementServiceImpl extends ServiceImpl<InventoryManagementMapper, InventoryManagement> implements IInventoryManagementService {
 
+    @Override
+    public List<Map<String, Object>> findSellNumber(List<Dept> dept) {
+        return this.baseMapper.findSellNumber(dept);
+    }
 }

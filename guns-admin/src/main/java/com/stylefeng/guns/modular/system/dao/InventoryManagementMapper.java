@@ -1,7 +1,12 @@
 package com.stylefeng.guns.modular.system.dao;
 
+import com.stylefeng.guns.modular.system.model.Dept;
 import com.stylefeng.guns.modular.system.model.InventoryManagement;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -13,4 +18,10 @@ import com.baomidou.mybatisplus.mapper.BaseMapper;
  */
 public interface InventoryManagementMapper extends BaseMapper<InventoryManagement> {
 
+    /**
+     * 部门id
+     * @param deptId
+     * @return
+     */
+    public List<Map<String,Object>> findSellNumber(@Param("deptId") List<Dept> deptId);
 }

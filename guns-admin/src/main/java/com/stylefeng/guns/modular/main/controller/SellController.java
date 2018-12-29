@@ -5,6 +5,8 @@ import com.stylefeng.guns.core.common.BaseEntityWrapper.BaseEntityWrapper;
 import com.stylefeng.guns.core.shiro.ShiroKit;
 import com.stylefeng.guns.modular.main.service.IIntegralrecordtypeService;
 import com.stylefeng.guns.modular.main.service.IInventoryManagementService;
+import com.stylefeng.guns.modular.main.service.impl.InventoryManagementServiceImpl;
+import com.stylefeng.guns.modular.system.dao.InventoryManagementMapper;
 import com.stylefeng.guns.modular.system.model.Dept;
 import com.stylefeng.guns.modular.system.model.Integralrecordtype;
 import com.stylefeng.guns.modular.system.model.InventoryManagement;
@@ -82,46 +84,24 @@ public class SellController {
         }
         List<Dept> depts = new ArrayList<>();
         List<Dept> deptList = getTreeMenuList(depts, deptId);
-        Integer[] num = new Integer[deptList.size()];
-        for(int i=0; i< deptList.size(); i++){
-            num[i] = deptList.get(i).getId();
-        }
-        EntityWrapper<InventoryManagement> wrapper = new EntityWrapper();
-        wrapper.in("deptid",num);
-        wrapper.eq("status",1); //
-        wrapper.ne("memberid","");
-        if(! StringUtils.isEmpty(begindate)) wrapper.gt("createtime",begindate);
-        if(! StringUtils.isEmpty(enddate)) wrapper.lt("createtime",enddate);
-        wrapper.isNotNull("memberid");
-        List<InventoryManagement> inventoryManagements = inventoryManagementService.selectList(wrapper);
         Map<String,Object> rowsMap = new HashMap();
-        Map<String,Object> map1 = new HashMap<>();
-//        Map<String,Object> map2 = new HashMap<>();
-        Integer oldNum; Integer newNum; Integer zongNum = 0;
-        for (InventoryManagement inv : inventoryManagements) {
-            if(! map1.isEmpty() && ! StringUtils.isEmpty(map1.get(inv.getName()))){
-                oldNum = (Integer) map1.get(inv.getName());
-                newNum = inv.getConsumptionNum();
-                map1.put(inv.getName(),oldNum + newNum);
-                zongNum += newNum;
-            }else {
-                map1.put(inv.getName(),inv.getConsumptionNum());
-                zongNum += inv.getConsumptionNum();
-            }
+        List<Map<String,Object>> maps = inventoryManagementService.findSellNumber(deptList);
+        Map<String,Integer> map1 = new HashMap<>();
+        Integer sumNumber = 0;
+        for (Map<String, Object> map : maps) {
+            map1.put(map.get("name").toString(),Integer.parseInt(map.get("consumptionNum").toString()));
+            sumNumber += Integer.parseInt(map.get("consumptionNum").toString());
         }
-        rowsMap.put("all",zongNum);
+        rowsMap.put("all",sumNumber);
         rowsMap.put("charts",map1);
-        rowsMap.put("components","");
-        rowsMap.put("ie",9743);
 
         Map<String,Object> map2 = new HashMap<>();
-        for(Map.Entry<String,Object> m : map1.entrySet()){
+        for(Map.Entry<String,Integer> m : map1.entrySet()){
             map2.put((m.getKey()+" "),m.getValue());
         }
         List<Map<String,Object>> resultList = new ArrayList<>();
         resultList.add(rowsMap);
         resultList.add(map2);
         return resultList;
-//        return null;
     }
 }
