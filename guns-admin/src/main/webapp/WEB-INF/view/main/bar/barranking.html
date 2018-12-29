@@ -4,6 +4,16 @@
        <meta charset="utf-8">
    </head>
    <body style="height: 100%; margin: 0">
+   <div>
+       @layout("/common/_container.html"){
+       <div class="col-sm-2">
+           <#DeptSelectCon id="deptId" name="门店" val="${shiro.getUser().deptId}"/>
+       </div>
+       <div class="col-sm-2">
+           <#button name="查询" icon="fa-search" clickFun="searchData1()"/>
+       </div>
+       @}
+   </div>
        <div id="container" style="height: 100%"></div>
        <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/echarts.min.js"></script>
        <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts-gl/echarts-gl.min.js"></script>
@@ -17,89 +27,95 @@
        <script src="/static/bar/macarons.js"></script>
        <script src="/static/js/jquery.min.js"></script>
        <script type="text/javascript">
-            var dom = document.getElementById("container");
-            var myChart = echarts.init(dom);
-            var app = {};
-            option = null;
-            app.title = '坐标轴刻度与标签对齐';
+           var searchData1=function () {
+               var dom = document.getElementById("container");
+               var myChart = echarts.init(dom);
+               var app = {};
+               option = null;
+               app.title = '坐标轴刻度与标签对齐';
 
-            var sData = [];
-            var xData = [];
-            $.ajax({
-                url: '/barranking/list',
-                type: 'POST',
-                async: false,
-                success: function (data) {
-                    console.log(data)
-                    for(var i=0; i<data.length; i++){
-                        xData.push("["+data[i].levelName+"]"+data[i].name);
-                        sData.push(data[i].integral);
-                    }
-                }
-            });
+               var sData = [];
+               var xData = [];
+               $.ajax({
+                   url: '/barranking/list',
+                   type: 'POST',
+                   async: false,
+                   data:{deptId:$("#deptId").val()},
+                   success: function (data) {
+                       console.log(data)
+                       for(var i=0; i<data.length; i++){
+                           xData.push("["+data[i].levelName+"]"+data[i].name);
+                           sData.push(data[i].integral);
+                       }
+                   }
+               });
 
-            option = {
-                title: {
-                    text: '门店积分 Top榜10',
-                },
-                tooltip: {
-                    trigger: 'axis'
-                },
-                legend: {
-                    data:['最高气温','最低气温']
-                },
-                toolbox: {
-                    show: true,
-                    feature: {
-                        dataZoom: {
-                            yAxisIndex: 'none'
-                        },
-                        dataView: {readOnly: false},
-                        magicType: {type: ['line', 'bar']},
-                        restore: {},
-                        saveAsImage: {}
-                    }
-                },
-                color: ['#3398DB'],
-                tooltip : {
-                    trigger: 'axis',
-                    axisPointer : {            // 坐标轴指示器，坐标轴触发有效
-                        type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
-                    }
-                },
-                grid: {
-                    left: '3%',
-                    right: '4%',
-                    bottom: '3%',
-                    containLabel: true
-                },
-                xAxis : [
-                    {
-                        type : 'category',
-                        data : xData,
-                        axisTick: {
-                            alignWithLabel: true
-                        }
-                    }
-                ],
-                yAxis : [
-                    {
-                        type : 'value'
-                    }
-                ],
-                series : [
-                    {
-                        name:'积分',
-                        type:'bar',
-                        barWidth: '60%',
-                        data: sData
-                    }
-                ]
-            };
-            ;
-            if (option && typeof option === "object") {
-                myChart.setOption(option, true);
-            }
+               option = {
+                   title: {
+                       text: '门店积分 Top榜10',
+                   },
+                   tooltip: {
+                       trigger: 'axis'
+                   },
+                   legend: {
+                       data:['最高气温','最低气温']
+                   },
+                   toolbox: {
+                       show: true,
+                       feature: {
+                           dataZoom: {
+                               yAxisIndex: 'none'
+                           },
+                           dataView: {readOnly: false},
+                           magicType: {type: ['line', 'bar']},
+                           restore: {},
+                           saveAsImage: {}
+                       }
+                   },
+                   color: ['#3398DB'],
+                   tooltip : {
+                       trigger: 'axis',
+                       axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                           type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                       }
+                   },
+                   grid: {
+                       left: '3%',
+                       right: '4%',
+                       bottom: '3%',
+                       containLabel: true
+                   },
+                   xAxis : [
+                       {
+                           type : 'category',
+                           data : xData,
+                           axisTick: {
+                               alignWithLabel: true
+                           }
+                       }
+                   ],
+                   yAxis : [
+                       {
+                           type : 'value'
+                       }
+                   ],
+                   series : [
+                       {
+                           name:'积分',
+                           type:'bar',
+                           barWidth: '60%',
+                           data: sData
+                       }
+                   ]
+               };
+               ;
+               if (option && typeof option === "object") {
+                   myChart.setOption(option, true);
+               }
+           }
+          $(function () {
+              searchData1()
+          })
        </script>
    <script>
        function importExcel() {

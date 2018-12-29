@@ -1,5 +1,6 @@
 package com.stylefeng.guns.modular.main.controller;
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.stylefeng.guns.core.base.controller.BaseController;
 import com.stylefeng.guns.core.common.BaseEntityWrapper.BaseEntityWrapper;
 import com.stylefeng.guns.modular.main.service.IMembermanagementService;
@@ -34,16 +35,19 @@ public class PiesimpleController extends BaseController {
     }
     @RequestMapping(value = "/getData")
     @ResponseBody
-    public Object getData() throws ParseException {
+    public Object getData(String deptId) throws ParseException {
        List<Map<String,Object>> result=new ArrayList<>();
-        BaseEntityWrapper<Membermanagement> wapper= new BaseEntityWrapper<Membermanagement>();
-        BaseEntityWrapper<Membershipcardtype> membershipcardtypeBaseEntityWrapper= new BaseEntityWrapper<>();
+        EntityWrapper<Membermanagement> wapper= new EntityWrapper<Membermanagement>();
+        wapper.eq("deptId",deptId);
+        EntityWrapper<Membershipcardtype> membershipcardtypeBaseEntityWrapper= new EntityWrapper<>();
+        membershipcardtypeBaseEntityWrapper.eq("deptId",deptId);
        List<Membershipcardtype> list=membershipcardtypeService.selectList(membershipcardtypeBaseEntityWrapper);
        int index=0;
        for(Membershipcardtype membershipcardtype:list){
           Integer meid= membershipcardtype.getId();
           String mename=membershipcardtype.getCardname();
-           wapper= new BaseEntityWrapper<Membermanagement>();
+           wapper= new EntityWrapper<Membermanagement>();
+           wapper.eq("deptId",deptId);
            wapper.eq("levelID",meid);
           int count= membermanagementService.selectCount(wapper);
            Map<String,Object> map=new HashMap<>();
