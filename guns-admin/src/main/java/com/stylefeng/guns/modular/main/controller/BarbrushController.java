@@ -8,6 +8,7 @@ import com.stylefeng.guns.modular.main.service.ICheckinService;
 import com.stylefeng.guns.modular.main.service.IMembermanagementService;
 import com.stylefeng.guns.modular.main.service.IMembershipcardtypeService;
 import com.stylefeng.guns.modular.main.service.IQiandaoCheckinService;
+import com.stylefeng.guns.modular.system.controller.DeptController;
 import com.stylefeng.guns.modular.system.model.Membermanagement;
 import com.stylefeng.guns.modular.system.model.QiandaoCheckin;
 import com.stylefeng.guns.modular.system.service.IDeptService;
@@ -48,6 +49,8 @@ public class BarbrushController extends BaseController {
     private ICheckinService checkinService;
     @Autowired
     private IDeptService deptService;
+    @Autowired
+    private DeptController deptController;
 
     /**
      * 跳转到签到数据图表
@@ -67,6 +70,12 @@ public class BarbrushController extends BaseController {
     @RequestMapping(value = "/getWeekdata")
     @ResponseBody
     public Object getWeekdata(String startdate,String enddate,String deptId) throws ParseException {
+        List<Map<String, Object>> list=( List<Map<String, Object>>) deptController.findDeptLists(deptId.toString());
+        String deptIds="";
+        for(Map<String, Object> map:list){
+            deptIds+=map.get("id")+",";
+        }
+        deptIds=deptIds.substring(0,deptIds.length()-1);
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
         Map<String,Object> result=new HashMap<>();
@@ -86,12 +95,12 @@ public class BarbrushController extends BaseController {
             calendar2.add(calendar2.DATE, i);
             date2 = calendar2.getTime();
             EntityWrapper<QiandaoCheckin> qiandaoCheckinBaseEntityWrapper = new EntityWrapper<>();
-            qiandaoCheckinBaseEntityWrapper.eq("deptId",deptId);
+            qiandaoCheckinBaseEntityWrapper.in("deptId",deptIds);
             qiandaoCheckinBaseEntityWrapper.like("createtime",simpleDateFormat.format(date2));
             qiandaoCheckinBaseEntityWrapper.isNotNull("updatetime");
 
             EntityWrapper<QiandaoCheckin> qiandaoCheckinBaseEntityWrapper2 = new EntityWrapper<>();
-            qiandaoCheckinBaseEntityWrapper2.eq("deptId",deptId);
+            qiandaoCheckinBaseEntityWrapper2.in("deptId",deptIds);
             qiandaoCheckinBaseEntityWrapper2.like("createtime",simpleDateFormat.format(date));
             qiandaoCheckinBaseEntityWrapper2.isNotNull("updatetime");
             int i1 = qiandaoCheckinService.selectCount(qiandaoCheckinBaseEntityWrapper);//当天签到人数
@@ -114,6 +123,12 @@ public class BarbrushController extends BaseController {
     @RequestMapping(value = "/getMonthdata")
     @ResponseBody
     public Object getMonthdata(String startdate,Integer enddate,String deptId) throws ParseException {
+        List<Map<String, Object>> list=( List<Map<String, Object>>) deptController.findDeptLists(deptId.toString());
+        String deptIds="";
+        for(Map<String, Object> map:list){
+            deptIds+=map.get("id")+",";
+        }
+        deptIds=deptIds.substring(0,deptIds.length()-1);
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
         Map<String,Object> result=new HashMap<>();
@@ -133,13 +148,13 @@ public class BarbrushController extends BaseController {
             calendar2.add(calendar2.DATE, i);
             date2 = calendar2.getTime();
            EntityWrapper<QiandaoCheckin> qiandaoCheckinBaseEntityWrapper = new EntityWrapper<>();
-            qiandaoCheckinBaseEntityWrapper.eq("deptId",deptId);
+            qiandaoCheckinBaseEntityWrapper.in("deptId",deptIds);
             qiandaoCheckinBaseEntityWrapper.like("createtime",simpleDateFormat.format(date2));
             qiandaoCheckinBaseEntityWrapper.isNotNull("updatetime");
 
             EntityWrapper<QiandaoCheckin> qiandaoCheckinBaseEntityWrapper2 = new EntityWrapper<>();
             qiandaoCheckinBaseEntityWrapper2.like("createtime",simpleDateFormat.format(date));
-            qiandaoCheckinBaseEntityWrapper2.eq("deptId",deptId);
+            qiandaoCheckinBaseEntityWrapper2.in("deptId",deptIds);
             qiandaoCheckinBaseEntityWrapper2.isNotNull("updatetime");
             int i1 = qiandaoCheckinService.selectCount(qiandaoCheckinBaseEntityWrapper);//当天签到人数
             int i2 = qiandaoCheckinService.selectCount(qiandaoCheckinBaseEntityWrapper2);//当天前一天签到人数
