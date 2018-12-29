@@ -174,8 +174,8 @@
         var memberId = $("#introducerId").val();
         var activityId=$("#id").val();
         $.ajax({
-            url: '/activity/getMemberInfo',
-            data: { memberId: memberId ,activityId:activityId},
+            url: '/serverMemberinfo/getMemberInfo',
+            data: { memberId: memberId },
             type: 'POST',
             async: false,
             success: function (data) {
@@ -185,18 +185,18 @@
                 $("#tel").val(data.phone);
                 $("#integral").val(data.integral);
                 $("#countnum").val(data.countnum);
-                if(data.countnum>=$("#maxgetnum").val()){
-                    $("#ensure").attr("disabled","disabled")
-                    Feng.error("该活动已经参与过了!");
-                }else {
-                    $("#ensure").removeAttr("disabled")
-                }
-
-                //判读签到符合
-                 if(data.error=="202"){
-                     Feng.error(data.errorMessage);
-                     $("#ensure").attr("disabled","disabled")
-                }
+                // if(data.countnum>=$("#maxgetnum").val()){
+                //     $("#ensure").attr("disabled","disabled")
+                //     Feng.error("该活动已经参与过了!");
+                // }else {
+                //     $("#ensure").removeAttr("disabled")
+                // }
+                //
+                // //判读签到符合
+                //  if(data.error=="202"){
+                //      Feng.error(data.errorMessage);
+                //      $("#ensure").attr("disabled","disabled")
+                // }
             }
         });
     });
