@@ -377,7 +377,7 @@ public class UserMgrController extends BaseController {
             userEntityWrapper.eq("deptid",deptid);
             List<User> users = userService.selectList(userEntityWrapper);
             for(User user:users){
-                setRole(user.getId(),"15");//防差角色
+                setRole(user.getId(),"18");//防差角色
             }
         }
         return SUCCESS_TIP;
