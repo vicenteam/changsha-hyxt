@@ -122,7 +122,7 @@ public class MembershipcardtypeController extends BaseController {
     public Object add(Membershipcardtype membershipcardtype) {
         membershipcardtype.setCreatedt(DateUtil.getTime());
         if(membershipcardtype.getLeaves()==0){
-            membershipcardtype.setCheckleavenum(999);
+            membershipcardtype.setCheckleavenum(0);
         }
         membershipcardtypeService.insert(membershipcardtype);
         return SUCCESS_TIP;
