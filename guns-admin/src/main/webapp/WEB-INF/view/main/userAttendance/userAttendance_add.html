@@ -1,0 +1,31 @@
+@layout("/common/_container.html"){
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div class="form-horizontal">
+
+            <div class="row">
+                <div class="col-sm-6 b-r">
+                            <#input id="id" name="" underline="true"/>
+                            <#input id="userId" name="userId" underline="true"/>
+                            <#input id="checkYearMonth" name="签到年月"/>
+                </div>
+
+                <div class="col-sm-6">
+                            <#input id="checkTime1" name="当天考勤时间1" underline="true"/>
+                            <#input id="checkTime2" name="当天考勤时间2" underline="true"/>
+                            <#input id="deptId" name="deptId" underline="true"/>
+                </div>
+            </div>
+
+            <div class="row btn-group-m-t">
+                <div class="col-sm-10">
+                    <#button btnCss="info" name="提交" id="ensure" icon="fa-check" clickFun="UserAttendanceInfoDlg.addSubmit()"/>
+                    <#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="UserAttendanceInfoDlg.close()"/>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script src="${ctxPath}/static/modular/main/userAttendance/userAttendance_info.js"></script>
+@}
