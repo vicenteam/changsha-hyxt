@@ -1,6 +1,8 @@
 package com.stylefeng.guns.modular.main.controller;
 
 import com.stylefeng.guns.core.base.controller.BaseController;
+import com.stylefeng.guns.core.shiro.ShiroKit;
+import com.stylefeng.guns.modular.system.model.Dept;
 import org.springframework.stereotype.Controller;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.stylefeng.guns.core.common.constant.factory.PageFactory;
@@ -14,6 +16,9 @@ import com.stylefeng.guns.core.log.LogObjectHolder;
 import org.springframework.web.bind.annotation.RequestParam;
 import com.stylefeng.guns.modular.system.model.UserAttendance;
 import com.stylefeng.guns.modular.main.service.IUserAttendanceService;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 用户考勤控制器
@@ -29,12 +34,17 @@ public class UserAttendanceController extends BaseController {
 
     @Autowired
     private IUserAttendanceService userAttendanceService;
+    @Autowired
+    private SellController sellController;
 
     /**
      * 跳转到用户考勤首页
      */
     @RequestMapping("")
-    public String index() {
+    public String index(Model model) {
+        List<Dept> deptList = new ArrayList<>();
+        List<Dept> depts = sellController.getTreeMenuList(deptList, ShiroKit.getUser().getDeptId());
+        model.addAttribute("depts", depts);
         return PREFIX + "userAttendance.html";
     }
 
