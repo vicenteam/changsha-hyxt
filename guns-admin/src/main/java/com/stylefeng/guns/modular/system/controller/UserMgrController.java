@@ -1,5 +1,7 @@
 package com.stylefeng.guns.modular.system.controller;
 
+import com.alibaba.fastjson.JSON;
+import com.baidu.aip.face.AipFace;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.stylefeng.guns.config.properties.GunsProperties;
 import com.stylefeng.guns.core.base.controller.BaseController;
@@ -17,13 +19,20 @@ import com.stylefeng.guns.core.exception.GunsException;
 import com.stylefeng.guns.core.log.LogObjectHolder;
 import com.stylefeng.guns.core.shiro.ShiroKit;
 import com.stylefeng.guns.core.shiro.ShiroUser;
+import com.stylefeng.guns.core.util.DateUtil;
 import com.stylefeng.guns.core.util.ToolUtil;
+import com.stylefeng.guns.modular.face.FaceMode;
+import com.stylefeng.guns.modular.face.FaceUser;
+import com.stylefeng.guns.modular.face.FaceUtil;
+import com.stylefeng.guns.modular.main.service.IUserAttendanceService;
 import com.stylefeng.guns.modular.system.dao.UserMapper;
 import com.stylefeng.guns.modular.system.factory.UserFactory;
 import com.stylefeng.guns.modular.system.model.User;
+import com.stylefeng.guns.modular.system.model.UserAttendance;
 import com.stylefeng.guns.modular.system.service.IUserService;
 import com.stylefeng.guns.modular.system.transfer.UserDto;
 import com.stylefeng.guns.modular.system.warpper.UserWarpper;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +45,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import sun.misc.BASE64Decoder;
+import sun.misc.BASE64Encoder;
 
 import javax.naming.NoPermissionException;
 import javax.servlet.http.HttpServletRequest;
@@ -44,10 +54,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * 系统管理员控制器
@@ -67,6 +74,8 @@ public class UserMgrController extends BaseController {
 
     @Autowired
     private IUserService userService;
+    @Autowired
+    private IUserAttendanceService userAttendanceService;
 
     /**
      * 跳转到查看管理员列表的页面
@@ -80,7 +89,9 @@ public class UserMgrController extends BaseController {
      * 跳转到查看管理员列表的页面
      */
     @RequestMapping("/user_add")
-    public String addView() {
+    public String addView(HttpServletRequest request) {
+        //清除人脸识别临时图片数据
+        request.getSession().removeAttribute("userBase64ImgData");
         return PREFIX + "user_add.html";
     }
 
@@ -105,7 +116,9 @@ public class UserMgrController extends BaseController {
      */
     @Permission
     @RequestMapping("/user_edit/{userId}")
-    public String userEdit(@PathVariable Integer userId, Model model) {
+    public String userEdit(@PathVariable Integer userId, Model model, HttpServletRequest request) {
+        //清除人脸识别临时图片数据
+        request.getSession().removeAttribute("userBase64ImgData");
         if (ToolUtil.isEmpty(userId)) {
             throw new GunsException(BizExceptionEnum.REQUEST_NULL);
         }
@@ -189,7 +202,7 @@ public class UserMgrController extends BaseController {
     @BussinessLog(value = "添加管理员", key = "account", dict = UserDict.class)
     @Permission(Const.ADMIN_NAME)
     @ResponseBody
-    public Tip add(@Valid UserDto user, BindingResult result) {
+    public Tip add(@Valid UserDto user, BindingResult result, HttpServletRequest request) {
         if (result.hasErrors()) {
             throw new GunsException(BizExceptionEnum.REQUEST_NULL);
         }
@@ -207,6 +220,20 @@ public class UserMgrController extends BaseController {
         user.setCreatetime(new Date());
 
         this.userService.insert(UserFactory.createUser(user));
+
+        //更新人脸库
+        new Runnable() {
+            @Override
+            public void run() {
+                String userBase64ImgData = (String) request.getSession().getAttribute("userBase64ImgData");
+                log.info("base64->"+userBase64ImgData);
+                if (!StringUtils.isEmpty(userBase64ImgData)) {
+                    AipFace client = new AipFace(FaceUtil.APP_ID, FaceUtil.API_KEY, FaceUtil.SECRET_KEY);
+                    new FaceUtil().userRegister(client, JSON.toJSONString(user), userBase64ImgData, user.getDeptid() + "", user.getId() + "");
+                }
+            }
+        }.run();
+
         return SUCCESS_TIP;
     }
 
@@ -219,7 +246,7 @@ public class UserMgrController extends BaseController {
     @BussinessLog(value = "修改管理员", key = "account", dict = UserDict.class)
     @ResponseBody
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRES_NEW)
-    public Tip edit(@Valid UserDto user, BindingResult result) throws NoPermissionException {
+    public Tip edit(@Valid UserDto user, BindingResult result, HttpServletRequest request) throws NoPermissionException {
         if (result.hasErrors()) {
             throw new GunsException(BizExceptionEnum.REQUEST_NULL);
         }
@@ -228,12 +255,29 @@ public class UserMgrController extends BaseController {
 
         if (ShiroKit.hasRole(Const.ADMIN_NAME)) {
             this.userService.updateById(UserFactory.editUser(user, oldUser));
+            //更新人脸库
+            new Runnable() {
+                @Override
+                public void run() {
+                    String userBase64ImgData = (String) request.getSession().getAttribute("userBase64ImgData");
+                    log.info("base64->"+userBase64ImgData);
+                    if (!StringUtils.isEmpty(userBase64ImgData)) {
+                        AipFace client = new AipFace(FaceUtil.APP_ID, FaceUtil.API_KEY, FaceUtil.SECRET_KEY);
+                        if(StringUtils.isEmpty(user.getAvatar())){//新增
+                            new FaceUtil().userRegister(client, JSON.toJSONString(user), userBase64ImgData, user.getDeptid() + "", user.getId() + "");
+                        }else {//更新
+                            new FaceUtil().faceUpdate(client, user.getId() + "", userBase64ImgData, JSON.toJSONString(user), user.getDeptid()+ "");
+
+                        }
+                    }
+                }
+            }.run();
             //更改密码
-            if(user.getPassword()!=null){
-                if(!user.getPassword().equals(oldUser.getPassword())){
+            if (user.getPassword() != null) {
+                if (!user.getPassword().equals(oldUser.getPassword())) {
                     User userPass = this.userService.selectById(user.getId());
                     userPass.setSalt(oldUser.getSalt());
-                    userPass.setPassword(ShiroKit.md5(user.getPassword(),oldUser.getSalt()));
+                    userPass.setPassword(ShiroKit.md5(user.getPassword(), oldUser.getSalt()));
                     this.userService.updateById(userPass);
                 }
             }
@@ -243,12 +287,29 @@ public class UserMgrController extends BaseController {
             ShiroUser shiroUser = ShiroKit.getUser();
             if (shiroUser.getId().equals(user.getId())) {
                 this.userService.updateById(UserFactory.editUser(user, oldUser));
+                //更新人脸库
+               new Runnable() {
+                   @Override
+                   public void run() {
+                       String userBase64ImgData = (String) request.getSession().getAttribute("userBase64ImgData");
+                       log.info("base64->"+userBase64ImgData);
+                       if (!StringUtils.isEmpty(userBase64ImgData)) {
+                           AipFace client = new AipFace(FaceUtil.APP_ID, FaceUtil.API_KEY, FaceUtil.SECRET_KEY);
+                           if(StringUtils.isEmpty(user.getAvatar())){//新增
+                               new FaceUtil().userRegister(client, JSON.toJSONString(user), userBase64ImgData, user.getDeptid() + "", user.getId() + "");
+                           }else {//更新
+                               new FaceUtil().faceUpdate(client, user.getId() + "", userBase64ImgData, JSON.toJSONString(user), user.getId() + "");
+
+                           }
+                       }
+                   }
+               }.run();
                 //更改密码
-                if(user.getPassword()!=null){
-                    if(!user.getPassword().equals(oldUser.getPassword())){
+                if (user.getPassword() != null) {
+                    if (!user.getPassword().equals(oldUser.getPassword())) {
                         User userPass = this.userService.selectById(user.getId());
                         userPass.setSalt(oldUser.getSalt());
-                        userPass.setPassword(ShiroKit.md5(user.getPassword(),oldUser.getSalt()));
+                        userPass.setPassword(ShiroKit.md5(user.getPassword(), oldUser.getSalt()));
                         this.userService.updateById(userPass);
                     }
                 }
@@ -370,12 +431,12 @@ public class UserMgrController extends BaseController {
     @RequestMapping("/roleAssignByDeptId")
     @ResponseBody
     public Tip roleAssignByDeptId(String deptid) {
-        if(!StringUtils.isEmpty(deptid)){
+        if (!StringUtils.isEmpty(deptid)) {
             EntityWrapper<User> userEntityWrapper = new EntityWrapper<>();
-            userEntityWrapper.eq("deptid",deptid);
+            userEntityWrapper.eq("deptid", deptid);
             List<User> users = userService.selectList(userEntityWrapper);
-            for(User user:users){
-                setRole(user.getId(),"18");//防差角色
+            for (User user : users) {
+                setRole(user.getId(), "18");//防差角色
             }
         }
         return SUCCESS_TIP;
@@ -386,10 +447,13 @@ public class UserMgrController extends BaseController {
      */
     @RequestMapping(method = RequestMethod.POST, path = "/upload")
     @ResponseBody
-    public String upload(@RequestPart("file") MultipartFile picture) {
-
+    public String upload(@RequestPart("file") MultipartFile picture, HttpServletRequest request) {
         String pictureName = UUID.randomUUID().toString() + "." + ToolUtil.getFileSuffix(picture.getOriginalFilename());
         try {
+            byte[] bytes = picture.getBytes();
+            BASE64Encoder encoder = new BASE64Encoder();
+            String encode = encoder.encode(bytes);
+            request.getSession().setAttribute("userBase64ImgData", encode);//临时存储人脸识别创建图片数据
             String fileSavePath = gunsProperties.getFileUploadPath();
             picture.transferTo(new File(fileSavePath + pictureName));
         } catch (Exception e) {
@@ -405,7 +469,7 @@ public class UserMgrController extends BaseController {
         imgStr = request.getParameter("file");
         String pictureName = "qq";//UUID.randomUUID().toString() + "." + ToolUtil.getFileSuffix(picture.getOriginalFilename());
         try {
-            String fileSavePath = gunsProperties.getFileUploadPath().substring(0,gunsProperties.getFileUploadPath().length()-1);
+            String fileSavePath = gunsProperties.getFileUploadPath().substring(0, gunsProperties.getFileUploadPath().length() - 1);
             BASE64Decoder decoder = new BASE64Decoder();                // Base64解码
             byte[] b = decoder.decodeBuffer(imgStr);
             for (int i = 0; i < b.length; ++i) {
@@ -417,9 +481,10 @@ public class UserMgrController extends BaseController {
             pictureName = imgFilePath = UUID.randomUUID().toString() + "." + "jpg";
             OutputStream out = null;
             try {
-                out = new FileOutputStream(fileSavePath+"/"+imgFilePath);
-                log.info("保存文件地址-》"+fileSavePath);
-                log.info("保存文件地址-》"+fileSavePath+"/"+imgFilePath);
+                out = new FileOutputStream(fileSavePath + "/" + imgFilePath);
+                log.info("base64-》" + imgStr);
+                log.info("保存文件地址-》" + fileSavePath);
+                log.info("保存文件地址-》" + fileSavePath + "/" + imgFilePath);
             } catch (FileNotFoundException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -431,6 +496,107 @@ public class UserMgrController extends BaseController {
             throw new GunsException(BizExceptionEnum.UPLOAD_ERROR);
         }
         return pictureName;
+    }
+
+    /**
+     * 打卡识别图
+     *
+     * @param request
+     * @return
+     */
+    @RequestMapping(method = RequestMethod.POST, path = "/checkFace")
+    @ResponseBody
+    public Object checkFace(HttpServletRequest request) {
+        User user2 = new User();
+        String imgStr;//接收经过base64编 之后的字符串
+        imgStr = request.getParameter("file");
+        String pictureName = "qq";//UUID.randomUUID().toString() + "." + ToolUtil.getFileSuffix(picture.getOriginalFilename());
+        try {
+            log.info("base64-》" + imgStr);
+            //进行人脸对比
+            AipFace client = new AipFace(FaceUtil.APP_ID, FaceUtil.API_KEY, FaceUtil.SECRET_KEY);
+            FaceUtil faceUtil = new FaceUtil();
+            JSONObject user = faceUtil.findUser(client, imgStr, ShiroKit.getUser().getDeptId() + "");
+            if (user.getString("error_msg").equals("liveness check fail")) {
+                log.info("活性检查失败");
+                user2.setVersion(202);
+                user2.setAvatar("暂无匹配数据");
+                return user2;
+            } else if (user.getString("error_msg").equals("pic not has face")) {
+                log.info("照片没有脸");
+                user2.setVersion(203);
+                user2.setAvatar("待识别");
+                return user2;
+            }
+            //获得对比结果
+            FaceMode faceMode = JSON.parseObject(user.toString(2), FaceMode.class);
+            if (faceMode != null && faceMode.getResult().getUser_list().size() >= 1) {
+                //数据转换
+                FaceUser faceUser = faceMode.getResult().getUser_list().get(0);
+                String deptId = faceUser.getGroup_id();
+                String user_id = faceUser.getUser_id();
+                Double score = faceUser.getScore();
+                if (score >= 60) {//图片相似率
+                    //数据处理
+                    User user1 = userService.selectById(user_id);
+                    String format = DateUtil.format(new Date(), "yyyy-MM-dd");
+                    //判断上午或者下午
+                    int hous = Integer.parseInt(DateUtil.format(new Date(), "HH"));
+                    if (hous >= 0 && hous <= 12) {
+                        log.info("上班打卡");
+                        EntityWrapper<UserAttendance> userAttendanceEntityWrapper = new EntityWrapper<>();
+                        userAttendanceEntityWrapper.eq("checkYearMonth", format);
+                        userAttendanceEntityWrapper.eq("userId", user_id);
+                        userAttendanceEntityWrapper.eq("deptId", user1.getDeptid());
+                        int i = userAttendanceService.selectCount(userAttendanceEntityWrapper);
+                        if (i == 0) {
+                            UserAttendance userAttendance = new UserAttendance();
+                            userAttendance.setCheckTime1(DateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
+                            userAttendance.setDeptId(user1.getDeptid());
+                            userAttendance.setUserId(Integer.parseInt(user_id));
+                            userAttendance.setCheckYearMonth(format);
+                            userAttendanceService.insert(userAttendance);
+                        }
+
+                    } else {
+                        log.info("下班打卡");
+                        EntityWrapper<UserAttendance> userAttendanceEntityWrapper = new EntityWrapper<>();
+                        userAttendanceEntityWrapper.eq("checkYearMonth", format);
+                        userAttendanceEntityWrapper.eq("userId", user_id);
+                        userAttendanceEntityWrapper.eq("deptId", user1.getDeptid());
+                        int i = userAttendanceService.selectCount(userAttendanceEntityWrapper);
+                        if (i == 0) {
+                            UserAttendance userAttendance = new UserAttendance();
+                            userAttendance.setCheckTime1(DateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
+                            userAttendance.setDeptId(user1.getDeptid());
+                            userAttendance.setUserId(Integer.parseInt(user_id));
+                            userAttendance.setCheckYearMonth(format);
+                            userAttendance.setCheckTime2(DateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
+                            userAttendanceService.insert(userAttendance);
+                        } else {
+                            UserAttendance userAttendance = userAttendanceService.selectOne(userAttendanceEntityWrapper);
+                            userAttendance.setCheckTime2(DateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
+                            userAttendanceService.updateById(userAttendance);
+                        }
+                    }
+
+//                    userAttendanceEntityWrapper.eq("")
+                    //返回结果
+                    user1.setVersion(200);
+                    return user1;
+                } else {
+                    user2.setVersion(202);
+                    user2.setAvatar("暂无匹配数据");
+                    return user2;
+                }
+
+            }
+
+
+        } catch (Exception e) {
+            throw new GunsException(BizExceptionEnum.UPLOAD_ERROR);
+        }
+        return null;
     }
 
     /**
@@ -450,4 +616,15 @@ public class UserMgrController extends BaseController {
         }
 
     }
+
+    /**
+     * 员工考勤页面
+     *
+     * @return
+     */
+    @RequestMapping("/userCheckIn")
+    public String userCheckIn() {
+        return PREFIX + "userCheckIn.html";
+    }
+
 }

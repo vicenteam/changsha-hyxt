@@ -6,6 +6,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.apache.catalina.servlet4preview.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -25,10 +26,10 @@ public class FileUploadApiController {
             @ApiImplicitParam(required = true, name = "userId", value = "操作人id", paramType = "query"),
             @ApiImplicitParam(required = true, name = "deptId", value = "操作人部门id", paramType = "query"),
     })
-    public ResponseData photoUpload(@RequestPart("file") MultipartFile picture) throws Exception {
+    public ResponseData photoUpload(@RequestPart("file") MultipartFile picture, HttpServletRequest request) throws Exception {
         ResponseData responseData=new ResponseData();
         try {
-           String pictureName= userMgrController.upload(picture);
+           String pictureName= userMgrController.upload(picture,request);
             responseData.setDataCollection(pictureName);
         }catch (Exception e){
             e.printStackTrace();
