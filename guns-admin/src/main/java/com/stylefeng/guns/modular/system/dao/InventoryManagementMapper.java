@@ -23,5 +23,5 @@ public interface InventoryManagementMapper extends BaseMapper<InventoryManagemen
      * @param deptId
      * @return
      */
-    public List<Map<String,Object>> findSellNumber(@Param("deptId") List<Dept> deptId);
+    public List<Map<String,Object>> findSellNumber(@Param("deptId") List<Dept> deptId, @Param("begindate") String begindate, @Param("enddate") String enddate);
 }

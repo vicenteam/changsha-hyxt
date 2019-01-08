@@ -37,6 +37,12 @@
             #{deptId.id}
         </foreach>
         and memberid is not null
+        <if test="begindate != null and begindate != ''">
+            and createtime &gt; #{begindate}
+        </if>
+        <if test="enddate != null and enddate != ''">
+            and createtime &lt; #{enddate}
+        </if>
         group by `name`
     </select>
 </mapper>

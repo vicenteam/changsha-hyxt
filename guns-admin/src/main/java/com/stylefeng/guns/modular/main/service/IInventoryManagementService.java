@@ -22,5 +22,5 @@ public interface IInventoryManagementService extends IService<InventoryManagemen
      * @param dept
      * @return
      */
-    List<Map<String,Object>> findSellNumber(List<Dept> dept);
+    List<Map<String,Object>> findSellNumber(List<Dept> dept, String begindate, String enddate);
 }

@@ -22,7 +22,7 @@ import java.util.Map;
 public class InventoryManagementServiceImpl extends ServiceImpl<InventoryManagementMapper, InventoryManagement> implements IInventoryManagementService {
 
     @Override
-    public List<Map<String, Object>> findSellNumber(List<Dept> dept) {
-        return this.baseMapper.findSellNumber(dept);
+    public List<Map<String, Object>> findSellNumber(List<Dept> dept, String begindate, String enddate) {
+        return this.baseMapper.findSellNumber(dept,begindate,enddate);
     }
 }

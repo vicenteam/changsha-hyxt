@@ -85,7 +85,7 @@ public class SellController {
         List<Dept> depts = new ArrayList<>();
         List<Dept> deptList = getTreeMenuList(depts, deptId);
         Map<String,Object> rowsMap = new HashMap();
-        List<Map<String,Object>> maps = inventoryManagementService.findSellNumber(deptList);
+        List<Map<String,Object>> maps = inventoryManagementService.findSellNumber(deptList,begindate,enddate);
         Map<String,Integer> map1 = new HashMap<>();
         Integer sumNumber = 0;
         for (Map<String, Object> map : maps) {
