@@ -11,6 +11,7 @@
     <script src="${ctxPath}/static/js/bootstrap.min.js?v=3.3.6"></script>
 </head>
 <body style="height: 100%; margin: 0">
+@layout("/common/_container.html"){
 <div class="row">
     <div class="col-sm-12">
         <div class="ibox float-e-margins">
@@ -19,12 +20,7 @@
                     <div class="col-sm-12">
                         <div class="row">
                             <div class="col-sm-2">
-                                <#SelectCon name="门店" id="deptId" >
-                                    <!--<option value="">全部</option>-->
-                                    @for(item in depts){
-                                        <option value="${item.id}">${item.fullname}</option>
-                                    @}
-                                </#SelectCon>
+                                <#DeptSelectCon id="deptId" name="门店" val="${shiro.getUser().deptId}"/>
                             </div>
                             <div class="col-sm-2">
                                 <#TimeCon id="begindate" name="开始时间" isTime="false" pattern="yyyy-MM-dd HH:mm:ss" />
@@ -35,6 +31,7 @@
                         <div class="col-sm-3">
                             <#button name="搜索" icon="fa-search" clickFun="find()"/>
                         </div>
+
                     </div>
                 </div>
             </div>
@@ -42,6 +39,7 @@
     </div>
 </div>
 </div>
+@}
 <div id="container" style="height: 100%"></div>
 <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/echarts.min.js"></script>
 <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts-gl/echarts-gl.min.js"></script>
