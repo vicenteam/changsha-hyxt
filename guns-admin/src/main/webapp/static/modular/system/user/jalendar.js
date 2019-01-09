@@ -36,7 +36,7 @@ $(function () {
             lTotalEvents['EN'] = 'Total Events in This Month: ';
             lTotalEvents['TR'] = 'Bu Ayki Etkinlik Sayısı: ';
             lTotalEvents['ES'] = 'Total De Eventos En Este Mes: ';
-            lEvent['EN'] = '签到时间';
+            lEvent['EN'] = '打卡时间';
             lEvent['TR'] = 'Etkinlik';
             lEvent['ES'] = 'Evento(s)';
 
@@ -215,7 +215,7 @@ $(function () {
             function calcTotalDayAgain() {
                 var eventCount = $this.find('.this-month .event-single').length;
                 // $this.find('.total-bar b').text(eventCount);
-                $this.find('.events h3 span b').text("签到次数:" + $this.find('.events .event-single').length)
+                $this.find('.events h3 span b').text("打卡次数:" + $this.find('.events .event-single').length)
             }
 
             function prevAddEvent() {
