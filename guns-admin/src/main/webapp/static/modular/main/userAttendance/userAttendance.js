@@ -19,10 +19,29 @@ UserAttendance.initColumn = function () {
             {title: '签到年月', field: 'checkYearMonth', visible: true, align: 'center', valign: 'middle'},
             {title: '当天考勤时间1', field: 'checkTime1', visible: true, align: 'center', valign: 'middle'},
             {title: '当天考勤时间2', field: 'checkTime2', visible: true, align: 'center', valign: 'middle'},
-            {title: '门店', field: 'fullname', visible: true, align: 'center', valign: 'middle'}
+            {title: '门店', field: 'fullname', visible: true, align: 'center', valign: 'middle'},
+            {title: '操作', field: 'id', visible: true, align: 'center', width:'380px', valign: 'middle',formatter: function (value, row, index) {
+
+                      return  '<button type="button" class=" btn-primary button-margin" onclick="UserAttendance.openintroducer(' + row.id + ')" id=""><i class="fa fa-group"></i>&nbsp;打卡异常信息</button>' +
+                        '<button type="button" class=" btn-primary button-margin" onclick="UserAttendance.opencheckHistory(' + row.id + ')" id=""><i class="fa fa-edit"></i>&nbsp;打卡记录</button>' ;
+                }},
     ];
 };
-
+/**
+ * 打开签到记录页面
+ * @param id
+ */
+UserAttendance.opencheckHistory = function (id) {
+    var index = layer.open({
+        type: 2,
+        title: '打卡记录',
+        area: ['800px', '500px'], //宽高
+        fix: false, //不固定
+        maxmin: true,
+        content: Feng.ctxPath + '/mgr/membermanagementcheckHistory/' + id
+    });
+    this.layerIndex = index;
+};
 /**
  * 检查是否选中
  */

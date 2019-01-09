@@ -27,6 +27,7 @@ import com.stylefeng.guns.modular.face.FaceUtil;
 import com.stylefeng.guns.modular.main.service.IUserAttendanceService;
 import com.stylefeng.guns.modular.system.dao.UserMapper;
 import com.stylefeng.guns.modular.system.factory.UserFactory;
+import com.stylefeng.guns.modular.system.model.Membermanagement;
 import com.stylefeng.guns.modular.system.model.User;
 import com.stylefeng.guns.modular.system.model.UserAttendance;
 import com.stylefeng.guns.modular.system.service.IUserService;
@@ -625,6 +626,19 @@ public class UserMgrController extends BaseController {
     @RequestMapping("/userCheckIn")
     public String userCheckIn() {
         return PREFIX + "userCheckIn.html";
+    }
+
+    /**
+     * 签到记录页面
+     *
+     * @param membermanagementId
+     * @param model
+     * @return
+     */
+    @RequestMapping("/membermanagementcheckHistory/{membermanagementId}")
+    public String membermanagementcheckHistory(@PathVariable Integer membermanagementId, Model model) {
+        model.addAttribute("memberId", membermanagementId);
+        return PREFIX + "membermanagementcheckHistory.html";
     }
 
 }

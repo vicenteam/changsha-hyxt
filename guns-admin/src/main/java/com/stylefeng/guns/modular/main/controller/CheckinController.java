@@ -1,5 +1,6 @@
 package com.stylefeng.guns.modular.main.controller;
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.stylefeng.guns.core.base.controller.BaseController;
 import com.stylefeng.guns.core.common.annotion.BussinessLog;
 import com.stylefeng.guns.core.shiro.ShiroKit;
@@ -49,6 +50,8 @@ public class CheckinController extends BaseController {
     private IQiandaoCheckinService qiandaoCheckinService;
     @Autowired
     private IDeptService deptService;
+    @Autowired
+    private IUserAttendanceService userAttendanceService;
 
     /**
      * 跳转到签到场次首页
@@ -284,6 +287,61 @@ public class CheckinController extends BaseController {
                 String[] split2 = updatetime.split(" ");
                 String time12 = split2[1];
                 sb.append("<div class='added-event' data-date='" + s2 + "' data-time='" + time12 + "' data-title='复签时间' style='background-color:" + backgroundcolor + ";'></div>");
+            }
+        }
+        result.put("dom", sb.toString());
+        result.put("timeObj", list1);
+        return result;
+    }
+    /**
+     * 查询打卡记录
+     */
+    @RequestMapping(value = "/findUserAttendance")
+    @ResponseBody
+    public Object findUserAttendance(String memberId, String valMonth, String valYear) {
+        Map<String, Object> result = new HashMap<>();
+        EntityWrapper<UserAttendance> memberCardBaseEntityWrapper = new EntityWrapper<>();
+        memberCardBaseEntityWrapper.eq("userId", memberId);
+        String starTime = valYear + "-";
+        if (valMonth.length() == 1) {
+            starTime += "0" + valMonth + "-01 00:00:01";
+        } else {
+            starTime += valMonth + "-01 00:00:01";
+        }
+        String endTime = valYear + "-";
+        if (valMonth.length() == 1) {
+            endTime += "0" + valMonth + "-31 23:59:59";
+        } else {
+            endTime += valMonth + "-31 23:59:59";
+        }
+        memberCardBaseEntityWrapper.between("checkTime1", starTime, endTime);
+        List<UserAttendance> list = userAttendanceService.selectList(memberCardBaseEntityWrapper);
+        StringBuilder sb = new StringBuilder();
+        List<Map<String, Object>> list1 = new ArrayList<>();
+        for (UserAttendance qi : list) {
+            String createtime = qi.getCheckTime1();
+            //日期转化
+            Date parse = DateUtil.parse(createtime, "yyyy-MM-dd HH:mm:ss");
+            String s = DateUtil.formatDate(parse, "d/M/yyyy");
+            String[] split = createtime.split(" ");
+            String time1 = split[1];
+            String backgroundcolor = "#29b451";
+            if (StringUtils.isEmpty(qi.getCheckTime2())) {
+                backgroundcolor = "#dbbf22";
+            }
+            sb.append("<div class='added-event' data-date='" + s + "' data-time='" + time1 + "' data-title='打卡时间1' style='background-color:" + backgroundcolor + ";'></div>");
+            Map<String, Object> map = new HashMap<>();
+            map.put("time", s);
+            map.put("color", backgroundcolor);
+            list1.add(map);
+            if (!StringUtils.isEmpty(qi.getCheckTime2())) {
+                //日期转化
+                String updatetime = qi.getCheckTime2();
+                Date parse2 = DateUtil.parse(updatetime, "yyyy-MM-dd HH:mm:ss");
+                String s2 = DateUtil.formatDate(parse2, "d/M/yyyy");
+                String[] split2 = updatetime.split(" ");
+                String time12 = split2[1];
+                sb.append("<div class='added-event' data-date='" + s2 + "' data-time='" + time12 + "' data-title='打卡时间2' style='background-color:" + backgroundcolor + ";'></div>");
             }
         }
         result.put("dom", sb.toString());
