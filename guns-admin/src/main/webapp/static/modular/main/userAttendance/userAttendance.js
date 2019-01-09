@@ -14,12 +14,12 @@ var UserAttendance = {
 UserAttendance.initColumn = function () {
     return [
         {field: 'selectItem', radio: true},
-            {title: '', field: 'id', visible: true, align: 'center', valign: 'middle'},
-            {title: 'userId', field: 'userId', visible: true, align: 'center', valign: 'middle'},
+            {title: '', field: 'id', visible: false, align: 'center', valign: 'middle'},
+            {title: '姓名', field: 'userId', visible: true, align: 'center', valign: 'middle'},
             {title: '签到年月', field: 'checkYearMonth', visible: true, align: 'center', valign: 'middle'},
             {title: '当天考勤时间1', field: 'checkTime1', visible: true, align: 'center', valign: 'middle'},
             {title: '当天考勤时间2', field: 'checkTime2', visible: true, align: 'center', valign: 'middle'},
-            {title: 'deptId', field: 'deptId', visible: true, align: 'center', valign: 'middle'}
+            {title: '门店', field: 'deptId', visible: true, align: 'center', valign: 'middle'}
     ];
 };
 
@@ -90,8 +90,20 @@ UserAttendance.delete = function () {
  */
 UserAttendance.search = function () {
     var queryData = {};
-    queryData['condition'] = $("#condition").val();
+    queryData['deptId'] = $("#deptId").val();
+    queryData['name'] = $("#name").val();
+    queryData['begindate'] = $("#begindate").val();
+    queryData['enddate'] = $("#enddate").val();
     UserAttendance.table.refresh({query: queryData});
+};
+
+UserAttendance.init = function () {
+    var queryData = {};
+    queryData['deptId'] = $("#deptId").val();
+    queryData['name'] = $("#name").val();
+    queryData['begindate'] = $("#begindate").val();
+    queryData['enddate'] = $("#enddate").val();
+    return queryData;
 };
 
 $(function () {
@@ -99,5 +111,6 @@ $(function () {
     var table = new BSTable(UserAttendance.id, "/userAttendance/list", defaultColunms);
     //table.setPaginationType("client");
     table.setPaginationType("server");
+    table.setQueryParams(UserAttendance.init())
     UserAttendance.table = table.init();
 });

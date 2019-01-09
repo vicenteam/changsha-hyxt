@@ -17,4 +17,31 @@
         id, userId, checkYearMonth, checkTime1, checkTime2, deptId
     </sql>
 
+
+    <select id="findUserAttendanceData" resultType="java.util.HashMap">
+        select
+        b.name,
+        a.checkYearMonth,
+        a.checkTime1,
+        a.checkTime2,
+        c.fullname
+        from main_user_attendance a,sys_user b,sys_dept c
+        where
+        a.userId = b.id
+        and a.deptId = c.id
+        and a.deptId
+        <foreach collection="deptList" item="deptList" open="in(" close=")" separator=",">
+            #{deptList.id}
+        </foreach>
+        <if test="name != null and name != ''">
+            and b.name = #{name}
+        </if>
+        <if test="begindate != null and begindate != ''">
+            and a.checkYearMonth &gt; #{begindate}
+        </if>
+        <if test="enddate != null and enddate != ''">
+            and a.checkYearMonth &lt; #{enddate}
+        </if>
+        limit #{pageNum},#{pageSize}
+    </select>
 </mapper>

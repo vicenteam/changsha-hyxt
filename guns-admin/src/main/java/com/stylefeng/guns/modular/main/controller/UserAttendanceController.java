@@ -4,11 +4,14 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.stylefeng.guns.core.base.controller.BaseController;
 import com.stylefeng.guns.core.shiro.ShiroKit;
 import com.stylefeng.guns.modular.system.model.Dept;
+import com.stylefeng.guns.modular.system.model.User;
 import com.stylefeng.guns.modular.system.service.IDeptService;
+import com.stylefeng.guns.modular.system.service.IUserService;
 import org.springframework.stereotype.Controller;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.stylefeng.guns.core.common.constant.factory.PageFactory;
 import com.stylefeng.guns.core.common.BaseEntityWrapper.BaseEntityWrapper;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.ui.Model;
@@ -21,6 +24,7 @@ import com.stylefeng.guns.modular.main.service.IUserAttendanceService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 用户考勤控制器
@@ -38,6 +42,10 @@ public class UserAttendanceController extends BaseController {
     private IUserAttendanceService userAttendanceService;
     @Autowired
     private SellController sellController;
+    @Autowired
+    private IUserService userService;
+    @Autowired
+    private IDeptService deptService;
 
     /**
      * 跳转到用户考勤首页
@@ -74,11 +82,14 @@ public class UserAttendanceController extends BaseController {
      */
     @RequestMapping(value = "/list")
     @ResponseBody
-    public Object list(String condition) {
-        Page<UserAttendance> page = new PageFactory<UserAttendance>().defaultPage();
-        BaseEntityWrapper<UserAttendance> baseEntityWrapper = new BaseEntityWrapper<>();
-        Page<UserAttendance> result = userAttendanceService.selectPage(page, baseEntityWrapper);
-        return super.packForBT(result);
+    public Object list(String deptId, String name, String begindate, String enddate) {
+        List<Dept> deptList = new ArrayList<>();
+        List<Dept> depts = sellController.getTreeMenuList(deptList, Integer.parseInt(deptId));
+
+        Page<Map<String,Object>> mapPage = new PageFactory<Map<String,Object>>().defaultPage();
+        List<Map<String,Object>> mapList = userAttendanceService.findUserAttendanceData(depts,name,begindate,enddate,mapPage.getOffset(),mapPage.getLimit());
+        mapPage.setRecords(mapList);
+        return super.packForBT(mapPage);
     }
 
     /**
