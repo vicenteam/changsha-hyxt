@@ -22,7 +22,7 @@ import java.util.Map;
 public class UserAttendanceServiceImpl extends ServiceImpl<UserAttendanceMapper, UserAttendance> implements IUserAttendanceService {
 
     @Override
-    public List<Map<String, Object>> findUserAttendanceData(List<Dept> deptList, String name, String begindate, String enddate, Integer pageNum, Integer pageSize) {
-        return this.baseMapper.findUserAttendanceData(deptList,name,begindate,enddate,pageNum,pageSize);
+    public List<Map<String, Object>> findUserAttendanceData(List<Dept> deptList, String name, String begindate, String enddate, Integer pageNum, Integer pageSize, Integer type) {
+        return this.baseMapper.findUserAttendanceData(deptList,name,begindate,enddate,pageNum,pageSize,type);
     }
 }

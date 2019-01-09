@@ -3,6 +3,7 @@ package com.stylefeng.guns.modular.main.service;
 import com.stylefeng.guns.modular.system.model.Dept;
 import com.stylefeng.guns.modular.system.model.UserAttendance;
 import com.baomidou.mybatisplus.service.IService;
+import io.swagger.models.auth.In;
 
 import java.util.List;
 import java.util.Map;
@@ -18,5 +19,5 @@ import java.util.Map;
 public interface IUserAttendanceService extends IService<UserAttendance> {
 
     public List<Map<String,Object>> findUserAttendanceData(List<Dept> deptList, String name, String begindate
-                                , String enddate, Integer pageNum, Integer pageSize);
+                                , String enddate, Integer pageNum, Integer pageSize, Integer type);
 }

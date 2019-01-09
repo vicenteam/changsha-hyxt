@@ -82,12 +82,12 @@ public class UserAttendanceController extends BaseController {
      */
     @RequestMapping(value = "/list")
     @ResponseBody
-    public Object list(String deptId, String name, String begindate, String enddate) {
+    public Object list(String deptId, String name, String begindate, String enddate, Integer type) {
         List<Dept> deptList = new ArrayList<>();
         List<Dept> depts = sellController.getTreeMenuList(deptList, Integer.parseInt(deptId));
 
         Page<Map<String,Object>> mapPage = new PageFactory<Map<String,Object>>().defaultPage();
-        List<Map<String,Object>> mapList = userAttendanceService.findUserAttendanceData(depts,name,begindate,enddate,mapPage.getOffset(),mapPage.getLimit());
+        List<Map<String,Object>> mapList = userAttendanceService.findUserAttendanceData(depts,name,begindate,enddate,mapPage.getOffset(),mapPage.getLimit(),type);
         mapPage.setRecords(mapList);
         return super.packForBT(mapPage);
     }

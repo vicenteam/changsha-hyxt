@@ -34,7 +34,7 @@
             #{deptList.id}
         </foreach>
         <if test="name != null and name != ''">
-            and b.name = #{name}
+            and b.name like concat('%',#{name},'#')
         </if>
         <if test="begindate != null and begindate != ''">
             and a.checkYearMonth &gt; #{begindate}
@@ -42,6 +42,20 @@
         <if test="enddate != null and enddate != ''">
             and a.checkYearMonth &lt; #{enddate}
         </if>
+        <choose>
+            <when test="type == 1">
+                and a.checkTime1 is not null and a.checkTime1 &lt;&gt; ''
+                and a.checkTime2 is not null and a.checkTime2 &lt;&gt; ''
+            </when>
+            <when test="type == 2">
+                and a.checkTime1 is not null and a.checkTime1 &lt;&gt; ''
+            </when>
+            <when test="type == 3">
+                and a.checkTime2 is not null and a.checkTime2 &lt;&gt; ''
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
         limit #{pageNum},#{pageSize}
     </select>
 </mapper>

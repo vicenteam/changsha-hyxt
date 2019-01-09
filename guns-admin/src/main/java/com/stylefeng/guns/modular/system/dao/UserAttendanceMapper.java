@@ -19,7 +19,8 @@ import java.util.Map;
 public interface UserAttendanceMapper extends BaseMapper<UserAttendance> {
 
     public List<Map<String,Object>> findUserAttendanceData(
-                        @Param("deptList") List<Dept> deptList, @Param("name") String name
-                        , @Param("begindate") String begindate, @Param("enddate") String enddate
-                        , @Param("pageNum") Integer pageNum, @Param("pageSize") Integer pageSize);
+                         @Param("deptList") List<Dept> deptList,@Param("name") String name
+                        ,@Param("begindate") String begindate,@Param("enddate") String enddate
+                        ,@Param("pageNum") Integer pageNum,@Param("pageSize") Integer pageSize
+                        ,@Param("type") Integer type);
 }

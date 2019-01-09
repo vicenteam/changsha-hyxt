@@ -16,6 +16,14 @@
                                 <#NameCon id="name" name="姓名" />
                             </div>
                             <div class="col-sm-2">
+                                <#SelectCon name="考勤状态" id="type" underline="true">
+                                    <option value="0">全部</option>
+                                    <option value="1">全天</option>
+                                    <option value="2">上午</option>
+                                    <option value="3">下午</option>
+                                </#SelectCon>
+                            </div>
+                            <div class="col-sm-2">
                                 <#TimeCon id="begindate" name="开始时间" isTime="false" pattern="yyyy-MM-dd HH:mm:ss" />
                             </div>
                             <div class="col-sm-2">
