@@ -24,6 +24,7 @@
         a.checkYearMonth,
         a.checkTime1,
         a.checkTime2,
+        a.userId,
         c.fullname
         from main_user_attendance a,sys_user b,sys_dept c
         where
