@@ -2,14 +2,42 @@ package com.stylefeng.guns.modular.face;
 
 import com.baidu.aip.face.AipFace;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
-
+@Component
 public class FaceUtil {
     //设置APPID/AK/SK
-    public static final String APP_ID = "14515758";
-    public static final String API_KEY = "K6hg9jGkjRQHsgdgaOlMoBU6";
-    public static final String SECRET_KEY = "ceUk49nKFuFjNjOGIIpSosSvWCMvlbdZ";
+
+    public static  String APP_ID ;
+
+    public static  String API_KEY ;
+    public static  String SECRET_KEY ;
+
+    public static String getAppId() {
+        return APP_ID;
+    }
+    @Value("${baidu.face-appid}")
+    public  void setAppId(String appId) {
+        APP_ID = appId;
+    }
+
+    public static String getApiKey() {
+        return API_KEY;
+    }
+    @Value("${baidu.face-api-key}")
+    public  void setApiKey(String apiKey) {
+        API_KEY = apiKey;
+    }
+
+    public static String getSecretKey() {
+        return SECRET_KEY;
+    }
+    @Value("${baidu.face-secret-key}")
+    public  void setSecretKey(String secretKey) {
+        SECRET_KEY = secretKey;
+    }
 
     public static void main(String[] args) {
         // 初始化一个AipFace

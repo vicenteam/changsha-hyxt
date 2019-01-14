@@ -264,6 +264,7 @@ public class UserMgrController extends BaseController {
                     log.info("base64->" + userBase64ImgData);
                     if (!StringUtils.isEmpty(userBase64ImgData)) {
                         AipFace client = new AipFace(FaceUtil.APP_ID, FaceUtil.API_KEY, FaceUtil.SECRET_KEY);
+                        System.out.println(FaceUtil.APP_ID+"---");
                         if (StringUtils.isEmpty(user.getAvatar())) {//新增
                             new FaceUtil().userRegister(client, JSON.toJSONString(user), userBase64ImgData, user.getDeptid() + "", user.getId() + "");
                         } else {//更新
