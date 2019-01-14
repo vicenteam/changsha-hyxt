@@ -97,7 +97,7 @@ public class FaceUtil {
 
     // 人脸更新
     JSONObject res = client.updateUser(imgBase64.toString(), imageType, deptId, userId, options);
-//    System.out.println(res.toString(2));
+    System.out.println(res.toString(2));
     return res;
 }
 }
