@@ -227,7 +227,7 @@ public class UserMgrController extends BaseController {
             @Override
             public void run() {
                 String userBase64ImgData = (String) request.getSession().getAttribute("userBase64ImgData");
-                log.info("base64->"+userBase64ImgData);
+                log.info("base64->" + userBase64ImgData);
                 if (!StringUtils.isEmpty(userBase64ImgData)) {
                     AipFace client = new AipFace(FaceUtil.APP_ID, FaceUtil.API_KEY, FaceUtil.SECRET_KEY);
                     new FaceUtil().userRegister(client, JSON.toJSONString(user), userBase64ImgData, user.getDeptid() + "", user.getId() + "");
@@ -261,13 +261,13 @@ public class UserMgrController extends BaseController {
                 @Override
                 public void run() {
                     String userBase64ImgData = (String) request.getSession().getAttribute("userBase64ImgData");
-                    log.info("base64->"+userBase64ImgData);
+                    log.info("base64->" + userBase64ImgData);
                     if (!StringUtils.isEmpty(userBase64ImgData)) {
                         AipFace client = new AipFace(FaceUtil.APP_ID, FaceUtil.API_KEY, FaceUtil.SECRET_KEY);
-                        if(StringUtils.isEmpty(user.getAvatar())){//新增
+                        if (StringUtils.isEmpty(user.getAvatar())) {//新增
                             new FaceUtil().userRegister(client, JSON.toJSONString(user), userBase64ImgData, user.getDeptid() + "", user.getId() + "");
-                        }else {//更新
-                            new FaceUtil().faceUpdate(client, user.getId() + "", userBase64ImgData, JSON.toJSONString(user), user.getDeptid()+ "");
+                        } else {//更新
+                            new FaceUtil().faceUpdate(client, user.getId() + "", userBase64ImgData, JSON.toJSONString(user), user.getDeptid() + "");
 
                         }
                     }
@@ -289,22 +289,22 @@ public class UserMgrController extends BaseController {
             if (shiroUser.getId().equals(user.getId())) {
                 this.userService.updateById(UserFactory.editUser(user, oldUser));
                 //更新人脸库
-               new Runnable() {
-                   @Override
-                   public void run() {
-                       String userBase64ImgData = (String) request.getSession().getAttribute("userBase64ImgData");
-                       log.info("base64->"+userBase64ImgData);
-                       if (!StringUtils.isEmpty(userBase64ImgData)) {
-                           AipFace client = new AipFace(FaceUtil.APP_ID, FaceUtil.API_KEY, FaceUtil.SECRET_KEY);
-                           if(StringUtils.isEmpty(user.getAvatar())){//新增
-                               new FaceUtil().userRegister(client, JSON.toJSONString(user), userBase64ImgData, user.getDeptid() + "", user.getId() + "");
-                           }else {//更新
-                               new FaceUtil().faceUpdate(client, user.getId() + "", userBase64ImgData, JSON.toJSONString(user), user.getId() + "");
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        String userBase64ImgData = (String) request.getSession().getAttribute("userBase64ImgData");
+                        log.info("base64->" + userBase64ImgData);
+                        if (!StringUtils.isEmpty(userBase64ImgData)) {
+                            AipFace client = new AipFace(FaceUtil.APP_ID, FaceUtil.API_KEY, FaceUtil.SECRET_KEY);
+                            if (StringUtils.isEmpty(user.getAvatar())) {//新增
+                                new FaceUtil().userRegister(client, JSON.toJSONString(user), userBase64ImgData, user.getDeptid() + "", user.getId() + "");
+                            } else {//更新
+                                new FaceUtil().faceUpdate(client, user.getId() + "", userBase64ImgData, JSON.toJSONString(user), user.getId() + "");
 
-                           }
-                       }
-                   }
-               }.run();
+                            }
+                        }
+                    }
+                }.run();
                 //更改密码
                 if (user.getPassword() != null) {
                     if (!user.getPassword().equals(oldUser.getPassword())) {
@@ -531,7 +531,7 @@ public class UserMgrController extends BaseController {
             }
             //获得对比结果
             FaceMode faceMode = JSON.parseObject(user.toString(2), FaceMode.class);
-            if (faceMode != null && faceMode.getResult().getUser_list().size() >= 1) {
+            if (faceMode != null && faceMode.getResult() != null && faceMode.getResult().getUser_list().size() >= 1) {
                 //数据转换
                 FaceUser faceUser = faceMode.getResult().getUser_list().get(0);
                 String deptId = faceUser.getGroup_id();
@@ -595,6 +595,7 @@ public class UserMgrController extends BaseController {
 
 
         } catch (Exception e) {
+            e.printStackTrace();
             throw new GunsException(BizExceptionEnum.UPLOAD_ERROR);
         }
         return null;

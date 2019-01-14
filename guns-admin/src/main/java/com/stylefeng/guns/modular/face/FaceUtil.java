@@ -48,7 +48,7 @@ public class FaceUtil {
 //        JSONObject res = client.search(sb.toString(), imageType, groupIdList, options);
         JSONObject res = client.search(imgBase64Data!=null?imgBase64Data:sb.toString(), imageType, deptId, options);
 //        JSONObject res = client.search("e20751b23ed673e8404001774adf439b", "FACE_TOKEN", groupIdList, options);
-        System.out.println(res.toString(2));
+//        System.out.println(res.toString(2));
         return res;
 
     }
@@ -74,7 +74,7 @@ public class FaceUtil {
         // 人脸注册
 //        JSONObject res = client.addUser(sb.toString(), imageType, groupId, userId, options);
         JSONObject res = client.addUser(imgBase64Data!=null?imgBase64Data:sb.toString(), imageType, deptId, userId, options);
-        System.out.println(res.toString(2));
+//        System.out.println(res.toString(2));
         return res;
     }
 
@@ -97,7 +97,7 @@ public class FaceUtil {
 
     // 人脸更新
     JSONObject res = client.updateUser(imgBase64.toString(), imageType, deptId, userId, options);
-    System.out.println(res.toString(2));
+//    System.out.println(res.toString(2));
     return res;
 }
 }
