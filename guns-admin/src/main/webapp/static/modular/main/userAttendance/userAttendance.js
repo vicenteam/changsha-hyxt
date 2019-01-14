@@ -22,8 +22,8 @@ UserAttendance.initColumn = function () {
             {title: '门店', field: 'fullname', visible: true, align: 'center', valign: 'middle'},
             {title: '操作', field: 'id', visible: true, align: 'center', width:'300px', valign: 'middle',formatter: function (value, row, index) {
 
-                      return  '<button type="button" class=" btn-primary button-margin" onclick="UserAttendance.opencheckHistory(' + row.userId + ')" id=""><i class="fa fa-edit"></i>&nbsp;打卡记录</button>'+
-                          '<button type="button" class=" btn-primary button-margin" onclick="UserAttendance.openintroducer(' + row.userId + ')" id=""><i class="fa fa-group"></i>&nbsp;打卡异常信息</button>'
+                      return  '<button type="button" class=" btn-primary button-margin" onclick="UserAttendance.opencheckHistory(' + row.userId + ')" id=""><i class="fa fa-edit"></i>&nbsp;打卡记录</button>'
+                          // '<button type="button" class=" btn-primary button-margin" onclick="UserAttendance.openintroducer(' + row.userId + ')" id=""><i class="fa fa-group"></i>&nbsp;打卡异常信息</button>'
                          ;
                 }},
     ];
