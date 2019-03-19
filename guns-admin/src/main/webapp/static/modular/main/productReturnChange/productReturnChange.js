@@ -125,19 +125,20 @@ ProductReturnChange.openProductReturnChangeDetail2 = function () {
  * 删除商品退换货
  */
 ProductReturnChange.delete = function () {
-    layer.confirm('您确定要删除本条数据吗？', {btn: ['确定', '取消']}, function () {
-        layer.closeAll('dialog');
-        if (this.check()) {
+    if (this.check()) {
+        var id = this.seItem.id;
+        layer.confirm('您确定要删除本条数据吗？', {btn: ['确定', '取消']}, function () {
+            layer.closeAll('dialog');
             var ajax = new $ax(Feng.ctxPath + "/productReturnChange/delete", function (data) {
                 Feng.success("删除成功!");
                 ProductReturnChange.table.refresh();
             }, function (data) {
                 Feng.error("删除失败!" + data.responseJSON.message + "!");
             });
-            ajax.set("productReturnChangeId", this.seItem.id);
+            ajax.set("productReturnChangeId", id);
             ajax.start();
-        }
-    });
+        });
+    }
 };
 
 /**

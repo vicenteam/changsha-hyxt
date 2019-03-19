@@ -103,6 +103,7 @@ Integralrecordtype.openIntegralrecordtypeDetail = function () {
  */
 Integralrecordtype.delete = function () {
     if (this.check()) {
+        var id = this.seItem.id;
         layer.confirm('您确定要删除本条数据吗？', {btn: ['确定', '取消']}, function () {
             layer.closeAll('dialog');
             var ajax = new $ax(Feng.ctxPath + "/integralrecordtype/delete", function (data) {
@@ -111,7 +112,7 @@ Integralrecordtype.delete = function () {
             }, function (data) {
                 Feng.error("删除失败!" + data.responseJSON.message + "!");
             });
-            ajax.set("integralrecordtypeId", this.seItem.id);
+            ajax.set("integralrecordtypeId", id);
             ajax.start();
         });
     }
