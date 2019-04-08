@@ -41,14 +41,14 @@ public class FaceUtil {
 
     public static void main(String[] args) {
         // 初始化一个AipFace
-        AipFace client = new AipFace(APP_ID, API_KEY, SECRET_KEY);
+        AipFace client = new AipFace("14515758", "K6hg9jGkjRQHsgdgaOlMoBU6", "ceUk49nKFuFjNjOGIIpSosSvWCMvlbdZ");
 
 //        new FaceUtil().findUser(client);
 //        userRegister(client);
         //注册
 //        new FaceUtil().userRegister(client,"{userId:1,userName:张三}",null,"43","1");
         //查询
-        new FaceUtil().findUser(client,null,"43");
+        new FaceUtil().findUser(client,"","48");
         //修改
 
     }
@@ -76,7 +76,7 @@ public class FaceUtil {
 //        JSONObject res = client.search(sb.toString(), imageType, groupIdList, options);
         JSONObject res = client.search(imgBase64Data!=null?imgBase64Data:sb.toString(), imageType, deptId, options);
 //        JSONObject res = client.search("e20751b23ed673e8404001774adf439b", "FACE_TOKEN", groupIdList, options);
-//        System.out.println(res.toString(2));
+        System.out.println(res.toString(2));
         return res;
 
     }
@@ -102,7 +102,8 @@ public class FaceUtil {
         // 人脸注册
 //        JSONObject res = client.addUser(sb.toString(), imageType, groupId, userId, options);
         JSONObject res = client.addUser(imgBase64Data!=null?imgBase64Data:sb.toString(), imageType, deptId, userId, options);
-//        System.out.println(res.toString(2));
+        System.out.println("deptId->"+deptId+" userId->"+userId+" options->"+options);
+        System.out.println(res.toString(2));
         return res;
     }
 
@@ -125,6 +126,7 @@ public class FaceUtil {
 
     // 人脸更新
     JSONObject res = client.updateUser(imgBase64.toString(), imageType, deptId, userId, options);
+        System.out.println("deptId->"+deptId+" userId->"+userId+" options->"+options);
     System.out.println(res.toString(2));
     return res;
 }

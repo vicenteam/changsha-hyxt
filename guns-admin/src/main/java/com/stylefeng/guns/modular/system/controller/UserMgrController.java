@@ -25,11 +25,13 @@ import com.stylefeng.guns.modular.face.FaceMode;
 import com.stylefeng.guns.modular.face.FaceUser;
 import com.stylefeng.guns.modular.face.FaceUtil;
 import com.stylefeng.guns.modular.main.service.IUserAttendanceService;
+import com.stylefeng.guns.modular.main.service.IUserAttendanceSourceService;
 import com.stylefeng.guns.modular.system.dao.UserMapper;
 import com.stylefeng.guns.modular.system.factory.UserFactory;
 import com.stylefeng.guns.modular.system.model.Membermanagement;
 import com.stylefeng.guns.modular.system.model.User;
 import com.stylefeng.guns.modular.system.model.UserAttendance;
+import com.stylefeng.guns.modular.system.model.UserAttendanceSource;
 import com.stylefeng.guns.modular.system.service.IUserService;
 import com.stylefeng.guns.modular.system.transfer.UserDto;
 import com.stylefeng.guns.modular.system.warpper.UserWarpper;
@@ -77,6 +79,8 @@ public class UserMgrController extends BaseController {
     private IUserService userService;
     @Autowired
     private IUserAttendanceService userAttendanceService;
+    @Autowired
+    private IUserAttendanceSourceService userAttendanceSourceService;
 
     /**
      * 跳转到查看管理员列表的页面
@@ -203,7 +207,7 @@ public class UserMgrController extends BaseController {
     @BussinessLog(value = "添加管理员", key = "account", dict = UserDict.class)
     @Permission(Const.ADMIN_NAME)
     @ResponseBody
-    public Tip add(@Valid UserDto user, BindingResult result, HttpServletRequest request) {
+    public Tip add(@Valid User user, BindingResult result, HttpServletRequest request) {
         if (result.hasErrors()) {
             throw new GunsException(BizExceptionEnum.REQUEST_NULL);
         }
@@ -220,20 +224,20 @@ public class UserMgrController extends BaseController {
         user.setStatus(ManagerStatus.OK.getCode());
         user.setCreatetime(new Date());
 
-        this.userService.insert(UserFactory.createUser(user));
+        this.userService.insert(user);
 
-        //更新人脸库
-        new Runnable() {
-            @Override
-            public void run() {
-                String userBase64ImgData = (String) request.getSession().getAttribute("userBase64ImgData");
-                log.info("base64->" + userBase64ImgData);
-                if (!StringUtils.isEmpty(userBase64ImgData)) {
-                    AipFace client = new AipFace(FaceUtil.APP_ID, FaceUtil.API_KEY, FaceUtil.SECRET_KEY);
-                    new FaceUtil().userRegister(client, JSON.toJSONString(user), userBase64ImgData, user.getDeptid() + "", user.getId() + "");
-                }
-            }
-        }.run();
+//        //更新人脸库
+//        new Runnable() {
+//            @Override
+//            public void run() {
+//                String userBase64ImgData = (String) request.getSession().getAttribute("userBase64ImgData");
+//                log.info("base64->" + userBase64ImgData);
+//                if (!StringUtils.isEmpty(userBase64ImgData)) {
+//                    AipFace client = new AipFace(FaceUtil.APP_ID, FaceUtil.API_KEY, FaceUtil.SECRET_KEY);
+//                    new FaceUtil().userRegister(client, JSON.toJSONString(user), userBase64ImgData, user.getDeptid() + "", user.getId() + "");
+//                }
+//            }
+//        }.run();
 
         return SUCCESS_TIP;
     }
@@ -247,7 +251,7 @@ public class UserMgrController extends BaseController {
     @BussinessLog(value = "修改管理员", key = "account", dict = UserDict.class)
     @ResponseBody
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRES_NEW)
-    public Tip edit(@Valid UserDto user, BindingResult result, HttpServletRequest request) throws NoPermissionException {
+    public Tip edit(@Valid User user, BindingResult result, HttpServletRequest request) throws NoPermissionException {
         if (result.hasErrors()) {
             throw new GunsException(BizExceptionEnum.REQUEST_NULL);
         }
@@ -255,25 +259,24 @@ public class UserMgrController extends BaseController {
         User oldUser = userService.selectById(user.getId());
 
         if (ShiroKit.hasRole(Const.ADMIN_NAME)) {
-            this.userService.updateById(UserFactory.editUser(user, oldUser));
-            //更新人脸库
-            new Runnable() {
-                @Override
-                public void run() {
-                    String userBase64ImgData = (String) request.getSession().getAttribute("userBase64ImgData");
-                    log.info("base64->" + userBase64ImgData);
-                    if (!StringUtils.isEmpty(userBase64ImgData)) {
-                        AipFace client = new AipFace(FaceUtil.APP_ID, FaceUtil.API_KEY, FaceUtil.SECRET_KEY);
-                        System.out.println(FaceUtil.APP_ID+"---");
-                        if (StringUtils.isEmpty(user.getAvatar())) {//新增
-                            new FaceUtil().userRegister(client, JSON.toJSONString(user), userBase64ImgData, user.getDeptid() + "", user.getId() + "");
-                        } else {//更新
-                            new FaceUtil().faceUpdate(client, user.getId() + "", userBase64ImgData, JSON.toJSONString(user), user.getDeptid() + "");
-
-                        }
-                    }
-                }
-            }.run();
+            this.userService.updateById(user);
+//            //更新人脸库
+//            new Runnable() {
+//                @Override
+//                public void run() {
+//                    String userBase64ImgData = (String) request.getSession().getAttribute("userBase64ImgData");
+//                    log.info("base64->" + userBase64ImgData);
+//                    if (!StringUtils.isEmpty(userBase64ImgData)) {
+//                        AipFace client = new AipFace(FaceUtil.APP_ID, FaceUtil.API_KEY, FaceUtil.SECRET_KEY);
+//                        if (StringUtils.isEmpty(user.getAvatar())) {//新增
+//                            new FaceUtil().userRegister(client, JSON.toJSONString(user), userBase64ImgData, user.getDeptid() + "", user.getId() + "");
+//                        } else {//更新
+//                            new FaceUtil().faceUpdate(client, user.getId() + "", userBase64ImgData, JSON.toJSONString(user), user.getDeptid() + "");
+//
+//                        }
+//                    }
+//                }
+//            }.run();
             //更改密码
             if (user.getPassword() != null) {
                 if (!user.getPassword().equals(oldUser.getPassword())) {
@@ -288,24 +291,24 @@ public class UserMgrController extends BaseController {
             assertAuth(user.getId());
             ShiroUser shiroUser = ShiroKit.getUser();
             if (shiroUser.getId().equals(user.getId())) {
-                this.userService.updateById(UserFactory.editUser(user, oldUser));
+                this.userService.updateById(user);
                 //更新人脸库
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        String userBase64ImgData = (String) request.getSession().getAttribute("userBase64ImgData");
-                        log.info("base64->" + userBase64ImgData);
-                        if (!StringUtils.isEmpty(userBase64ImgData)) {
-                            AipFace client = new AipFace(FaceUtil.APP_ID, FaceUtil.API_KEY, FaceUtil.SECRET_KEY);
-                            if (StringUtils.isEmpty(user.getAvatar())) {//新增
-                                new FaceUtil().userRegister(client, JSON.toJSONString(user), userBase64ImgData, user.getDeptid() + "", user.getId() + "");
-                            } else {//更新
-                                new FaceUtil().faceUpdate(client, user.getId() + "", userBase64ImgData, JSON.toJSONString(user), user.getId() + "");
-
-                            }
-                        }
-                    }
-                }.run();
+//                new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        String userBase64ImgData = (String) request.getSession().getAttribute("userBase64ImgData");
+//                        log.info("base64->" + userBase64ImgData);
+//                        if (!StringUtils.isEmpty(userBase64ImgData)) {
+//                            AipFace client = new AipFace(FaceUtil.APP_ID, FaceUtil.API_KEY, FaceUtil.SECRET_KEY);
+//                            if (StringUtils.isEmpty(user.getAvatar())) {//新增
+//                                new FaceUtil().userRegister(client, JSON.toJSONString(user), userBase64ImgData, user.getDeptid() + "", user.getId() + "");
+//                            } else {//更新
+//                                new FaceUtil().faceUpdate(client, user.getId() + "", userBase64ImgData, JSON.toJSONString(user), user.getId() + "");
+//
+//                            }
+//                        }
+//                    }
+//                }.run();
                 //更改密码
                 if (user.getPassword() != null) {
                     if (!user.getPassword().equals(oldUser.getPassword())) {
@@ -538,9 +541,10 @@ public class UserMgrController extends BaseController {
                 String deptId = faceUser.getGroup_id();
                 String user_id = faceUser.getUser_id();
                 Double score = faceUser.getScore();
-                if (score >= 60) {//图片相似率
+                if (score >= 80) {//图片相似率
                     //数据处理
-                    User user1 = userService.selectById(user_id);
+                    User user1 = new User();
+                    UserAttendanceSource userAttendanceSource = userAttendanceSourceService.selectById(user_id);
                     String format = DateUtil.format(new Date(), "yyyy-MM-dd");
                     //判断上午或者下午
                     int hous = Integer.parseInt(DateUtil.format(new Date(), "HH"));
@@ -549,12 +553,12 @@ public class UserMgrController extends BaseController {
                         EntityWrapper<UserAttendance> userAttendanceEntityWrapper = new EntityWrapper<>();
                         userAttendanceEntityWrapper.eq("checkYearMonth", format);
                         userAttendanceEntityWrapper.eq("userId", user_id);
-                        userAttendanceEntityWrapper.eq("deptId", user1.getDeptid());
+                        userAttendanceEntityWrapper.eq("deptId", userAttendanceSource.getDeptId());
                         int i = userAttendanceService.selectCount(userAttendanceEntityWrapper);
                         if (i == 0) {
                             UserAttendance userAttendance = new UserAttendance();
                             userAttendance.setCheckTime1(DateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
-                            userAttendance.setDeptId(user1.getDeptid());
+                            userAttendance.setDeptId(userAttendanceSource.getDeptId());
                             userAttendance.setUserId(Integer.parseInt(user_id));
                             userAttendance.setCheckYearMonth(format);
                             userAttendanceService.insert(userAttendance);
@@ -565,12 +569,12 @@ public class UserMgrController extends BaseController {
                         EntityWrapper<UserAttendance> userAttendanceEntityWrapper = new EntityWrapper<>();
                         userAttendanceEntityWrapper.eq("checkYearMonth", format);
                         userAttendanceEntityWrapper.eq("userId", user_id);
-                        userAttendanceEntityWrapper.eq("deptId", user1.getDeptid());
+                        userAttendanceEntityWrapper.eq("deptId", userAttendanceSource.getDeptId());
                         int i = userAttendanceService.selectCount(userAttendanceEntityWrapper);
                         if (i == 0) {
                             UserAttendance userAttendance = new UserAttendance();
                             userAttendance.setCheckTime1(DateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
-                            userAttendance.setDeptId(user1.getDeptid());
+                            userAttendance.setDeptId(userAttendanceSource.getDeptId());
                             userAttendance.setUserId(Integer.parseInt(user_id));
                             userAttendance.setCheckYearMonth(format);
                             userAttendance.setCheckTime2(DateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
@@ -585,6 +589,9 @@ public class UserMgrController extends BaseController {
 //                    userAttendanceEntityWrapper.eq("")
                     //返回结果
                     user1.setVersion(200);
+                    user1.setName(userAttendanceSource.getName());
+                    user1.setPhone(userAttendanceSource.getPhone());
+                    user1.setSex(Integer.parseInt(userAttendanceSource.getSex()));
                     return user1;
                 } else {
                     user2.setVersion(202);

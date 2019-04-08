@@ -26,7 +26,7 @@
         a.checkTime2,
         a.userId,
         c.fullname
-        from main_user_attendance a,sys_user b,sys_dept c
+        from main_user_attendance a,main_user_attendance_source b,sys_dept c
         where
         a.userId = b.id
         and a.deptId = c.id
@@ -35,7 +35,7 @@
             #{deptList.id}
         </foreach>
         <if test="name != null and name != ''">
-            and b.name like concat('%',#{name},'#')
+            and b.name like concat('%',#{name},'%')
         </if>
         <if test="begindate != null and begindate != ''">
             and a.checkYearMonth &gt; #{begindate}
