@@ -75,6 +75,7 @@ QiandaoCheckin.openQiandaoCheckinDetail = function () {
  */
 QiandaoCheckin.delete = function () {
     if (this.check()) {
+        var id = this.seItem.id;
         layer.confirm('您确定要删除本条数据吗？', {btn: ['确定', '取消']}, function () {
             layer.closeAll('dialog');
             var ajax = new $ax(Feng.ctxPath + "/qiandaoCheckin/delete", function (data) {
@@ -83,7 +84,7 @@ QiandaoCheckin.delete = function () {
             }, function (data) {
                 Feng.error("删除失败!" + data.responseJSON.message + "!");
             });
-            ajax.set("qiandaoCheckinId", this.seItem.id);
+            ajax.set("qiandaoCheckinId", id);
             ajax.start();
         });
     }

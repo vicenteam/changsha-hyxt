@@ -45,7 +45,7 @@ log:
 spring:
   profiles: local
   datasource:
-    url: jdbc:mysql://47.92.75.132:3306/changsha_guns?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false&serverTimezone=UTC
+    url: jdbc:mysql://47.92.75.13:3306/changsha_guns?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false&serverTimezone=UTC
     username: root
     password: Xxkj@123
     db-name: changsha_guns #用来搜集数据库的所有表
@@ -55,7 +55,7 @@ spring:
 guns:
   muti-datasource:
     open: false
-    url: jdbc:mysql://47.92.75.132:3306/changsha_guns?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false&serverTimezone=UTC
+    url: jdbc:mysql://47.92.75.13:3306/changsha_guns?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false&serverTimezone=UTC
     username: root
     password: root
     dataSourceNames:
@@ -67,7 +67,7 @@ guns:
 spring:
   profiles: dev
   datasource:
-    url: jdbc:mysql://47.92.75.132:3306/guns4_0?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false&serverTimezone=UTC
+    url: jdbc:mysql://47.92.75.13:3306/guns4_0?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false&serverTimezone=UTC
     username: root
     password: root
     db-name: guns_5 #用来搜集数据库的所有表
@@ -78,7 +78,7 @@ spring:
 spring:
   profiles: test
   datasource:
-    url: jdbc:mysql://47.92.75.132:3306/guns4_0?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false&serverTimezone=UTC
+    url: jdbc:mysql://47.92.75.13:3306/guns4_0?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false&serverTimezone=UTC
     username: root
     password: root
 
