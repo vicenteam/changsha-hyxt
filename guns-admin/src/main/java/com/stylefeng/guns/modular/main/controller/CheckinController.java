@@ -9,6 +9,7 @@ import com.stylefeng.guns.modular.main.service.*;
 import com.stylefeng.guns.modular.system.model.*;
 import com.stylefeng.guns.modular.system.service.IDeptService;
 import com.stylefeng.guns.modular.system.service.IUserService;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.stylefeng.guns.core.common.constant.factory.PageFactory;
@@ -31,6 +32,7 @@ import java.util.*;
  * @Date 2018-08-14 10:12:47
  */
 @Controller
+@Scope("prototype")
 @RequestMapping("/checkin")
 public class CheckinController extends BaseController {
 

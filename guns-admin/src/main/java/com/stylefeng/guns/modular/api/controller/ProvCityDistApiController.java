@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
+
 @RequestMapping("/api/provCityDistApi")
 @Api(description = "省市区")
 public class ProvCityDistApiController extends BaseController {

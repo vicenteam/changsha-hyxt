@@ -39,6 +39,7 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -66,6 +67,7 @@ import java.util.*;
  * @Date 2017年1月11日 下午1:08:17
  */
 @Controller
+@Scope("prototype")
 @RequestMapping("/mgr")
 public class UserMgrController extends BaseController {
 

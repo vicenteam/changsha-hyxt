@@ -9,6 +9,7 @@ import com.stylefeng.guns.core.util.DateUtil;
 import com.stylefeng.guns.modular.main.service.*;
 import com.stylefeng.guns.modular.system.model.*;
 import com.stylefeng.guns.modular.system.service.IUserService;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.stylefeng.guns.core.common.constant.factory.PageFactory;
@@ -35,6 +36,7 @@ import java.util.Map;
  * @Date 2018-12-11 10:46:39
  */
 @Controller
+@Scope("prototype")
 @RequestMapping("/productReturnChange")
 public class ProductReturnChangeController extends BaseController {
 

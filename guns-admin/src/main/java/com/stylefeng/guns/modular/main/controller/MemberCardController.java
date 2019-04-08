@@ -2,6 +2,7 @@ package com.stylefeng.guns.modular.main.controller;
 
 import com.stylefeng.guns.core.base.controller.BaseController;
 import com.stylefeng.guns.core.common.BaseEntityWrapper.BaseEntityWrapper;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
@@ -17,6 +18,7 @@ import com.stylefeng.guns.modular.main.service.IMemberCardService;
  * @Date 2018-08-10 15:39:46
  */
 @Controller
+@Scope("prototype")
 @RequestMapping("/memberCard")
 public class MemberCardController extends BaseController {
 

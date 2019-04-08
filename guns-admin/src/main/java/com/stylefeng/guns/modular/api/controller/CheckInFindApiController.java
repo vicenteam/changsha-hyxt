@@ -18,6 +18,7 @@ import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -27,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
+@Scope("prototype")
 @RequestMapping("/api/checkinfindapi")
 @Api(description = "签到查询")
 public class CheckInFindApiController extends BaseController {

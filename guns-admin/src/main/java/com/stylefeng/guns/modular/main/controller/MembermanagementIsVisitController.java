@@ -20,6 +20,7 @@ import org.apache.poi.xssf.streaming.SXSSFRow;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,6 +42,7 @@ import java.util.*;
  * @Date 2018-08-10 16:00:02
  */
 @Controller
+@Scope("prototype")
 @RequestMapping("/membermanagementisvisit")
 public class MembermanagementIsVisitController extends BaseController {
 

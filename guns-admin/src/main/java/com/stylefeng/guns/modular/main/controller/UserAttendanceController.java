@@ -7,6 +7,7 @@ import com.stylefeng.guns.modular.system.model.Dept;
 import com.stylefeng.guns.modular.system.model.User;
 import com.stylefeng.guns.modular.system.service.IDeptService;
 import com.stylefeng.guns.modular.system.service.IUserService;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.stylefeng.guns.core.common.constant.factory.PageFactory;
@@ -33,6 +34,7 @@ import java.util.Map;
  * @Date 2019-01-07 17:13:48
  */
 @Controller
+@Scope("prototype")
 @RequestMapping("/userAttendance")
 public class UserAttendanceController extends BaseController {
 

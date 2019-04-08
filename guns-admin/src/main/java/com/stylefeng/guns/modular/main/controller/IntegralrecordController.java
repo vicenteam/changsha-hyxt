@@ -16,6 +16,7 @@ import com.stylefeng.guns.modular.main.service.IMembermanagementService;
 import com.stylefeng.guns.modular.system.controller.DeptController;
 import com.stylefeng.guns.modular.system.model.*;
 import com.stylefeng.guns.modular.system.service.IDictService;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.stylefeng.guns.core.common.constant.factory.PageFactory;
@@ -45,6 +46,7 @@ import java.util.Map;
  * @Date 2018-08-14 16:47:26
  */
 @Controller
+@Scope("prototype")
 @RequestMapping("/integralrecord")
 public class IntegralrecordController extends BaseController {
 

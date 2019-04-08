@@ -21,6 +21,7 @@ import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,17 +30,14 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+@Scope("prototype")
 @RequestMapping("/api/jifenfindapi")
 @Api(description = "积分查询")
 public class JifenFindApiController extends BaseController {
     private final Logger log = LoggerFactory.getLogger(JifenFindApiController.class);
 
     @Autowired
-    private IntegralRecordQueryController integralRecordQueryController;
-    @Autowired
     private MembermanagementController membermanagementController;
-    @Autowired
-    private IMembermanagementService membermanagementService;
     @Autowired
     private IIntegralrecordtypeService iIntegralrecordtypeService;
 

@@ -5,6 +5,7 @@ import com.stylefeng.guns.core.base.controller.BaseController;
 import com.stylefeng.guns.modular.main.service.IMembermanagementService;
 import com.stylefeng.guns.modular.main.service.IMembershipcardtypeService;
 import com.stylefeng.guns.modular.system.model.*;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.stylefeng.guns.core.common.constant.factory.PageFactory;
@@ -30,6 +31,7 @@ import java.util.*;
  * @Date 2018-12-27 16:12:20
  */
 @Controller
+@Scope("prototype")
 @RequestMapping("/serverMemberinfo")
 public class ServerMemberinfoController extends BaseController {
 

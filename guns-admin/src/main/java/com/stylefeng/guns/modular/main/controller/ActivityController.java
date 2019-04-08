@@ -12,6 +12,7 @@ import com.stylefeng.guns.modular.main.service.*;
 import com.stylefeng.guns.modular.system.model.*;
 import com.stylefeng.guns.modular.system.service.IUserService;
 import com.stylefeng.guns.modular.task.ActivityTask;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.stylefeng.guns.core.common.constant.factory.PageFactory;
@@ -38,6 +39,7 @@ import java.util.*;
  * @Date 2018-08-16 10:54:46
  */
 @Controller
+@Scope("prototype")
 @RequestMapping("/activity")
 public class ActivityController extends BaseController {
 

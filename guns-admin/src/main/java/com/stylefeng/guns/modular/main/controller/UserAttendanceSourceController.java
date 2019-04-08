@@ -8,6 +8,7 @@ import com.stylefeng.guns.core.util.DateUtil;
 import com.stylefeng.guns.modular.face.FaceUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.stylefeng.guns.core.common.constant.factory.PageFactory;
@@ -33,6 +34,7 @@ import java.util.Date;
  * @Date 2019-04-08 10:53:16
  */
 @Controller
+@Scope("prototype")
 @RequestMapping("/userAttendanceSource")
 public class UserAttendanceSourceController extends BaseController {
     private Logger log = LoggerFactory.getLogger(this.getClass());

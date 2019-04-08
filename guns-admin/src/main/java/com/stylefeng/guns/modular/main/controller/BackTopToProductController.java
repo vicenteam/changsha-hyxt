@@ -12,6 +12,7 @@ import com.stylefeng.guns.modular.system.model.Integralrecordtype;
 import com.stylefeng.guns.modular.system.model.InventoryManagement;
 import com.stylefeng.guns.modular.system.model.User;
 import com.stylefeng.guns.modular.system.service.IUserService;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.stylefeng.guns.core.common.constant.factory.PageFactory;
@@ -38,6 +39,7 @@ import java.util.List;
  * @Date 2018-12-26 14:22:08
  */
 @Controller
+@Scope("prototype")
 @RequestMapping("/backTopToProduct")
 public class BackTopToProductController extends BaseController {
 

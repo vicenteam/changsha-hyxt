@@ -10,6 +10,7 @@ import com.stylefeng.guns.modular.main.service.IMembershipcardtypeService;
 import com.stylefeng.guns.modular.system.model.Checkin;
 import com.stylefeng.guns.modular.system.model.Membermanagement;
 import com.stylefeng.guns.modular.system.model.Membershipcardtype;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.stylefeng.guns.core.common.constant.factory.PageFactory;
@@ -38,6 +39,7 @@ import java.util.List;
  * @Date 2018-08-14 14:52:03
  */
 @Controller
+@Scope("prototype")
 @RequestMapping("/qiandaoCheckin")
 public class QiandaoCheckinController extends BaseController {
 

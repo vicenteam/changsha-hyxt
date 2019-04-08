@@ -13,6 +13,7 @@ import com.stylefeng.guns.modular.system.model.*;
 import com.stylefeng.guns.modular.system.service.IDeptService;
 import com.stylefeng.guns.modular.system.service.IUserService;
 import org.beetl.ext.fn.Json;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.stylefeng.guns.core.common.constant.factory.PageFactory;
@@ -40,6 +41,7 @@ import java.util.Map;
  * @Date 2018-12-10 11:10:57
  */
 @Controller
+@Scope("prototype")
 @RequestMapping("/inventoryManagement")
 public class InventoryManagementController extends BaseController {
 
