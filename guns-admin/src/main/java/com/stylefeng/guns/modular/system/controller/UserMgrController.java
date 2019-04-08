@@ -519,7 +519,7 @@ public class UserMgrController extends BaseController {
         imgStr = request.getParameter("file");
         String pictureName = "qq";//UUID.randomUUID().toString() + "." + ToolUtil.getFileSuffix(picture.getOriginalFilename());
         try {
-            log.info("base64-》" + imgStr);
+//            log.info("base64-》" + imgStr);
             //进行人脸对比
             AipFace client = new AipFace(FaceUtil.APP_ID, FaceUtil.API_KEY, FaceUtil.SECRET_KEY);
             FaceUtil faceUtil = new FaceUtil();

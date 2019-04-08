@@ -99,7 +99,7 @@ public class UserAttendanceSourceController extends BaseController {
             @Override
             public void run() {
                 String userBase64ImgData = (String) request.getSession().getAttribute("userBase64ImgData");
-                log.info("base64->" + userBase64ImgData);
+//                log.info("base64->" + userBase64ImgData);
                 if (!StringUtils.isEmpty(userBase64ImgData)) {
                     AipFace client = new AipFace(FaceUtil.APP_ID, FaceUtil.API_KEY, FaceUtil.SECRET_KEY);
                     new FaceUtil().userRegister(client, JSON.toJSONString(userAttendanceSource), userBase64ImgData, userAttendanceSource.getDeptId() + "", userAttendanceSource.getId() + "");
@@ -132,7 +132,7 @@ public class UserAttendanceSourceController extends BaseController {
             @Override
             public void run() {
                 String userBase64ImgData = (String) request.getSession().getAttribute("userBase64ImgData");
-                log.info("base64->" + userBase64ImgData);
+//                log.info("base64->" + userBase64ImgData);
                 if (!StringUtils.isEmpty(userBase64ImgData)) {
                     AipFace client = new AipFace(FaceUtil.APP_ID, FaceUtil.API_KEY, FaceUtil.SECRET_KEY);
                     if (StringUtils.isEmpty(userAttendanceSource.getImg())) {//新增
