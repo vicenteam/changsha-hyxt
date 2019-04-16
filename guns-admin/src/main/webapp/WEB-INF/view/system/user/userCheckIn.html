@@ -270,6 +270,15 @@
                     <#input id="name" name="姓名" underline="true"/>
                     <#input id="sex" name="性别" underline="true"/>
                     <#input id="phone" name="电话" underline="true"/>
+
+                </div>
+                <div class="col-sm-10">
+                    <br />
+                    <div style="margin-left: 40%">
+                        <button type="button" class="btn btn-info button-margin" onclick="photo()" id="ps">
+                            <i class="fa fa-check"></i>&nbsp;提交
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -295,10 +304,10 @@
 
 <script src="${ctxPath}/static/modular/main/membermanagement/membermanagement_userPhotoPage.js"></script>
 <script>
-    $(function () {
-        var time= setInterval(function(){
-            photo();
-        },3000);
-    })
+    // $(function () {
+    //     var time= setInterval(function(){
+    //         photo();
+    //     },3000);
+    // })
 </script>
 @}
